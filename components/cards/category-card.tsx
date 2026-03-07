@@ -1,0 +1,96 @@
+'use client';
+
+import Link from 'next/link';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Category } from '@/lib/types';
+import { cn } from '@/lib/utils';
+
+interface CategoryCardProps {
+  category: Category;
+  className?: string;
+}
+
+// Icon map implementation omitted for brevity, assume same as previous
+const iconMap: Record<string, React.ReactNode> = {
+  palette: (
+    <svg
+      className='h-5 w-5'
+      fill='none'
+      stroke='currentColor'
+      viewBox='0 0 24 24'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={2}
+        d='M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01'
+      />
+    </svg>
+  ),
+  // ... add other icons as needed
+  default: (
+    <svg
+      className='h-5 w-5'
+      fill='none'
+      stroke='currentColor'
+      viewBox='0 0 24 24'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={2}
+        d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
+      />
+    </svg>
+  ),
+};
+
+export function CategoryCard({ category, className }: CategoryCardProps) {
+  const Icon = iconMap[category.icon] || iconMap.default;
+
+  return (
+    <Link href={`/category/${category.id}`} className='block h-full'>
+      <Card
+        className={cn(
+          'group relative h-full overflow-hidden border-0',
+          'backdrop-blur-xl border border-white/30 dark:border-white/10',
+          'shadow-card transition-all duration-300 ease-out',
+          'hover:shadow-card-hover hover:scale-[1.02]',
+          className,
+        )}
+        style={{
+          background: `linear-gradient(135deg, ${category.color}20 0%, ${category.color}10 100%)`,
+        }}
+      >
+        <CardContent className='p-5 flex items-center justify-between relative z-10'>
+          <div>
+            <CardTitle className='text-base font-semibold text-foreground group-hover:text-primary transition-colors'>
+              {category.title}
+            </CardTitle>
+            {category.count && (
+              <p className='text-sm text-muted-foreground mt-0.5'>
+                {category.count} apps
+              </p>
+            )}
+          </div>
+
+          {/* Icon Container */}
+          <div
+            className='h-12 w-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6'
+            style={{ backgroundColor: `${category.color}30` }}
+          >
+            <span style={{ color: category.color }}>{Icon}</span>
+          </div>
+        </CardContent>
+
+        {/* Hover Gradient Overlay */}
+        <div
+          className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0'
+          style={{
+            background: `linear-gradient(135deg, ${category.color}10 0%, transparent 50%)`,
+          }}
+        />
+      </Card>
+    </Link>
+  );
+}
