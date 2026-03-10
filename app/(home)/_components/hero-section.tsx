@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import Autoplay from 'embla-carousel-autoplay';
+
 import {
   Carousel,
   CarouselContent,
@@ -9,46 +11,53 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-
-import { HeroSlide } from '@/lib/types';
-import { SECTION_HEADERS } from '@/lib/constants';
+import { HeroAppCard } from '@/components/cards/hero-app-card';
 import { Container } from '@/components/layout/container';
 import { SectionHeader } from '@/components/layout/section-header';
-import { HeroAppCard } from '@/components/cards/herp-app-card';
-import Autoplay from 'embla-carousel-autoplay';
+import { SECTION_HEADERS } from '@/lib/constants';
+import { HeroSlide } from '@/lib/types';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface HeroSectionProps {
   slides: HeroSlide[];
 }
 
-export function HeroSection({ slides }: HeroSectionProps) {
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export function HeroSection({
+  slides,
+}: HeroSectionProps): React.JSX.Element | null {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true }),
   );
 
-  return (
-    <section className='section-spacing bg-linear-to-b from-primary/5 to-transparent relative overflow-hidden '>
-      {/* Background Decorative Elements */}
+  // Guard: Embla's behavior with zero items is undefined and may throw.
+  if (slides.length === 0) return null;
 
+  return (
+    <section
+      className='section-spacing bg-linear-to-b from-primary/5 to-transparent relative overflow-hidden'
+      aria-labelledby='section-heading-trending'
+    >
       <Container size='full'>
         <SectionHeader
+          id='section-heading-trending'
           title={SECTION_HEADERS.trending.title}
           subtitle={SECTION_HEADERS.trending.subtitle}
           align='left'
         />
       </Container>
 
-      <div className=' px-4 sm:px-6 lg:px-8 relative'>
+      <div className='px-4 sm:px-6 lg:px-8 relative'>
         <Carousel
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
+          opts={{ align: 'start', loop: true }}
           plugins={[plugin.current]}
           className='w-full'
         >
           <CarouselContent className='-ml-2 md:-ml-4'>
-            {slides.map((slide, index) => (
+            {/* ✅ `index` removed — it was declared but never used */}
+            {slides.map((slide) => (
               <CarouselItem
                 key={slide.id}
                 className='pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/4'

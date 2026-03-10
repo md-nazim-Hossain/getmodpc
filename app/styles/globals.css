@@ -2,6 +2,8 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
+@import './glass-card.css';
+
 @custom-variant dark (&:is(.dark *));
 
 /* 
@@ -67,11 +69,10 @@
 }
 
 :root {
-  /* Base */
-  /* #D7D7D7 converted to OKLCH */
-  --background: oklch(0.8792 0 0);
+  /* Base */ /* # converted to OKLCH */
+  --background: #d7d7d7;
   /* Dark text for contrast */
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.2621 0.0095 248.19);
 
   /* Card: Pure white or slight transparency for glass effect base */
   --card: oklch(1 0 0);
@@ -139,32 +140,6 @@
   Component Layer for Reusable Utilities 
 */
 @layer components {
-  /* Glassmorphism Card Utility */
-  .glass-card {
-    background: var(--glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-glass);
-  }
-
-  /* Glassmorphism Hover State */
-  .glass-card-hover {
-    background: var(--glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-glass);
-    transition: all 0.3s ease;
-  }
-
-  .glass-card-hover:hover {
-    box-shadow: var(--shadow-glass-hover);
-    background: rgba(255, 255, 255, 0.85);
-    transform: scale(1.01);
-    border-color: rgba(255, 255, 255, 0.5);
-  }
-
   /* Container Utility */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -184,6 +159,10 @@
   Utility Layer for One-off Utilities 
 */
 @layer utilities {
+  .all-unset {
+    all: unset;
+  }
+
   .text-balance {
     text-wrap: balance;
   }

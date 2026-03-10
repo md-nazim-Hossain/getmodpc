@@ -1,8 +1,13 @@
-'use client';
+// components/layout/section-header.tsx
+// ✅ No 'use client' — removed. Uses only Link and Button which are server-compatible.
+// Previously marked 'use client' with zero client-side logic, unnecessarily shipping JS.
 
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+
 import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface SectionHeaderProps {
   title: string;
@@ -11,7 +16,15 @@ interface SectionHeaderProps {
   viewAllText?: string;
   className?: string;
   align?: 'left' | 'center';
+  /**
+   * Pass an id to wire up aria-labelledby on the parent <section>.
+   * Example: <section aria-labelledby="section-heading-popular-apps">
+   *            <SectionHeader id="section-heading-popular-apps" ... />
+   */
+  id?: string;
 }
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export function SectionHeader({
   title,
@@ -20,7 +33,8 @@ export function SectionHeader({
   viewAllText = 'View All',
   className,
   align = 'left',
-}: SectionHeaderProps) {
+  id,
+}: SectionHeaderProps): React.JSX.Element {
   return (
     <div
       className={cn(
@@ -30,7 +44,10 @@ export function SectionHeader({
       )}
     >
       <div>
-        <h2 className='text-2xl md:text-3xl font-bold text-foreground tracking-tight'>
+        <h2
+          id={id}
+          className='text-2xl md:text-3xl font-bold text-foreground tracking-tight'
+        >
           {title}
         </h2>
         {subtitle && (
@@ -41,16 +58,19 @@ export function SectionHeader({
       </div>
 
       {viewAllLink && (
-        <Link href={viewAllLink} className='cursor-pointer'>
-          <Button variant='glassPrimary' className='shrink-0  cursor-pointer'>
+        // ✅ 'group' moved to the Link — was missing entirely.
+        // 'group-hover:translate-x-1' on the SVG inside was dead because no
+        // ancestor had the 'group' class. The arrow never animated.
+        <Link href={viewAllLink} className='group shrink-0 cursor-pointer'>
+          <Button variant='glassPrimary'>
             {viewAllText}
-
             <svg
               className='h-4 w-4 transition-transform duration-300 group-hover:translate-x-1'
               fill='none'
               stroke='currentColor'
               viewBox='0 0 24 24'
               strokeWidth={2}
+              aria-hidden='true'
             >
               <path
                 strokeLinecap='round'

@@ -1,0 +1,153 @@
+:root {
+  --anim--hover-time: 400ms;
+  --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --test-border-radius: 24px;
+  --shadow-cuttoff-fix: 2em;
+}
+
+.glass-card-wrapper {
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  border: none;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  pointer-events: none;
+  border-radius: var(--test-border-radius);
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.glass-card-shadow {
+  position: absolute;
+  width: calc(100% + var(--shadow-cuttoff-fix));
+  height: calc(100% + var(--shadow-cuttoff-fix));
+  top: calc(0% - var(--shadow-cuttoff-fix) / 2);
+  left: calc(0% - var(--shadow-cuttoff-fix) / 2);
+  filter: blur(clamp(2px, 0.125em, 12px));
+  -webkit-filter: blur(clamp(2px, 0.125em, 12px));
+  -moz-filter: blur(clamp(2px, 0.125em, 12px));
+  -ms-filter: blur(clamp(2px, 0.125em, 12px));
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Shadow */
+.glass-card-shadow::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: var(--test-border-radius);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+  width: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
+  height: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
+  top: calc(var(--shadow-cuttoff-fix) - 0.5em);
+  left: calc(var(--shadow-cuttoff-fix) - 0.875em);
+  padding: 0.125em;
+  box-sizing: border-box;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+  overflow: visible;
+  opacity: 1;
+}
+
+.glass-card {
+  /* Basic Styling */
+  padding: 12px;
+  --border-width: clamp(1px, 0.0625em, 4px);
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  pointer-events: auto;
+  z-index: 3;
+  background: linear-gradient(
+    -75deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-radius: var(--test-border-radius);
+  box-shadow:
+    inset 0 0.125em 0.25em rgba(0, 0, 0, 0.05),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+    0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+    0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+    0 0 0 0 rgba(255, 255, 255, 1);
+  backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+  -webkit-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+  -moz-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+  -ms-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.glass-card:hover {
+  transform: scale(0.975);
+  backdrop-filter: blur(0.01em);
+  -webkit-backdrop-filter: blur(0.01em);
+  -moz-backdrop-filter: blur(0.01em);
+  -ms-backdrop-filter: blur(0.01em);
+  box-shadow:
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+    0 0.15em 0.05em -0.1em rgba(0, 0, 0, 0.25),
+    0 0 0.05em 0.1em inset rgba(255, 255, 255, 0.5),
+    0 0 0 0 rgba(255, 255, 255, 1);
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: var(--test-border-radius);
+  width: calc(100% + var(--border-width));
+  height: calc(100% + var(--border-width));
+  top: calc(0% - var(--border-width) / 2);
+  left: calc(0% - var(--border-width) / 2);
+  padding: var(--border-width);
+  box-sizing: border-box;
+  background:
+    conic-gradient(
+      from var(--angle-1) at 50% 50%,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0) 5% 40%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0) 60% 95%,
+      rgba(0, 0, 0, 0.5)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition:
+    all var(--anim--hover-time) var(--anim--hover-ease),
+    --angle-1 500ms ease;
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.5);
+}
+
+.glass-card:hover::after {
+  --angle-1: -125deg;
+}
+
+.glass-card:active::after {
+  --angle-1: -75deg;
+}
+
+/* Shadow Hover */
+.glass-card-wrapper:has(.glass-card:hover) .glass-card-shadow {
+  filter: blur(clamp(2px, 0.0625em, 6px));
+  -webkit-filter: blur(clamp(2px, 0.0625em, 6px));
+  -moz-filter: blur(clamp(2px, 0.0625em, 6px));
+  -ms-filter: blur(clamp(2px, 0.0625em, 6px));
+  transition: filter var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.glass-card-wrapper:has(.glass-card:hover) .glass-card-shadow::after {
+  top: calc(var(--shadow-cuttoff-fix) - 0.875em);
+  opacity: 1;
+}

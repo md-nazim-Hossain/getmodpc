@@ -1,9 +1,8 @@
 // app/layout.tsx
+import { SITE_CONFIG } from '@/lib/constants';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
-import { SITE_CONFIG } from '@/lib/constants';
-import { Header } from '@/components/layout/header';
+import './styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
