@@ -29,6 +29,8 @@ interface HomeSectionProps<T extends { id: string | number }> {
   variant?: SectionVariant;
   /** Override the default 4-column grid class if needed (e.g. featured rows). */
   gridClassName?: string;
+
+  className?: string;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -54,6 +56,7 @@ export function HomeSection<T extends { id: string | number }>({
   renderItem,
   variant = 'default',
   gridClassName = DEFAULT_GRID_CLASS,
+  className,
 }: HomeSectionProps<T>): React.JSX.Element | null {
   // Empty-state guard — previously all 8 sections would render an orphaned
   // SectionHeader above an empty grid when data was unavailable.
@@ -65,7 +68,7 @@ export function HomeSection<T extends { id: string | number }>({
 
   return (
     <section
-      className={cn('section-spacing', VARIANT_CLASSES[variant])}
+      className={cn('section-spacing', VARIANT_CLASSES[variant], className)}
       aria-labelledby={headingId}
     >
       <Container>

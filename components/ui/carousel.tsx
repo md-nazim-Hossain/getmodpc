@@ -208,9 +208,9 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        'absolute h-10 w-10 rounded-full transition-all duration-300',
-        'bg-white/80 backdrop-blur-md border border-white/30 shadow-lg',
-        'hover:bg-white hover:scale-105 hover:shadow-xl',
+        'absolute size-8 md:size-10 rounded-full transition-all duration-300',
+        'bg-primary backdrop-blur-md border border-white/30 shadow-lg',
+        'hover:bg-primary/80 hover:scale-105 hover:shadow-xl',
         'disabled:opacity-30 disabled:cursor-not-allowed',
         'dark:bg-black/50 dark:hover:bg-black/70',
         orientation === 'horizontal'
@@ -222,7 +222,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft className='h-5 w-5 text-foreground' />
+      <ArrowLeft className='size-4 md:size-5 text-primary-foreground' />
       <span className='sr-only'>Previous slide</span>
     </Button>
   );
@@ -241,9 +241,9 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        'absolute h-10 w-10 rounded-full transition-all duration-300',
-        'bg-white/80 backdrop-blur-md border border-white/30 shadow-lg',
-        'hover:bg-white hover:scale-105 hover:shadow-xl',
+        'absolute size-8 md:size-10 rounded-full transition-all duration-300',
+        'bg-primary backdrop-blur-md border border-white/30 shadow-lg',
+        'hover:bg-primary/80 hover:scale-105 hover:shadow-xl',
         'disabled:opacity-30 disabled:cursor-not-allowed',
         'dark:bg-black/50 dark:hover:bg-black/70',
         orientation === 'horizontal'
@@ -255,7 +255,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight className='h-5 w-5 text-foreground' />
+      <ArrowRight className='size-4 md:size-5 text-primary-foreground' />
       <span className='sr-only'>Next slide</span>
     </Button>
   );

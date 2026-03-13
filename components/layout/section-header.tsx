@@ -3,6 +3,8 @@
 // Previously marked 'use client' with zero client-side logic, unnecessarily shipping JS.
 import Link from 'next/link';
 
+import { ArrowRight } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 import { Button } from '../ui/button';
@@ -38,7 +40,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4',
+        'mb-4 flex items-end justify-between gap-4',
         align === 'center' && 'text-center items-center',
         className
       )}
@@ -62,22 +64,13 @@ export function SectionHeader({
         // 'group-hover:translate-x-1' on the SVG inside was dead because no
         // ancestor had the 'group' class. The arrow never animated.
         <Link href={viewAllLink} className='group shrink-0 cursor-pointer'>
-          <Button variant='glassPrimary'>
+          <Button
+            size={'sm'}
+            variant='glassPrimary'
+            className='rounded-full gap-x-1'
+          >
             {viewAllText}
-            <svg
-              className='h-4 w-4 transition-transform duration-300 group-hover:translate-x-1'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-              strokeWidth={2}
-              aria-hidden='true'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M13 7l5 5m0 0l-5 5m5-5H6'
-              />
-            </svg>
+            <ArrowRight className='size-4' />
           </Button>
         </Link>
       )}

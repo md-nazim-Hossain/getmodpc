@@ -61,7 +61,7 @@ export function HeroSection({
             {slides.map((slide) => (
               <CarouselItem
                 key={slide.id}
-                className='pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/4'
+                className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3'
               >
                 <div className='p-1 h-full'>
                   <HeroAppCard app={slide} badge={slide.badge} />
@@ -69,8 +69,8 @@ export function HeroSection({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className='hidden md:flex' />
-          <CarouselNext className='hidden md:flex' />
+          <CarouselPrevious />
+          <CarouselNext />
         </Carousel>
       </div>
     </section>

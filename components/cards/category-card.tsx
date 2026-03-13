@@ -79,17 +79,21 @@ export function CategoryCard({
     <Link href={`/category/${category.id}`} className='block h-full'>
       <Card
         className={cn(
-          'group relative h-full overflow-hidden border-0',
-          'backdrop-blur-xl border border-white/30 dark:border-white/10',
-          'shadow-card transition-all duration-300 ease-out',
-          'hover:shadow-card-hover hover:scale-[1.02]',
+          'glass-card-wrapper',
+
           className
         )}
         style={{
-          background: `linear-gradient(135deg, ${category.color}20 0%, ${category.color}10 100%)`,
+          // background: `${category.color}20`,
+          background: `linear-gradient(135deg, ${category.color}40 0%, ${category.color}10 100%)`,
         }}
       >
-        <CardContent className='p-5 flex items-center justify-between relative z-10'>
+        <CardContent
+          className={cn(
+            'glass-card',
+            'p-5! flex items-center justify-between relative z-10'
+          )}
+        >
           <div>
             <CardTitle className='text-base font-semibold text-foreground group-hover:text-primary transition-colors'>
               {category.title}
@@ -104,21 +108,14 @@ export function CategoryCard({
           {/* Icon Container */}
           <div
             className='h-12 w-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6'
-            style={{ backgroundColor: `${category.color}30` }}
+            style={{ backgroundColor: `${category.color}40` }}
             aria-hidden='true'
           >
             <span style={{ color: category.color }}>{icon}</span>
           </div>
         </CardContent>
 
-        {/* Hover Gradient Overlay — purely decorative */}
-        <div
-          className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0'
-          style={{
-            background: `linear-gradient(135deg, ${category.color}10 0%, transparent 50%)`,
-          }}
-          aria-hidden='true'
-        />
+        <div className='glass-card-shadow'></div>
       </Card>
     </Link>
   );
