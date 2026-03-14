@@ -13,14 +13,14 @@ interface PlatformIconProps {
 }
 
 interface PlatformListProps {
-  platforms: Platform[];
+  platform: Platform;
   size?: IconSize;
 }
 
 // ─── Size config ──────────────────────────────────────────────────────────────
 
 const SIZE_CONFIG: Record<IconSize, { container: string; icon: string }> = {
-  sm: { container: 'size-5', icon: 'size-3' }, // AppCard
+  sm: { container: 'size-5', icon: 'size-4' }, // AppCard
   md: { container: 'size-7', icon: 'size-4' }, // HeroAppCard
 };
 
@@ -57,19 +57,19 @@ export function PlatformIcon({
   platform,
   size = 'sm',
 }: PlatformIconProps): React.JSX.Element {
-  const { container, icon } = SIZE_CONFIG[size];
-  const color = PLATFORM_COLORS[platform];
+  const { icon } = SIZE_CONFIG[size];
+  // const color = PLATFORM_COLORS[platform];
 
   return (
     <span
       aria-label={PLATFORM_LABELS[platform]}
-      className={`inline-flex items-center justify-center ${container} rounded-full`}
-      style={{ backgroundColor: `${color}15` }}
+      // className={`inline-flex items-center justify-center ${container} rounded-full`}
+      // style={{ backgroundColor: `${color}15` }}
     >
       <svg
         className={icon}
         viewBox={PLATFORM_VIEWBOXES[platform]}
-        fill={color}
+        fill={'currentColor'}
         aria-hidden='true'
       >
         <path d={PLATFORM_PATHS[platform]} />
@@ -82,20 +82,21 @@ export function PlatformIcon({
 // Renders the full platform row — replaces the duplicated .map() in both cards.
 
 export function PlatformIconList({
-  platforms,
+  platform,
   size = 'sm',
 }: PlatformListProps): React.JSX.Element {
   return (
     <div
-      className='flex items-center gap-1.5'
+      className='flex items-center gap-2'
       role='list'
       aria-label='Available platforms'
     >
-      {platforms.map((p) => (
-        <div key={p} role='listitem'>
-          <PlatformIcon platform={p} size={size} />
-        </div>
-      ))}
+      <div key={platform} role='listitem'>
+        <PlatformIcon platform={platform} size={size} />
+      </div>
+      <span className='text-muted-foreground capitalize text-xs '>
+        {platform}
+      </span>
     </div>
   );
 }

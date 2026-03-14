@@ -79,7 +79,7 @@ export function CategoryCard({
     <Link href={`/category/${category.id}`} className='block h-full'>
       <Card
         className={cn(
-          'glass-card-wrapper',
+          'glass-card-wrapper rounded-[12px]!',
 
           className
         )}
@@ -91,18 +91,18 @@ export function CategoryCard({
         <CardContent
           className={cn(
             'glass-card',
-            'p-5! flex items-center justify-between relative z-10'
+            'px-3.5! py-4.5! flex items-center justify-between relative z-10 rounded-[12px]! after:rounded-[12px]!'
           )}
         >
           <div>
-            <CardTitle className='text-base font-semibold text-foreground group-hover:text-primary transition-colors'>
+            <CardTitle className='text-sm font-semibold text-foreground group-hover:text-primary transition-colors'>
               {category.title}
             </CardTitle>
-            {category.count != null && (
+            {/* {category.count != null && (
               <p className='text-sm text-muted-foreground mt-0.5'>
                 {category.count} apps
               </p>
-            )}
+            )} */}
           </div>
 
           {/* Icon Container */}
@@ -115,7 +115,7 @@ export function CategoryCard({
           </div>
         </CardContent>
 
-        <div className='glass-card-shadow'></div>
+        <div className='glass-card-shadow after:rounded-[12px]!'></div>
       </Card>
     </Link>
   );

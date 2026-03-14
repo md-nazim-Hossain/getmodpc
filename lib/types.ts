@@ -7,7 +7,7 @@ export interface App {
   title: string;
   icon: string;
   banner: string;
-  platform: Platform[];
+  platform: Platform;
   downloads: number;
   extraInfo: string;
   category: string;

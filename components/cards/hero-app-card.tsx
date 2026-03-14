@@ -38,7 +38,7 @@ export function HeroAppCard({
               className='object-cover transition-transform duration-700 group-hover:scale-110'
               style={{
                 borderRadius:
-                  'var(--test-border-radius) var(--test-border-radius) 0 0',
+                  'var(--glass-border-radius) var(--glass-border-radius) 0 0',
               }}
               sizes='(max-width: 768px) 100vw, 50vw'
               // ✅ priority is now controlled by the parent — only index 0 gets true.
@@ -48,13 +48,13 @@ export function HeroAppCard({
             <div className='absolute inset-0 bg-linear-to-t from-background/30 via-background/10 to-transparent' />
 
             {/* Badges */}
-            {badge && (
+            {/* {badge && (
               <div className='absolute top-4 left-4 z-10'>
                 <Badge className='bg-primary text-primary-foreground shadow-lg border-0'>
                   {badge}
                 </Badge>
               </div>
-            )}
+            )} */}
           </div>
           <div className='p-3'>
             <AppCardInfo app={app} />

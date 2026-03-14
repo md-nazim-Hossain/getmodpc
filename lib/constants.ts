@@ -23,7 +23,7 @@ export const PLATFORM_COLORS = {
 
 export const SECTION_HEADERS = {
   trending: {
-    title: 'Trending Now',
+    title: 'indispensable on your phone',
     subtitle: "Discover what's hot in the app world",
   },
   popularApps: {

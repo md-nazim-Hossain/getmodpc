@@ -147,7 +147,7 @@
 
   /* Section Spacing Utility */
   .section-spacing {
-    @apply py-8;
+    @apply pb-8;
   }
 }
 

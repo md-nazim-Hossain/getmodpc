@@ -6,12 +6,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDownloads(count: number): string {
+export function formatDownloads(count: number, version?: string): string {
   if (count >= 1000000000) {
-    return `${(count / 1000000000).toFixed(1)}B`;
+    const formatted = `${(count / 1000000000).toFixed(1)}B`;
+    return version ? `${version} + ${formatted}` : formatted;
   }
   if (count >= 1000000) {
-    return `${(count / 1000000).toFixed(1)}M`;
+    const formatted = `${(count / 1000000).toFixed(1)}M`;
+    return version ? `${version} + ${formatted}` : formatted;
   }
   if (count >= 1000) {
     return `${(count / 1000).toFixed(1)}K`;

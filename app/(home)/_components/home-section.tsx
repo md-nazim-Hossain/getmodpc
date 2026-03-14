@@ -29,7 +29,7 @@ interface HomeSectionProps<T extends { id: string | number }> {
   variant?: SectionVariant;
   /** Override the default 4-column grid class if needed (e.g. featured rows). */
   gridClassName?: string;
-
+  wrapperClassName?: string;
   className?: string;
 }
 
@@ -56,6 +56,7 @@ export function HomeSection<T extends { id: string | number }>({
   renderItem,
   variant = 'default',
   gridClassName = DEFAULT_GRID_CLASS,
+  wrapperClassName = 'bg-white p-4 border border-[#dee2e6] rounded-[16px] shadow-sm',
   className,
 }: HomeSectionProps<T>): React.JSX.Element | null {
   // Empty-state guard — previously all 8 sections would render an orphaned
@@ -72,17 +73,20 @@ export function HomeSection<T extends { id: string | number }>({
       aria-labelledby={headingId}
     >
       <Container>
-        <SectionHeader
-          id={headingId}
-          title={header.title}
-          subtitle={header.subtitle}
-          viewAllLink={'viewAllLink' in header ? header.viewAllLink : undefined}
-        />
-        <div className={gridClassName}>
-          {items.map((item) => (
-            // React.Fragment preserves the key on the render prop's root element.
-            <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
-          ))}
+        <div className={cn(wrapperClassName)}>
+          <SectionHeader
+            id={headingId}
+            title={header.title}
+            viewAllLink={
+              'viewAllLink' in header ? header.viewAllLink : undefined
+            }
+          />
+          <div className={gridClassName}>
+            {items.map((item) => (
+              // React.Fragment preserves the key on the render prop's root element.
+              <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

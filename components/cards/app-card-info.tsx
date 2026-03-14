@@ -10,7 +10,7 @@ const AppCardInfo: React.FC<{ app: App }> = ({ app }) => {
   return (
     <div className='flex gap-4 '>
       {/* App Icon */}
-      <div className='relative size-25 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
+      <div className='relative size-21 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
         <Image
           src={app.icon}
           alt={`${app.title} icon`}
@@ -36,13 +36,9 @@ const AppCardInfo: React.FC<{ app: App }> = ({ app }) => {
           )}
         </CardTitle>
 
-        {/* ✅ Platform icons extracted — was duplicated verbatim in HeroAppCard */}
-        <div className='mt-1'>
-          <PlatformIconList platforms={app.platform} size='sm' />
-        </div>
-
         {/* Meta */}
-        <div className='flex flex-col gap-1 mt-1.5 text-xs text-foreground '>
+        <div className='flex flex-col gap-y-0.75 mt-1 text-xs text-foreground '>
+          <PlatformIconList platform={app.platform} size='sm' />
           <span className='flex items-center gap-2'>
             <div className='size-3.5'>
               <svg className='size-3.5' viewBox='0 0 24 24' fill='currentColor'>
@@ -52,7 +48,7 @@ const AppCardInfo: React.FC<{ app: App }> = ({ app }) => {
               </svg>
             </div>
             <span className='text-muted-foreground'>
-              {formatDownloads(app.downloads)}
+              {formatDownloads(app.downloads, app.version)}
             </span>
           </span>
 

@@ -38,14 +38,14 @@ export function HeroSection({
 
   return (
     <section
-      className='section-spacing bg-linear-to-b from-primary/5 to-transparent relative overflow-hidden'
+      className='section-spacing pt-6 bg-linear-to-b from-primary/5 to-transparent relative overflow-hidden'
       aria-labelledby='section-heading-trending'
     >
       <Container size='full'>
         <SectionHeader
           id='section-heading-trending'
           title={SECTION_HEADERS.trending.title}
-          subtitle={SECTION_HEADERS.trending.subtitle}
+          titleClassName='uppercase md:text-[2rem]'
           align='left'
         />
       </Container>

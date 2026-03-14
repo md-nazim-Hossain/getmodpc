@@ -7,12 +7,13 @@ import { ArrowRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-import { Button } from '../ui/button';
+import GlassButton from '../glass-button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface SectionHeaderProps {
   title: string;
+  titleClassName?: string;
   subtitle?: string;
   viewAllLink?: string;
   viewAllText?: string;
@@ -30,6 +31,7 @@ interface SectionHeaderProps {
 
 export function SectionHeader({
   title,
+  titleClassName,
   subtitle,
   viewAllLink,
   viewAllText = 'View All',
@@ -48,7 +50,10 @@ export function SectionHeader({
       <div>
         <h2
           id={id}
-          className='text-2xl md:text-3xl font-bold text-foreground tracking-tight'
+          className={cn(
+            'text-2xl md:text-[1.75rem] font-bold text-foreground tracking-tight',
+            titleClassName
+          )}
         >
           {title}
         </h2>
@@ -64,14 +69,18 @@ export function SectionHeader({
         // 'group-hover:translate-x-1' on the SVG inside was dead because no
         // ancestor had the 'group' class. The arrow never animated.
         <Link href={viewAllLink} className='group shrink-0 cursor-pointer'>
-          <Button
+          <GlassButton>
+            {viewAllText}
+            <ArrowRight className='size-4' />
+          </GlassButton>
+          {/* <Button
             size={'sm'}
             variant='glassPrimary'
             className='rounded-full gap-x-1'
           >
             {viewAllText}
             <ArrowRight className='size-4' />
-          </Button>
+          </Button> */}
         </Link>
       )}
     </div>

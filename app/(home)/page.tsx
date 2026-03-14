@@ -83,23 +83,21 @@ export default function HomePage() {
         variant='tinted'
       />
 
-      <div className='bg-white mt-8'>
-        <HomeSection
-          headerKey='appCategories'
-          items={appCategories}
-          variant='tinted'
-          gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'
-          renderItem={(category) => <CategoryCard category={category} />}
-        />
+      <HomeSection
+        headerKey='appCategories'
+        items={appCategories}
+        variant='tinted'
+        gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-3'
+        renderItem={(category) => <CategoryCard category={category} />}
+      />
 
-        <HomeSection
-          headerKey='gameCategories'
-          items={gameCategories}
-          gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'
-          renderItem={(category) => <CategoryCard category={category} />}
-          variant='tinted'
-        />
-      </div>
+      <HomeSection
+        headerKey='gameCategories'
+        items={gameCategories}
+        gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-3'
+        renderItem={(category) => <CategoryCard category={category} />}
+        variant='tinted'
+      />
     </>
   );
 }
