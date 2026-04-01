@@ -1,14 +1,17 @@
 import Image from 'next/image';
 
 import { App } from '@/lib/types';
-import { formatDownloads } from '@/lib/utils';
+import { cn, formatDownloads } from '@/lib/utils';
 
 import { PlatformIconList } from '../platform-icon';
 import { CardTitle } from '../ui/card';
 
-const AppCardInfo: React.FC<{ app: App }> = ({ app }) => {
+const AppCardInfo: React.FC<{ app: App; className?: string }> = ({
+  app,
+  className,
+}) => {
   return (
-    <div className='flex gap-4 '>
+    <div className={cn('flex gap-4 p-2', className)}>
       {/* App Icon */}
       <div className='relative size-21 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
         <Image

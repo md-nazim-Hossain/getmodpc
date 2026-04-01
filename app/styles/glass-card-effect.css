@@ -1,64 +1,36 @@
-:root {
+.glass-card-effect {
+  --global--size: clamp(2rem, 3em, 5rem);
   --anim--hover-time: 400ms;
   --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
   --glass-border-radius: 24px;
-  --shadow-cuttoff-fix: 2em;
 }
 
-.glass-card-wrapper {
-  padding: 0;
-  margin: 0;
-  box-shadow: none;
-  border: none;
+/* Base Styles */
+.glass-card-effect {
+  font-size: var(--global--size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* ========== BUTTON ========== */
+
+/* Button Wrap Container */
+.glass-card-effect-wrapper {
   position: relative;
   z-index: 2;
+  border-radius: var(--glass-border-radius);
   background: transparent;
   pointer-events: none;
-  border-radius: var(--glass-border-radius);
   transition: all var(--anim--hover-time) var(--anim--hover-ease);
 }
 
-.glass-card-shadow {
-  position: absolute;
-  width: calc(100% + var(--shadow-cuttoff-fix));
-  height: calc(100% + var(--shadow-cuttoff-fix));
-  top: calc(0% - var(--shadow-cuttoff-fix) / 2);
-  left: calc(0% - var(--shadow-cuttoff-fix) / 2);
-  filter: blur(clamp(2px, 0.125em, 12px));
-  -webkit-filter: blur(clamp(2px, 0.125em, 12px));
-  -moz-filter: blur(clamp(2px, 0.125em, 12px));
-  -ms-filter: blur(clamp(2px, 0.125em, 12px));
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* Shadow */
-.glass-card-shadow::after {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border-radius: var(--glass-border-radius);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
-  width: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
-  height: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
-  top: calc(var(--shadow-cuttoff-fix) - 0.5em);
-  left: calc(var(--shadow-cuttoff-fix) - 0.875em);
-  padding: 0.125em;
-  box-sizing: border-box;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  transition: all var(--anim--hover-time) var(--anim--hover-ease);
-  overflow: visible;
-  opacity: 1;
-}
+/* ========== BUTTON BASE STYLES ========== */
 
 .glass-card {
   /* Basic Styling */
-  padding: 12px;
   --border-width: clamp(1px, 0.0625em, 4px);
+  all: unset;
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -72,7 +44,7 @@
   );
   border-radius: var(--glass-border-radius);
   box-shadow:
-    inset 0 0.125em 0.25em rgba(0, 0, 0, 0.05),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
     inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
     0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.2),
     0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
@@ -82,8 +54,10 @@
   -moz-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
   -ms-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
   transition: all var(--anim--hover-time) var(--anim--hover-ease);
+  width: 100%;
 }
 
+/* Button Hover */
 .glass-card:hover {
   transform: scale(0.975);
   backdrop-filter: blur(0.01em);
@@ -98,10 +72,13 @@
     0 0 0 0 rgba(255, 255, 255, 1);
 }
 
+/* ========== BUTTON OUTLINE ========== */
+
+/* Outline */
 .glass-card::after {
   content: '';
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   inset: 0;
   border-radius: var(--glass-border-radius);
   width: calc(100% + var(--border-width));
@@ -138,16 +115,22 @@
   --angle-1: -75deg;
 }
 
-/* Shadow Hover */
-.glass-card-wrapper:has(.glass-card:hover) .glass-card-shadow {
-  filter: blur(clamp(2px, 0.0625em, 6px));
-  -webkit-filter: blur(clamp(2px, 0.0625em, 6px));
-  -moz-filter: blur(clamp(2px, 0.0625em, 6px));
-  -ms-filter: blur(clamp(2px, 0.0625em, 6px));
-  transition: filter var(--anim--hover-time) var(--anim--hover-ease);
+/* Rotation */
+.glass-card-effect-wrapper:has(button:active) {
+  transform: rotate3d(1, 0, 0, 25deg);
 }
 
-.glass-card-wrapper:has(.glass-card:hover) .glass-card-shadow::after {
-  top: calc(var(--shadow-cuttoff-fix) - 0.875em);
-  opacity: 1;
+.glass-card-effect-wrapper:has(button:active) button {
+  box-shadow:
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+    0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+    0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+    0 0.225em 0.05em 0 rgba(0, 0, 0, 0.05),
+    0 0.25em 0 0 rgba(255, 255, 255, 0.75),
+    inset 0 0.25em 0.05em 0 rgba(0, 0, 0, 0.15);
+}
+
+.glass-card-effect-wrapper:has(button:active) span {
+  text-shadow: 0.025em 0.25em 0.05em rgba(0, 0, 0, 0.12);
 }

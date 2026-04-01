@@ -1,6 +1,6 @@
-import Link from 'next/link';
+'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
 
 import { App } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -19,13 +19,15 @@ interface AppCardProps {
 
 export function AppCard({ app, className }: AppCardProps): React.JSX.Element {
   return (
-    <Link href={`/app/${app.id}`} className='block h-full'>
-      <Card className={cn('glass-card-wrapper', className)}>
-        <CardContent className='glass-card'>
+    <Link
+      href={`/app/${app.id}`}
+      className={cn('glass-card-effect', className)}
+    >
+      <div className='glass-card-effect-wrapper'>
+        <button className='glass-card'>
           <AppCardInfo app={app} />
-        </CardContent>
-        <div className='glass-card-shadow'></div>
-      </Card>
+        </button>
+      </div>
     </Link>
   );
 }

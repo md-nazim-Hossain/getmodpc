@@ -2,9 +2,9 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-@import './glass-card.css';
 @import './glass-button.css';
 @import './social-icon.css';
+@import './glass-card-effect.css';
 
 @custom-variant dark (&:is(.dark *));
 
