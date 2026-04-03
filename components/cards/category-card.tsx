@@ -82,7 +82,6 @@ export function CategoryCard({
       style={
         {
           '--glass-border-radius': '12px',
-          // '--global--size': 'clamp(2rem, 3em, 5rem)',
         } as CSSProperties
       }
     >
@@ -98,10 +97,10 @@ export function CategoryCard({
           style={{
             background: `linear-gradient(135deg, ${category.color}40 0%, ${category.color}10 100%)`,
           }}
-          className='p-4 rounded-[12px] flex items-center justify-between gap-1'
+          className='flex items-center justify-between gap-3 rounded-[12px] p-4'
         >
-          <div>
-            <h5 className='text-xs font-medium text-foreground group-hover:text-primary transition-colors'>
+          <div className='min-w-0 flex-1 self-center'>
+            <h5 className='text-xs leading-tight font-medium text-foreground transition-colors group-hover:text-primary'>
               {category.title}
             </h5>
             {/* {category.count != null && (
@@ -113,7 +112,7 @@ export function CategoryCard({
 
           {/* Icon Container */}
           <div
-            className='size-10 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6'
+            className='flex size-10 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6'
             style={{ backgroundColor: `${category.color}70` }}
             aria-hidden='true'
           >

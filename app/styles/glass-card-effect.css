@@ -11,6 +11,7 @@
 /* Button Wrap Container */
 .glass-card-effect-wrapper {
   font-size: var(--global--size);
+  display: block;
   position: relative;
   z-index: 2;
   border-radius: var(--glass-border-radius);
@@ -63,6 +64,7 @@
   /* Basic Styling */
   --border-width: clamp(1px, 0.0625em, 4px);
   all: unset;
+  display: block;
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
