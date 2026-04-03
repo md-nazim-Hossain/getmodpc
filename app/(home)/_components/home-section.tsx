@@ -42,7 +42,7 @@ const VARIANT_CLASSES: Record<SectionVariant, string> = {
 
 // Single source of truth for the grid — was duplicated verbatim across 8 files.
 const DEFAULT_GRID_CLASS = cn(
-  'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+  'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5'
 );
 
 // ─── Component ────────────────────────────────────────────────────────────────
