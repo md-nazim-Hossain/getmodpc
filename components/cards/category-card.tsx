@@ -82,6 +82,7 @@ export function CategoryCard({
       style={
         {
           '--glass-border-radius': '12px',
+          // '--global--size': 'clamp(2rem, 3em, 5rem)',
         } as CSSProperties
       }
     >
