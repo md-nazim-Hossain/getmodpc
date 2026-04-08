@@ -54,3 +54,8 @@ export interface FooterSection {
   title: string;
   links: FooterLink[];
 }
+
+export type IValueLabel = {
+  value: string;
+  label: string;
+};

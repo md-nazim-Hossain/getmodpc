@@ -1,15 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { App } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { AppBody } from '@/lib/types.app';
 
 import AppCardInfo from './app-card-info';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface HeroAppCardProps {
-  app: App;
+  app: AppBody;
   badge?: string;
   priority?: boolean;
 }
@@ -18,7 +17,6 @@ interface HeroAppCardProps {
 
 export function HeroAppCard({
   app,
-  badge,
   priority = false,
 }: HeroAppCardProps): React.JSX.Element {
   return (
@@ -28,8 +26,8 @@ export function HeroAppCard({
         {/* Banner Image */}
         <div className='relative h-50 overflow-hidden'>
           <Image
-            src={app.banner}
-            alt={app.title}
+            src={app.header_image ?? '/placeholder.png'}
+            alt={app.name}
             fill
             className='object-cover transition-transform duration-700'
             style={{

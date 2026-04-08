@@ -52,3 +52,37 @@ export function generateSlug(title: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
+
+/**
+ * FIX: formatNumber and formatRatings were duplicated across
+ * AppDetailsCard.tsx and AppCard.tsx with identical logic.
+ * Single source of truth here.
+ */
+export function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+  return String(n);
+}
+
+/**
+ * Truncate text at word boundary near `limit`.
+ * Replaces the raw `.slice(0, 300)` in AppDetailsCard — that cut mid-word.
+ */
+export function truncateAtWord(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  const sliced = text.slice(0, limit);
+  const lastSpace = sliced.lastIndexOf(' ');
+  return lastSpace > 0 ? sliced.slice(0, lastSpace) : sliced;
+}
+
+/**
+ * Returns a star-fill classification for a given 1-based star index and score.
+ * Extracted from StarRating render logic for testability.
+ */
+export type StarFill = 'full' | 'half' | 'empty';
+
+export function getStarFill(index: number, score: number): StarFill {
+  if (index <= Math.floor(score)) return 'full';
+  if (index - 0.5 <= score) return 'half';
+  return 'empty';
+}
