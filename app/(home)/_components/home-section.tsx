@@ -15,11 +15,11 @@ type SectionHeaderKey = keyof typeof SECTION_HEADERS;
 // new-release sections — centralises what was 4 separate copy-pasted class strings.
 type SectionVariant = 'default' | 'tinted';
 
-interface HomeSectionProps<T extends { id: string | number }> {
+interface HomeSectionProps<T> {
   /** Maps to a key in SECTION_HEADERS — single source of truth for copy */
   headerKey: SectionHeaderKey;
   /** The data array. Items must have a stable `id` for React keying. */
-  items: readonly T[];
+  items: T[];
   /**
    * Render prop — typed against T, so AppCard receives App and CategoryCard
    * receives Category with zero casting or `any`.
@@ -50,7 +50,7 @@ const DEFAULT_GRID_CLASS = cn(
 // SRP: renders ONE section template. Config is the only variation.
 // Generic T: fully type-safe for both App and Category without casting.
 
-export function HomeSection<T extends { id: string | number }>({
+export function HomeSection<T>({
   headerKey,
   items,
   renderItem,
@@ -82,9 +82,9 @@ export function HomeSection<T extends { id: string | number }>({
             }
           />
           <div className={gridClassName}>
-            {items.map((item) => (
+            {items.map((item, index) => (
               // React.Fragment preserves the key on the render prop's root element.
-              <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
+              <React.Fragment key={index}>{renderItem(item)}</React.Fragment>
             ))}
           </div>
         </div>
