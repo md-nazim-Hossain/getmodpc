@@ -13,18 +13,23 @@ import { useMemo } from 'react';
 import Image from 'next/image';
 
 import {
+  BaseIconProps,
+  GenreIcon,
+  ModeInfoIcon,
+  PublisherIcon,
+  ReportIcon,
+  SizeIcon,
+  SourceOfIcon,
+  UpdateIcon,
+  VersionIcon,
+} from '@/assets';
+import {
   BadgeCheck,
   Download,
   Facebook,
-  Flag,
   Globe,
-  HardDrive,
-  LucideIcon,
   Mail,
-  RefreshCw,
-  Shield,
   Star,
-  Tag,
   Twitter,
   Zap,
 } from 'lucide-react';
@@ -67,8 +72,8 @@ function StarRating({ score }: { score: string }) {
 
 interface MetaRowItem {
   label: string;
-  value: string | null | undefined;
-  Icon: LucideIcon;
+  value: string | null | React.ReactNode | undefined;
+  Icon: React.FC<BaseIconProps>;
   isBadge?: boolean;
   isDanger?: boolean;
 }
@@ -82,13 +87,14 @@ function MetaTable({ items }: { items: MetaRowItem[] }) {
       {visible.map(({ label, value, Icon, isBadge, isDanger }, idx) => (
         <div
           key={label}
-          className={`flex items-center gap-3 px-4 py-3 border-b border-slate-100 text-sm ${
-            idx % 2 === 0 ? 'bg-background' : 'bg-muted/40'
+          className={`flex items-center gap-3 px-4 py-3 border-b border-slate-100 text-sm rounded-md ${
+            idx % 2 === 0 ? 'bg-gray-100' : 'bg-white'
           }`}
         >
           <Icon
-            className={`w-5 h-5 shrink-0 ${isDanger ? 'text-amber-500' : 'text-muted-foreground'}`}
-            aria-hidden
+
+          // className={`w-5 h-5 shrink-0 ${isDanger ? 'text-amber-500' : 'text-muted-foreground'}`}
+          // aria-hidden
           />
           <dt className='w-24 sm:w-28 text-muted-foreground font-medium shrink-0 text-xs sm:text-sm'>
             {label}:
@@ -168,14 +174,24 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
   const metaItems = useMemo<MetaRowItem[]>(
     () => [
       { label: 'App Name', value: app.name, Icon: Globe },
-      { label: 'Publisher', value: app.developer, Icon: Globe },
-      { label: 'Genre', value: app.genre, Icon: Tag },
-      { label: 'Size', value: app.size, Icon: HardDrive },
-      { label: 'Version', value: app.version, Icon: Tag },
-      { label: 'Update', value: app.updated, Icon: RefreshCw },
-      { label: 'Mod Info', value: app.short_mode, Icon: Shield },
-      { label: 'Source of', value: sourceLabel, Icon: Globe, isBadge: true },
-      { label: 'Report', value: 'Report App', Icon: Flag, isDanger: true },
+      { label: 'Publisher', value: app.developer, Icon: PublisherIcon },
+      { label: 'Genre', value: app.genre, Icon: GenreIcon },
+      { label: 'Size', value: app.size, Icon: SizeIcon },
+      { label: 'Version', value: app.version, Icon: VersionIcon },
+      { label: 'Update', value: app.updated, Icon: UpdateIcon },
+      { label: 'Mod Info', value: app.short_mode, Icon: ModeInfoIcon },
+      {
+        label: 'Source of',
+        value: sourceLabel,
+        Icon: SourceOfIcon,
+        isBadge: true,
+      },
+      {
+        label: 'Report',
+        value: 'Report App',
+        Icon: ReportIcon,
+        isDanger: true,
+      },
     ],
     [app, sourceLabel]
   );
@@ -206,7 +222,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         )}
 
         {/* ── 2. Icon + title + badge + date ───────────────────────── */}
-        <div className='flex items-start gap-3 px-4 pt-4 pb-3'>
+        <div className='flex items-start gap-3 px-4 pt-4 pb-3 '>
           {app.icon && (
             <Image
               src={app.icon}
@@ -248,12 +264,12 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         )}
 
         {/* ── 4. Metadata table ────────────────────────────────────── */}
-        <div className='border-t border-b border-border mt-1'>
+        <div className=' mt-4  px-4'>
           <MetaTable items={metaItems} />
         </div>
 
         {/* ── 5. Star rating + votes ────────────────────────────────── */}
-        <div className='flex items-center justify-between px-4 py-3 border-b border-border'>
+        <div className='flex items-center justify-between px-4 pt-3  '>
           <div className='flex items-center gap-2 flex-wrap'>
             <StarRating score={app.score_text} />
             <span className='text-sm font-bold text-foreground'>
