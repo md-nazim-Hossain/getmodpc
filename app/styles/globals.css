@@ -12,10 +12,13 @@
   Theme Configuration 
   Mapping CSS variables to Tailwind utility names.
 */
+
 @theme inline {
   /* Base Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --font-inter: var(--font-inter);
 
   /* Component Colors */
   --color-card: var(--card);
@@ -127,7 +130,7 @@
   }
 
   body {
-    @apply bg-background text-foreground overflow-x-hidden antialiased;
+    @apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
     font-feature-settings:
       'rlig' 1,
       'calt' 1;

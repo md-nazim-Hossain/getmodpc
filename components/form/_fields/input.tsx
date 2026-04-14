@@ -38,7 +38,7 @@ export const FormInput: IFormInput = ({
               className={cn('rounded-l', className)}
               type={showPassword ? 'text' : 'password'}
             />
-            <InputGroupAddon align={'inline-end'} className='border-l'>
+            <InputGroupAddon align={'inline-end'}>
               <InputGroupButton
                 aria-label='Toggle password visibility'
                 title='Toggle password visibility'

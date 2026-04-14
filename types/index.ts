@@ -59,3 +59,25 @@ export type IValueLabel = {
   value: string;
   label: string;
 };
+
+export interface Testimonial {
+  id: string;
+  author_name: string;
+  author_image: string;
+  designation: string;
+  workplace_name: string;
+  workplace_logo?: string;
+  message: string;
+}
+
+export interface TestimonialsSectionProps {
+  title?: string;
+  subtitle?: string;
+  testimonials: Testimonial[];
+  autoplay?: boolean;
+  autoplayDelay?: number;
+}
+
+export interface TestimonialCardProps {
+  testimonial: Testimonial;
+}

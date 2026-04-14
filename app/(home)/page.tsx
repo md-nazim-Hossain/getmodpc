@@ -14,10 +14,12 @@ import {
   newReleaseGames,
   popularApps,
   popularGames,
-} from '@/lib/mock-data';
+} from '@/lib/data';
+import { TESTIMONIALS_DATA } from '@/lib/data/testimonials-data';
 
 import { HeroSection } from './_components/hero-section';
 import { HomeSection } from './_components/home-section';
+import TestimonialsSection from './_components/testimonials-section';
 
 export const metadata: Metadata = {
   title: 'AppStore — Discover the Best Apps & Games',
@@ -98,6 +100,8 @@ export default function HomePage() {
         renderItem={(category) => <CategoryCard category={category} />}
         variant='tinted'
       />
+
+      <TestimonialsSection testimonials={TESTIMONIALS_DATA} />
     </>
   );
 }

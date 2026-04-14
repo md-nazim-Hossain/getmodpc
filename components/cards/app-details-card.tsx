@@ -8,7 +8,12 @@
 //  - ScreenshotDialog rendered at end of article (portal-free, z-index stacked)
 //  - Thumbnail strip kept for navigation context (clicking thumb → opens dialog at that index)
 //  - No UI/design changes to any other section
-import { useMemo } from 'react';
+//
+// NEW in this version:
+//  - "Report App" row in the MetaTable now opens ReportAppDialog
+//  - useReportDialog hook encapsulates open/close state
+//  - ReportAppDialog rendered alongside ScreenshotDialog (outside article)
+import { useMemo, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -23,6 +28,7 @@ import {
   UpdateIcon,
   VersionIcon,
 } from '@/assets';
+import { AppWithSlug } from '@/types/types.app';
 import {
   BadgeCheck,
   Download,
@@ -36,9 +42,10 @@ import {
 
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
-import { AppWithSlug } from '@/lib/types.app';
+import { ReportAppFormValues } from '@/lib/schemas';
 import { formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
+import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -75,7 +82,10 @@ interface MetaRowItem {
   value: string | null | React.ReactNode | undefined;
   Icon: React.FC<BaseIconProps>;
   isBadge?: boolean;
+  /** Renders value as a plain danger-styled button */
   isDanger?: boolean;
+  /** Called when the danger button is clicked */
+  onDangerClick?: () => void;
 }
 
 function MetaTable({ items }: { items: MetaRowItem[] }) {
@@ -84,49 +94,48 @@ function MetaTable({ items }: { items: MetaRowItem[] }) {
   );
   return (
     <dl>
-      {visible.map(({ label, value, Icon, isBadge, isDanger }, idx) => (
-        <div
-          key={label}
-          className={`flex items-center gap-3 px-4 py-3 border-b border-slate-100 text-sm rounded-md ${
-            idx % 2 === 0 ? 'bg-gray-100' : 'bg-white'
-          }`}
-        >
-          <Icon
-
-          // className={`w-5 h-5 shrink-0 ${isDanger ? 'text-amber-500' : 'text-muted-foreground'}`}
-          // aria-hidden
-          />
-          <dt className='w-24 sm:w-28 text-muted-foreground font-medium shrink-0 text-xs sm:text-sm'>
-            {label}:
-          </dt>
-          <dd className='flex-1 min-w-0'>
-            {isBadge ? (
-              <span className='inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold'>
-                <svg
-                  className='w-3.5 h-3.5'
-                  viewBox='0 0 24 24'
-                  fill='currentColor'
-                  aria-hidden
+      {visible.map(
+        ({ label, value, Icon, isBadge, isDanger, onDangerClick }, idx) => (
+          <div
+            key={label}
+            className={`flex items-center gap-3 px-4 py-3 border-b border-slate-100 text-sm rounded-md ${
+              idx % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+            }`}
+          >
+            <Icon />
+            <dt className='w-24 sm:w-28 text-muted-foreground font-medium shrink-0 text-xs sm:text-sm'>
+              {label}:
+            </dt>
+            <dd className='flex-1 min-w-0'>
+              {isBadge ? (
+                <span className='inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold'>
+                  <svg
+                    className='w-3.5 h-3.5'
+                    viewBox='0 0 24 24'
+                    fill='currentColor'
+                    aria-hidden
+                  >
+                    <path d='M3.18 23.76a2 2 0 002.2-.22L18.08 16.2l-3.5-3.5-11.4 11.06zM20.54 9.22L17.2 7.3 13.38 11l3.82 3.82 3.34-1.92a2 2 0 000-3.68zM2 2.24v19.52L13.16 11 2 2.24zm1.18.76l11.4 8.24-3.54 3.54L3.18 3z' />
+                  </svg>
+                  {value}
+                </span>
+              ) : isDanger ? (
+                <button
+                  type='button'
+                  onClick={onDangerClick}
+                  className='text-foreground hover:text-destructive transition-colors font-medium'
                 >
-                  <path d='M3.18 23.76a2 2 0 002.2-.22L18.08 16.2l-3.5-3.5-11.4 11.06zM20.54 9.22L17.2 7.3 13.38 11l3.82 3.82 3.34-1.92a2 2 0 000-3.68zM2 2.24v19.52L13.16 11 2 2.24zm1.18.76l11.4 8.24-3.54 3.54L3.18 3z' />
-                </svg>
-                {value}
-              </span>
-            ) : isDanger ? (
-              <button
-                type='button'
-                className='text-foreground hover:text-destructive transition-colors font-medium'
-              >
-                {value}
-              </button>
-            ) : (
-              <span className='text-foreground font-medium truncate'>
-                {value}
-              </span>
-            )}
-          </dd>
-        </div>
-      ))}
+                  {value}
+                </button>
+              ) : (
+                <span className='text-foreground font-medium truncate'>
+                  {value}
+                </span>
+              )}
+            </dd>
+          </div>
+        )
+      )}
     </dl>
   );
 }
@@ -161,8 +170,11 @@ interface AppDetailsCardProps {
 export function AppDetailsCard({ app }: AppDetailsCardProps) {
   const screenshots = app.screenshots ?? [];
 
-  // All screenshot dialog state lives in the hook
+  // Screenshot dialog state
   const viewer = useScreenshotViewer(screenshots.length);
+
+  // Report dialog state
+  const [reportOpen, setReportOpen] = useState(false);
 
   const sourceLabel =
     app.source === 'play_store'
@@ -191,10 +203,19 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         value: 'Report App',
         Icon: ReportIcon,
         isDanger: true,
+        // ← wire up the click handler here; MetaTable stays data-driven
+        onDangerClick: () => setReportOpen(true),
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [app, sourceLabel]
   );
+
+  const handleReportSubmit = async (values: ReportAppFormValues) => {
+    // TODO: replace with your API call, e.g.:
+    // await fetch('/api/report', { method: 'POST', body: JSON.stringify({ appSlug: app.slug, ...values }) })
+    console.log('[ReportApp]', { slug: app.slug, ...values });
+  };
 
   const scoreNum = parseFloat(app.score_text);
   const voteLabel = app.ratings
@@ -205,7 +226,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
   return (
     <>
-      <article className='bg-white border border-border overflow-hidden  rounded-2xl'>
+      <article className='bg-white border border-border overflow-hidden rounded-2xl'>
         {/* ── 1. Banner ────────────────────────────────────────────── */}
         {app.header_image && (
           <div className='p-4 rounded-2xl'>
@@ -214,27 +235,30 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
                 src={app.header_image}
                 alt={`${app.name} banner`}
                 fill
-                className='object-cover'
                 priority
+                sizes='(max-width: 768px) 100vw, 640px'
+                className='object-cover'
               />
             </div>
           </div>
         )}
 
-        {/* ── 2. Icon + title + badge + date ───────────────────────── */}
-        <div className='flex items-start gap-3 px-4 pt-4 pb-3 '>
+        {/* ── 2. App identity ──────────────────────────────────────── */}
+        <div className='flex items-start gap-3 px-4 pb-3'>
           {app.icon && (
-            <Image
-              src={app.icon}
-              alt={`${app.name} icon`}
-              width={52}
-              height={52}
-              className='rounded-xl object-cover border border-border shrink-0'
-            />
+            <div className='relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border border-border shadow-sm'>
+              <Image
+                src={app.icon}
+                alt={`${app.name} icon`}
+                fill
+                sizes='64px'
+                className='object-cover'
+              />
+            </div>
           )}
-          <div className='flex-1 min-w-0'>
-            <div className='flex items-start gap-1.5 flex-wrap'>
-              <h1 className='text-sm sm:text-base font-bold text-foreground leading-snug'>
+          <div className='flex-1 min-w-0 pt-1'>
+            <div className='flex items-center gap-1 flex-wrap'>
+              <h1 className='text-sm sm:text-base font-bold text-foreground leading-snug truncate'>
                 {app.name}
                 {app.version ? ` v${app.version}` : ''}
                 {app.short_mode ? ` (${app.short_mode})` : ''}
@@ -264,12 +288,12 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         )}
 
         {/* ── 4. Metadata table ────────────────────────────────────── */}
-        <div className=' mt-4  px-4'>
+        <div className='mt-4 px-4'>
           <MetaTable items={metaItems} />
         </div>
 
         {/* ── 5. Star rating + votes ────────────────────────────────── */}
-        <div className='flex items-center justify-between px-4 pt-3  '>
+        <div className='flex items-center justify-between px-4 pt-3'>
           <div className='flex items-center gap-2 flex-wrap'>
             <StarRating score={app.score_text} />
             <span className='text-sm font-bold text-foreground'>
@@ -347,7 +371,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
           </a>
         </div>
 
-        {/* ── 8. Screenshot strip — clicking a thumb opens the dialog ── */}
+        {/* ── 8. Screenshot strip ──────────────────────────────────── */}
         {screenshots.length > 0 && (
           <div className='border-b border-border'>
             <div
@@ -371,7 +395,6 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
                     className='object-cover transition-transform duration-200 group-hover:scale-105'
                     aria-hidden
                   />
-                  {/* Hover overlay hint */}
                   <div
                     className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors'
                     aria-hidden
@@ -379,7 +402,6 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
                 </button>
               ))}
             </div>
-            {/* Scroll progress bar */}
             <div className='h-1 bg-muted mx-3 rounded-full mb-2'>
               <div
                 className='h-1 bg-cyan-400 rounded-full transition-all'
@@ -400,7 +422,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         {/* ── 10. Bottom CTA ───────────────────────────────────────── */}
         <div className='px-4 pt-5 pb-3 bg-background border-t border-border'>
           <h2 className='text-base font-bold text-foreground mb-4 flex items-center gap-1.5'>
-            DownloadNow {app.name}
+            Download Now {app.name}
             {app.is_verified && (
               <BadgeCheck
                 className='w-4 h-4 text-destructive shrink-0'
@@ -431,8 +453,8 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
           <ul className='list-disc list-inside space-y-1'>
             <li>Please check our installation guide.</li>
             <li>
-              To check the CPU and GPU of your Android device, please use CPU-Z
-              app.
+              To check the CPU and GPU of your Android device, please use the
+              CPU-Z app.
             </li>
             {app.os_version && <li>Requires {app.os_version} or higher.</li>}
             {app.size && <li>Download size: {app.size}.</li>}
@@ -440,11 +462,19 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         </div>
       </article>
 
-      {/* ── Screenshot dialog — rendered outside article to cover full viewport ── */}
+      {/* ── Screenshot dialog ─────────────────────────────────────── */}
       <ScreenshotDialog
         screenshots={screenshots}
         appName={app.name}
         viewer={viewer}
+      />
+
+      {/* ── Report dialog ─────────────────────────────────────────── */}
+      <ReportAppDialog
+        appName={app.name}
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        onSubmit={handleReportSubmit}
       />
     </>
   );

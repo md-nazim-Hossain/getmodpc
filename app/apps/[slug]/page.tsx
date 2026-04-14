@@ -27,7 +27,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { newReleaseApps, popularApps } from '@/lib/mock-data';
+import { newReleaseApps, popularApps } from '@/lib/data';
 
 import { AppSection } from './_components/app-section';
 import { CommentForm } from './_components/comment-form';
@@ -47,7 +47,7 @@ interface PageProps {
  */
 async function getAppBySlug(slug: string) {
   // Simulate fetch; replace with: const res = await fetch(`/api/apps/${slug}`, { next: { revalidate: 3600 } })
-  const { mockApp } = await import('@/lib/app-mock-data');
+  const { mockApp } = await import('@/lib/data/app-mock-data');
 
   return mockApp;
 
@@ -61,7 +61,7 @@ async function getAppBySlug(slug: string) {
 
 async function getRelatedContent() {
   const { relatedApps, recommendedApps, similarApps } =
-    await import('@/lib/app-mock-data');
+    await import('@/lib/data/app-mock-data');
   return { relatedApps, recommendedApps, similarApps };
 }
 

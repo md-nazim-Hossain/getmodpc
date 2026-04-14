@@ -14,7 +14,8 @@
 // UI: UNCHANGED — same layout, same classes, same icon SVGs.
 import Image from 'next/image';
 
-import { AppBody } from '@/lib/types.app';
+import { AppBody } from '@/types/types.app';
+
 import { cn } from '@/lib/utils';
 
 import { PlatformIconList } from '../platform-icon';

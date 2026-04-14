@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/carousel';
 
 import { SECTION_HEADERS } from '@/lib/constants';
-import { HeroSlide } from '@/lib/mock-data';
+import { HeroSlide } from '@/lib/data';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

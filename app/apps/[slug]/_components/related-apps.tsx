@@ -1,9 +1,9 @@
 'use client';
 
+import { AppBody } from '@/types/types.app';
+
 import { AppCard } from '@/components/cards/app-card';
 import { Card } from '@/components/ui/card';
-
-import { AppBody } from '@/lib/types.app';
 
 interface RelatedAppsProps {
   apps: AppBody[];

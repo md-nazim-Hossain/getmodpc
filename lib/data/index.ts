@@ -24,7 +24,11 @@
 //   url           → ''
 //   package_name  → ''
 //   score_text    → String(rating) or '0'
-import { AppBody, EnumAppSource, EnumPlatformType } from './types.app';
+import {
+  AppBody,
+  EnumAppSource,
+  EnumPlatformType,
+} from '../../types/types.app';
 
 // ─── HeroSlide type ────────────────────────────────────────────────────────
 // Kept as a local type since it has extra hero-specific fields (badge, featured).

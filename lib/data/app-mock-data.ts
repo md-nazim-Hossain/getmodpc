@@ -6,7 +6,7 @@ import {
   EnumAppStatus,
   EnumAppType,
   EnumPlatformType,
-} from './types.app';
+} from '../../types/types.app';
 
 // ─── Main app ───────────────────────────────────────────────────────────────
 
