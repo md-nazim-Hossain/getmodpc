@@ -22,3 +22,33 @@ export type CommentPayload = CommentFormValues & {
   appSlug: string;
   createdAt: string; // ISO string set on submit
 };
+
+export const REPORT_REASONS = [
+  'Not Working',
+  'Broken Link',
+  'Wrong Information',
+  'Virus / Malware',
+  'Duplicate App',
+  'Other',
+] as const;
+
+export type ReportReason = (typeof REPORT_REASONS)[number];
+
+export const reportAppSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address'),
+
+  reason: z.enum(REPORT_REASONS, {
+    required_error: 'Please select a reason',
+    invalid_type_error: 'Please select a valid reason',
+  }),
+
+  details: z
+    .string()
+    .max(500, 'Details must be 500 characters or fewer')
+    .optional(),
+});
+
+export type ReportAppFormValues = z.infer<typeof reportAppSchema>;

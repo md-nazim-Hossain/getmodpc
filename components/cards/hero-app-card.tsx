@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { AppBody } from '@/lib/types.app';
+import { AppBody } from '@/types/types.app';
 
 import AppCardInfo from './app-card-info';
 
@@ -24,15 +24,14 @@ export function HeroAppCard({
       {/* Content Area */}
       <button className='glass-card'>
         {/* Banner Image */}
-        <div className='relative h-50 overflow-hidden'>
+        <div className='relative h-80 overflow-hidden!'>
           <Image
             src={app.header_image ?? '/placeholder.png'}
             alt={app.name}
             fill
             className='object-cover transition-transform duration-700'
             style={{
-              borderRadius:
-                'var(--glass-border-radius) var(--glass-border-radius) 0 0',
+              borderRadius: 'var(--glass-border-radius)',
             }}
             sizes='(max-width: 768px) 100vw, 50vw'
             priority={priority}
@@ -48,7 +47,14 @@ export function HeroAppCard({
               </div>
             )} */}
         </div>
-        <AppCardInfo app={app} className='p-2' />
+        <div
+          style={{
+            borderRadius: '0 0 var(--glass-border-radius)',
+          }}
+          className='absolute bottom-0 left-0 right-0  bg-linear-to-t from-background via-background/90 to-background/80 '
+        >
+          <AppCardInfo app={app} className='p-2' />
+        </div>
       </button>
 
       {/* Shadow */}

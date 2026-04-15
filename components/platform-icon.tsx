@@ -1,6 +1,6 @@
 // components/cards/platform-icon.tsx
 // ─── Extracted from app-card.tsx and hero-app-card.tsx where it was duplicated verbatim ───
-import { EnumPlatformType } from '@/lib/types.app';
+import { EnumPlatformType } from '@/types/types.app';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

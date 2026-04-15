@@ -4,7 +4,8 @@ import { CSSProperties } from 'react';
 
 import Link from 'next/link';
 
-import { Category } from '@/lib/types';
+import { Category } from '@/types';
+
 import { cn } from '@/lib/utils';
 
 // ─── Icon map ─────────────────────────────────────────────────────────────────

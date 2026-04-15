@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 
-import { AppBody } from '@/lib/types.app';
+import { AppBody } from '@/types/types.app';
+
 import { cn } from '@/lib/utils';
 
 import AppCardInfo from './app-card-info';

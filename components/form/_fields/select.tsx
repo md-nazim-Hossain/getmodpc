@@ -47,7 +47,7 @@ export const FormSelect: IFormSelect = ({
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
 
-              {field.value && (
+              {(!!field.value || field.value === 0) && (
                 <DeleteButton
                   disabled={disabled}
                   onClick={() => field.onChange('')}

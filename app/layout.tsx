@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' className={inter.className}>
-      <body className='min-h-screen bg-background font-sans antialiased'>
+      <body className='min-h-screen bg-background font-sans  antialiased'>
         <div className='relative flex min-h-screen flex-col'>
           {/* <Header /> */}
           <main className='flex-1'>{children}</main>

@@ -1,8 +1,8 @@
 'use client';
 
-import { AppCard } from '@/components/cards/app-card';
+import { AppBody } from '@/types/types.app';
 
-import { AppBody } from '@/lib/types.app';
+import { AppCard } from '@/components/cards/app-card';
 
 interface AppSectionProps {
   title: string;
