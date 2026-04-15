@@ -5,9 +5,9 @@ import React, { useCallback, useRef, useState } from 'react';
 import { TestimonialsSectionProps } from '@/types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Swiper as SwiperType } from 'swiper';
+import 'swiper/css';
 import { A11y, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.css';
 
 import TestimonialCard from '@/components/cards/testimonial-card';
 

@@ -81,3 +81,28 @@ export interface TestimonialsSectionProps {
 export interface TestimonialCardProps {
   testimonial: Testimonial;
 }
+
+// types/ads.ts
+
+export interface Ad {
+  id: string;
+  banner_image: string;
+  banner_bg_color?: string; // optional per-card accent color
+  title: string;
+  description: string;
+  cta_label: string;
+  cta_link: string;
+}
+
+export interface AdCardProps {
+  ad: Ad;
+}
+
+export interface AdsSectionProps {
+  /** Optional heading above the carousel */
+  heading?: string;
+  ads: Ad[];
+  /** Enable Swiper autoplay */
+  autoplay?: boolean;
+  autoplayDelay?: number;
+}
