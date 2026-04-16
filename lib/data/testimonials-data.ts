@@ -4,7 +4,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
   {
     id: '1',
     author_name: 'Drew Smith',
-    author_image: '/images/testimonials/drew-smith.jpg',
+    author_image: '/images/testimonial/1.jpg',
     designation: 'CEO',
     workplace_name: 'Makt-Trans',
     workplace_logo: '/images/logos/makt-trans.svg',
@@ -14,7 +14,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
   {
     id: '2',
     author_name: 'John Sutton',
-    author_image: '/images/testimonials/john-sutton.jpg',
+    author_image: '/images/testimonial/2.jpg',
     designation: 'Director of Corporate Strategy',
     workplace_name: 'Sunset Transportation',
     workplace_logo: '/images/logos/sunset.svg',
@@ -24,7 +24,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
   {
     id: '3',
     author_name: 'Charles Miller',
-    author_image: '/images/testimonials/charles-miller.jpg',
+    author_image: '/images/testimonial/3.jpg',
     designation: 'Chief Commercial Officer',
     workplace_name: 'Evans Transportation Services',
     workplace_logo: '/images/logos/evans.svg',
@@ -34,7 +34,7 @@ export const TESTIMONIALS_DATA: Testimonial[] = [
   {
     id: '4',
     author_name: 'Sarah Chen',
-    author_image: '/images/testimonials/sarah-chen.jpg',
+    author_image: '/images/testimonial/4.jpg',
     designation: 'VP of Operations',
     workplace_name: 'Freight Forward Inc.',
     message:

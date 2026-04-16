@@ -6,8 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
+import { createComment } from '@/server/post/create-comment';
+
 import { FormInput, FormTextarea, FormWrapper } from '@/components/form';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import {
   commentFormSchema,
@@ -18,28 +21,19 @@ import {
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface CommentFormProps {
-  appSlug: string;
-  /**
-   * Injected action — defaults to a no-op so the component is usable in Storybook
-   * and unit tests without a real API. In production, pass your server action or
-   * fetch wrapper here.
-   */
-  submitComment?: (payload: CommentPayload) => Promise<void>;
+  app_id: string;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function CommentForm({
-  appSlug,
-  submitComment = async () => {},
-}: CommentFormProps) {
+export function CommentForm({ app_id }: CommentFormProps) {
   const formId = useId();
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<CommentFormValues>({
     resolver: zodResolver(commentFormSchema),
-    defaultValues: { name: '', email: '', comment: '' },
+    defaultValues: { name: '', email: '', content: '' },
   });
 
   async function onSubmit(values: CommentFormValues) {
@@ -47,10 +41,9 @@ export function CommentForm({
     try {
       const payload: CommentPayload = {
         ...values,
-        appSlug,
-        createdAt: new Date().toISOString(),
+        app_id,
       };
-      await submitComment(payload);
+      await createComment(payload);
       setSubmitted(true);
       form.reset();
     } catch {
@@ -60,13 +53,7 @@ export function CommentForm({
   }
 
   return (
-    <section className='mt-10' aria-labelledby={`${formId}-heading`}>
-      <div className='flex items-center gap-2 mb-6'>
-        <h2 id={`${formId}-heading`} className='text-2xl font-bold'>
-          Leave a Comment
-        </h2>
-      </div>
-
+    <section className='mt-10 max-w-2xl' aria-labelledby={`${formId}-heading`}>
       {submitted ? (
         <div
           role='status'
@@ -90,55 +77,63 @@ export function CommentForm({
           </Button>
         </div>
       ) : (
-        <div className='bg-white border border-slate-100 rounded-2xl p-6 shadow-sm'>
-          {/* Server error alert */}
-          {serverError && (
-            <div
-              role='alert'
-              className='flex items-center gap-2 mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm'
-            >
-              <AlertCircle className='w-4 h-4 shrink-0' aria-hidden />
-              {serverError}
-            </div>
-          )}
+        <Card className='bg-white border border-slate-100 rounded-2xl shadow-sm'>
+          <CardHeader>
+            <CardTitle className='text-2xl font-bold'>
+              Leave a Comment
+            </CardTitle>
+          </CardHeader>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-            <FormWrapper>
-              <FormInput
-                control={form.control}
-                name='name'
-                placeholder='Your full name'
-              />
-              <FormInput
-                control={form.control}
-                name='email'
-                placeholder='your@email.com'
-                fieldProps={{
-                  type: 'email',
-                }}
-              />
-              <FormTextarea
-                control={form.control}
-                name='comment'
-                placeholder='Share your experience with this app…'
-                maxChars={1000}
-              />
-            </FormWrapper>
+          <CardContent>
+            {/* Server error alert */}
+            {serverError && (
+              <div
+                role='alert'
+                className='flex items-center gap-2 mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm'
+              >
+                <AlertCircle className='w-4 h-4 shrink-0' aria-hidden />
+                {serverError}
+              </div>
+            )}
 
-            {/* ── Submit ──────────────────────────────────────────────── */}
-            <Button
-              type='submit'
-              disabled={form.formState.isSubmitting}
-              aria-busy={form.formState.isSubmitting}
-              className='w-full mt-4 bg-primary hover:bg-primary/90 text-white
+            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+              <FormWrapper>
+                <FormInput
+                  control={form.control}
+                  name='name'
+                  placeholder='Your full name'
+                />
+                <FormInput
+                  control={form.control}
+                  name='email'
+                  placeholder='your@email.com'
+                  fieldProps={{
+                    type: 'email',
+                  }}
+                />
+                <FormTextarea
+                  control={form.control}
+                  name='content'
+                  placeholder='Share your experience with this app…'
+                  maxChars={1000}
+                />
+              </FormWrapper>
+
+              {/* ── Submit ──────────────────────────────────────────────── */}
+              <Button
+                type='submit'
+                disabled={form.formState.isSubmitting}
+                aria-busy={form.formState.isSubmitting}
+                className='w-full mt-4 bg-primary hover:bg-primary/90 text-white
                            font-semibold py-3 rounded-md text-sm sm:text-base
                            transition-colors duration-200 cursor-pointer
                            disabled:opacity-60 disabled:cursor-not-allowed'
-            >
-              {form.formState.isSubmitting ? 'Submitting…' : 'Submit Comment'}
-            </Button>
-          </form>
-        </div>
+              >
+                {form.formState.isSubmitting ? 'Submitting…' : 'Submit Comment'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )}
     </section>
   );

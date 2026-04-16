@@ -17,7 +17,9 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
+import { getADs } from '@/server/get/get-ads';
 import { getHomeApps } from '@/server/get/get-apps';
+import { getActiveTestimonials } from '@/server/get/get-testimonials';
 
 import { CategoryCard } from '@/components/cards/category-card';
 import { HomeAppCard } from '@/components/cards/home-app-card';
@@ -51,9 +53,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const data = await getHomeApps();
+  const appData = await getHomeApps();
 
-  if (!data || !data.success || !data.data) {
+  const adsData = await getADs();
+
+  const testimonialsData = await getActiveTestimonials();
+
+  if (!appData || !appData.success || !appData.data) {
     redirect('/404');
   }
 
@@ -69,13 +75,16 @@ export default async function HomePage() {
     newReleasedGames,
     // HomeAppsData merges appCategories + gameCategories into one array
     categories,
-  } = data.data;
+  } = appData.data;
 
   return (
     <>
       <HeroSection slides={sliderApps} />
 
-      <AdsSection ads={ADS_SAMPLE_DATA} />
+      <AdsSection
+        //ads={adsData.data} // TODO: Use this when API supports it
+        ads={ADS_SAMPLE_DATA}
+      />
 
       <HomeSection
         headerKey='popularApps'
@@ -132,7 +141,10 @@ export default async function HomePage() {
         renderItem={(category) => <CategoryCard category={category} />}
       />
 
-      <TestimonialsSection testimonials={TESTIMONIALS_DATA} />
+      <TestimonialsSection
+        // testimonials={testimonials.data} // TODO: Use this when API supports it
+        testimonials={TESTIMONIALS_DATA}
+      />
     </>
   );
 }

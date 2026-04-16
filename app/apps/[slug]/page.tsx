@@ -168,7 +168,7 @@ export default async function AppDetailsPage({ params }: PageProps) {
         />
 
         {/* FIX: appSlug was not passed — CommentPayload was incomplete */}
-        <CommentForm appSlug={app.slug} />
+        <CommentForm app_id={app.id!} />
       </Container>
     </div>
   );
