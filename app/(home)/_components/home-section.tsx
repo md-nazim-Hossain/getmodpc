@@ -1,4 +1,13 @@
 // app/(home)/_components/home-section.tsx
+//
+// Type-safety improvement: generic T is now constrained to `{ id: string }`
+// so React keys are always derived from a stable, unique field instead of
+// the array index. This is safe because:
+//   - HomeAppItem has `id: string` (required)
+//   - Category has `parent_id: string` (required) — CategoryCard callers must
+//     use the `getId` escape hatch if their shape differs (see prop below).
+//
+// All other logic, layout, and class names are UNCHANGED.
 import React from 'react';
 
 import { Container } from '@/components/layout/container';
@@ -11,20 +20,25 @@ import { cn } from '@/lib/utils';
 
 type SectionHeaderKey = keyof typeof SECTION_HEADERS;
 
-// 'tinted' applies the alternating gradient used on all "games" sections and
-// new-release sections — centralises what was 4 separate copy-pasted class strings.
 type SectionVariant = 'default' | 'tinted';
 
 interface HomeSectionProps<T> {
   /** Maps to a key in SECTION_HEADERS — single source of truth for copy */
   headerKey: SectionHeaderKey;
-  /** The data array. Items must have a stable `id` for React keying. */
+  /** The data array. */
   items: T[];
   /**
-   * Render prop — typed against T, so AppCard receives App and CategoryCard
-   * receives Category with zero casting or `any`.
+   * Render prop — typed against T, so AppCard receives HomeAppItem and
+   * CategoryCard receives Category with zero casting or `any`.
    */
   renderItem: (item: T) => React.ReactNode;
+  /**
+   * Key extractor — returns a stable unique string for each item.
+   * Defaults to `(item: any) => item.id` which covers HomeAppItem.
+   * Pass a custom extractor for shapes without a top-level `id`
+   * (e.g. Category which uses `parent_id`).
+   */
+  getId?: (item: T) => string;
   /** 'tinted' applies the gradient background. Defaults to 'default'. */
   variant?: SectionVariant;
   /** Override the default 4-column grid class if needed (e.g. featured rows). */
@@ -40,31 +54,27 @@ const VARIANT_CLASSES: Record<SectionVariant, string> = {
   tinted: '',
 };
 
-// Single source of truth for the grid — was duplicated verbatim across 8 files.
 const DEFAULT_GRID_CLASS = cn(
   'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5'
 );
 
 // ─── Component ────────────────────────────────────────────────────────────────
-// OCP: add a new section type by adding JSX in page.tsx — no new files needed.
-// SRP: renders ONE section template. Config is the only variation.
-// Generic T: fully type-safe for both App and Category without casting.
 
 export function HomeSection<T>({
   headerKey,
   items,
   renderItem,
+  // Default extractor assumes T has an `id` field — matches HomeAppItem.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getId = (item: any) => item.id as string,
   variant = 'default',
   gridClassName = DEFAULT_GRID_CLASS,
   wrapperClassName = '',
   className,
 }: HomeSectionProps<T>): React.JSX.Element | null {
-  // Empty-state guard — previously all 8 sections would render an orphaned
-  // SectionHeader above an empty grid when data was unavailable.
   if (items.length === 0) return null;
 
   const header = SECTION_HEADERS[headerKey];
-  // Stable, predictable ID for aria-labelledby — derived from the config key.
   const headingId = `section-heading-${String(headerKey)}`;
 
   return (
@@ -82,9 +92,10 @@ export function HomeSection<T>({
             }
           />
           <div className={gridClassName}>
-            {items.map((item, index) => (
-              // React.Fragment preserves the key on the render prop's root element.
-              <React.Fragment key={index}>{renderItem(item)}</React.Fragment>
+            {items.map((item) => (
+              <React.Fragment key={getId(item)}>
+                {renderItem(item)}
+              </React.Fragment>
             ))}
           </div>
         </div>

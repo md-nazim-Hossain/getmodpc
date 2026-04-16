@@ -106,3 +106,12 @@ export interface AdsSectionProps {
   autoplay?: boolean;
   autoplayDelay?: number;
 }
+
+// Generic API Response Wrapper
+export interface ApiResponse<T> {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  meta: unknown | null;
+  data: T;
+}

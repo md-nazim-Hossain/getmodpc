@@ -33,8 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' className={inter.className}>
-      <body className='min-h-screen bg-background font-sans  antialiased'>
+    <html suppressHydrationWarning lang='en' className={inter.className}>
+      <body
+        suppressHydrationWarning
+        className='min-h-screen bg-background font-sans  antialiased'
+      >
         <div className='relative flex min-h-screen flex-col'>
           {/* <Header /> */}
           <main className='flex-1'>{children}</main>

@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 
 import Link from 'next/link';
 
-import { Category } from '@/types';
+import { Category } from '@/types/home-apps.types';
 
 import { cn } from '@/lib/utils';
 
@@ -47,18 +47,41 @@ const FALLBACK_ICON: React.JSX.Element = (
   </svg>
 );
 
-function getIcon(iconKey: string): React.JSX.Element {
-  const icon = ICON_MAP[iconKey];
-  if (!icon) {
+const COLOR_MAP: Record<string, string> = {
+  palette: '#87CEEB',
+};
+
+// make the color random
+const FALLBACK_COLOR = function () {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
+function getIconColor(key: string): {
+  icon: React.JSX.Element;
+  color: string;
+} {
+  const icon = ICON_MAP[key];
+  const color = COLOR_MAP[key];
+  if (!icon && !color) {
     // ✅ Surfaces unmapped icons during development — was silently falling back
     if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        `[CategoryCard] Unmapped icon key: "${iconKey}". Add it to ICON_MAP.`
-      );
+      console.warn(`[CategoryCard] Unmapped icon or color for key: ${key}`);
     }
-    return FALLBACK_ICON;
+    return {
+      icon: FALLBACK_ICON,
+      color: FALLBACK_COLOR(),
+    };
   }
-  return icon;
+
+  return {
+    icon: icon || FALLBACK_ICON,
+    color: color || FALLBACK_COLOR(),
+  };
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -74,11 +97,11 @@ export function CategoryCard({
   category,
   className,
 }: CategoryCardProps): React.JSX.Element {
-  const icon = getIcon(category.icon);
+  const { icon, color } = getIconColor(category.parent_name);
 
   return (
     <Link
-      href={`/category/${category.id}`}
+      href={`/category/${category.parent_id}`}
       className={cn('glass-card-effect-wrapper', className)}
       style={
         {
@@ -96,13 +119,13 @@ export function CategoryCard({
       >
         <div
           style={{
-            background: `linear-gradient(135deg, ${category.color}40 0%, ${category.color}10 100%)`,
+            background: `linear-gradient(135deg, ${color}40 0%, ${color}10 100%)`,
           }}
           className='flex items-center justify-between gap-3 rounded-[12px] p-4'
         >
           <div className='min-w-0 flex-1 self-center'>
             <h5 className='text-xs leading-tight font-medium text-foreground transition-colors group-hover:text-primary'>
-              {category.title}
+              {category.parent_name}
             </h5>
             {/* {category.count != null && (
               <p className='text-sm text-muted-foreground mt-0.5'>
@@ -114,7 +137,7 @@ export function CategoryCard({
           {/* Icon Container */}
           <div
             className='flex size-10 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6'
-            style={{ backgroundColor: `${category.color}70` }}
+            style={{ backgroundColor: `${color}70` }}
             aria-hidden='true'
           >
             <span className='text-neutral-700'>{icon}</span>

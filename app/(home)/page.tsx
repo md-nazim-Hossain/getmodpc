@@ -1,20 +1,27 @@
 // app/(home)/page.tsx
+//
+// Migrated from local mock data → live API response (HomeAppsData).
+//
+// Structural changes:
+//   - All mock data imports (popularApps, popularGames, etc.) REMOVED.
+//     Data now comes entirely from `data.data` (HomeAppsData).
+//   - `newReleaseApps`  → `data.data.newReleasedApps`   (renamed in HomeAppsData)
+//   - `newReleaseGames` → `data.data.newReleasedGames`  (renamed in HomeAppsData)
+//   - `appCategories` + `gameCategories` → `data.data.categories`
+//     (HomeAppsData merges both into one Category[] array)
+//   - CategoryCard now receives `Category` items; `getId` extractor uses
+//     `parent_id` since Category has no top-level `id`.
+//   - HeroSection receives `HomeAppItem[]` directly — type is already aligned.
+//   - AppCard receives `HomeAppItem` — type updated in app-card.tsx.
+//   - `heroSlides` mock import removed — slider data comes from `data.data.sliderApps`.
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
-import { AppCard } from '@/components/cards/app-card';
+import { getHomeApps } from '@/server/get/get-apps';
+
 import { CategoryCard } from '@/components/cards/category-card';
+import { HomeAppCard } from '@/components/cards/home-app-card';
 
-import {
-  appCategories,
-  gameCategories,
-  heroSlides,
-  latestUpdatedApps,
-  latestUpdatedGames,
-  newReleaseApps,
-  newReleaseGames,
-  popularApps,
-  popularGames,
-} from '@/lib/data';
 import { ADS_SAMPLE_DATA } from '@/lib/data/ads-data';
 import { TESTIMONIALS_DATA } from '@/lib/data/testimonials-data';
 
@@ -43,66 +50,86 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const data = await getHomeApps();
+
+  if (!data || !data.success || !data.data) {
+    redirect('/404');
+  }
+
+  const {
+    sliderApps,
+    popularApps,
+    popularGames,
+    latestUpdatedApps,
+    latestUpdatedGames,
+    // Renamed in HomeAppsData: newReleaseApps → newReleasedApps
+    newReleasedApps,
+    // Renamed in HomeAppsData: newReleaseGames → newReleasedGames
+    newReleasedGames,
+    // HomeAppsData merges appCategories + gameCategories into one array
+    categories,
+  } = data.data;
+
   return (
     <>
-      <HeroSection slides={heroSlides} />
+      <HeroSection slides={sliderApps} />
 
       <AdsSection ads={ADS_SAMPLE_DATA} />
 
       <HomeSection
         headerKey='popularApps'
         items={popularApps}
-        renderItem={(app) => <AppCard app={app} />}
+        renderItem={(app) => <HomeAppCard app={app} />}
       />
 
       <HomeSection
         headerKey='popularGames'
         items={popularGames}
-        renderItem={(game) => <AppCard app={game} />}
+        renderItem={(game) => <HomeAppCard app={game} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestApps'
         items={latestUpdatedApps}
-        renderItem={(app) => <AppCard app={app} showVersion />}
+        renderItem={(app) => <HomeAppCard app={app} showVersion />}
       />
 
       <HomeSection
         headerKey='newApps'
-        items={newReleaseApps}
-        renderItem={(app) => <AppCard app={app} />}
+        items={newReleasedApps}
+        renderItem={(app) => <HomeAppCard app={app} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestGames'
         items={latestUpdatedGames}
-        renderItem={(game) => <AppCard app={game} showVersion />}
+        renderItem={(game) => <HomeAppCard app={game} showVersion />}
       />
 
       <HomeSection
         headerKey='newGames'
-        items={newReleaseGames}
-        renderItem={(game) => <AppCard app={game} />}
+        items={newReleasedGames}
+        renderItem={(game) => <HomeAppCard app={game} />}
         variant='tinted'
       />
 
+      {/*
+       * Category sections: HomeAppsData merges the old appCategories +
+       * gameCategories into a single `categories: Category[]` array.
+       * `getId` uses `parent_id` because Category has no top-level `id` field.
+       * If product requirements call for separate app/game category sections,
+       * split `categories` by a type discriminator when the API supports it.
+       */}
       <HomeSection
         headerKey='appCategories'
-        items={appCategories}
+        items={categories}
+        getId={(category) => category.parent_id}
         variant='tinted'
         gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-5'
         renderItem={(category) => <CategoryCard category={category} />}
-      />
-
-      <HomeSection
-        headerKey='gameCategories'
-        items={gameCategories}
-        gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-5'
-        renderItem={(category) => <CategoryCard category={category} />}
-        variant='tinted'
       />
 
       <TestimonialsSection testimonials={TESTIMONIALS_DATA} />

@@ -1,7 +1,18 @@
 'use client';
 
+// app/(home)/_components/hero-section.tsx
+//
+// Migrated from HeroSlide → HomeAppItem.
+//
+// Structural changes:
+//   - Import type: HeroSlide (from @/lib/data) → HomeAppItem (from @/types/types.app)
+//   - HeroSectionProps.slides: HeroSlide[] → HomeAppItem[]
+//   - HeroAppCard call: `badge={slide.badge}` removed — HomeAppItem has no badge field
+//     and the badge prop has been removed from HeroAppCard in the same migration.
+//   - Keying: slide.id remains — id is now a required string on HomeAppItem (was optional).
 import * as React from 'react';
 
+import { HomeAppItem } from '@/types/home-apps.types';
 import Autoplay from 'embla-carousel-autoplay';
 
 import { HeroAppCard } from '@/components/cards/hero-app-card';
@@ -16,12 +27,11 @@ import {
 } from '@/components/ui/carousel';
 
 import { SECTION_HEADERS } from '@/lib/constants';
-import { HeroSlide } from '@/lib/data';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface HeroSectionProps {
-  slides: HeroSlide[];
+  slides: HomeAppItem[];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -57,14 +67,15 @@ export function HeroSection({
           className='w-full'
         >
           <CarouselContent className='-ml-2 md:-ml-4'>
-            {/* ✅ `index` removed — it was declared but never used */}
             {slides.map((slide) => (
               <CarouselItem
+                // `id` is now a required string on HomeAppItem — safe to use as key
                 key={slide.id}
                 className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3'
               >
                 <div className='p-1 h-full'>
-                  <HeroAppCard app={slide} badge={slide.badge} />
+                  {/* `badge` prop removed — not part of HomeAppItem */}
+                  <HeroAppCard app={slide} />
                 </div>
               </CarouselItem>
             ))}
