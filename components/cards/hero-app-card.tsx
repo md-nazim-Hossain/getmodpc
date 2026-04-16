@@ -37,7 +37,7 @@ export function HeroAppCard({
       {/* Content Area */}
       <button className='glass-card'>
         {/* Banner Image */}
-        <div className='relative h-80 overflow-hidden!'>
+        <div className='relative h-84 overflow-hidden!'>
           <Image
             // header_image is now a required non-null string on HomeAppItem;
             // fallback retained for defensive robustness.

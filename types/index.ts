@@ -62,12 +62,15 @@ export type IValueLabel = {
 
 export interface Testimonial {
   id: string;
-  author_name: string;
-  author_image: string;
   designation: string;
-  workplace_name: string;
-  workplace_logo?: string;
-  message: string;
+  name: string;
+  content: string;
+  image_url: string;
+  company_logo: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TestimonialsSectionProps {
@@ -114,4 +117,12 @@ export interface ApiResponse<T> {
   message: string;
   meta: unknown | null;
   data: T;
+}
+
+export interface ReportReason {
+  id: string;
+  title: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }

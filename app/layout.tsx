@@ -2,6 +2,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import TanstackProvider from '@/provider/tanstack-provider';
+
 import { Footer } from '@/components/layout/footer';
 
 import { SITE_CONFIG } from '@/lib/constants';
@@ -38,11 +40,13 @@ export default function RootLayout({
         suppressHydrationWarning
         className='min-h-screen bg-background font-sans  antialiased'
       >
-        <div className='relative flex min-h-screen flex-col'>
-          {/* <Header /> */}
-          <main className='flex-1'>{children}</main>
-          <Footer />
-        </div>
+        <TanstackProvider>
+          <div className='relative flex min-h-screen flex-col'>
+            {/* <Header /> */}
+            <main className='flex-1'>{children}</main>
+            <Footer />
+          </div>
+        </TanstackProvider>
       </body>
     </html>
   );

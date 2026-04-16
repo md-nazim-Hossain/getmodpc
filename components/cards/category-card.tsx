@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 
 import Link from 'next/link';
 
-import { Category } from '@/types/home-apps.types';
+import { CategoryChild } from '@/types/home-apps.types';
 
 import { cn } from '@/lib/utils';
 
@@ -87,7 +87,7 @@ function getIconColor(key: string): {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface CategoryCardProps {
-  category: Category;
+  category: CategoryChild;
   className?: string;
 }
 
@@ -97,11 +97,13 @@ export function CategoryCard({
   category,
   className,
 }: CategoryCardProps): React.JSX.Element {
-  const { icon, color } = getIconColor(category.parent_name);
+  const { icon } = getIconColor(category.name);
+
+  const color = category.category_bg_color || '#87CEEB';
 
   return (
     <Link
-      href={`/category/${category.parent_id}`}
+      href={`/category/${category.slug}`}
       className={cn('glass-card-effect-wrapper', className)}
       style={
         {
@@ -125,7 +127,7 @@ export function CategoryCard({
         >
           <div className='min-w-0 flex-1 self-center'>
             <h5 className='text-xs leading-tight font-medium text-foreground transition-colors group-hover:text-primary'>
-              {category.parent_name}
+              {category.name}
             </h5>
             {/* {category.count != null && (
               <p className='text-sm text-muted-foreground mt-0.5'>

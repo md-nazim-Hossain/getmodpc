@@ -17,7 +17,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-import { getADs } from '@/server/get/get-ads';
 import { getHomeApps } from '@/server/get/get-apps';
 import { getActiveTestimonials } from '@/server/get/get-testimonials';
 
@@ -25,11 +24,10 @@ import { CategoryCard } from '@/components/cards/category-card';
 import { HomeAppCard } from '@/components/cards/home-app-card';
 
 import { ADS_SAMPLE_DATA } from '@/lib/data/ads-data';
-import { TESTIMONIALS_DATA } from '@/lib/data/testimonials-data';
 
 import AdsSection from './_components/ads-section';
 import { HeroSection } from './_components/hero-section';
-import { HomeSection } from './_components/home-section';
+import { HomeSection, SectionHeaderKey } from './_components/home-section';
 import TestimonialsSection from './_components/testimonials-section';
 
 export const metadata: Metadata = {
@@ -55,7 +53,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const appData = await getHomeApps();
 
-  const adsData = await getADs();
+  // const adsData = await getADs();
 
   const testimonialsData = await getActiveTestimonials();
 
@@ -75,7 +73,7 @@ export default async function HomePage() {
     newReleasedGames,
     // HomeAppsData merges appCategories + gameCategories into one array
     categories,
-  } = appData.data;
+  } = appData?.data;
 
   return (
     <>
@@ -132,18 +130,21 @@ export default async function HomePage() {
        * If product requirements call for separate app/game category sections,
        * split `categories` by a type discriminator when the API supports it.
        */}
-      <HomeSection
-        headerKey='appCategories'
-        items={categories}
-        getId={(category) => category.parent_id}
-        variant='tinted'
-        gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-5'
-        renderItem={(category) => <CategoryCard category={category} />}
-      />
+      {categories.map((category) => (
+        <HomeSection
+          key={category?.parent_id}
+          headerKey={category?.parent_slug as SectionHeaderKey}
+          items={category?.categories}
+          getId={(category) => category?.id}
+          variant='tinted'
+          gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-5'
+          renderItem={(category) => <CategoryCard category={category} />}
+        />
+      ))}
 
       <TestimonialsSection
-        // testimonials={testimonials.data} // TODO: Use this when API supports it
-        testimonials={TESTIMONIALS_DATA}
+        testimonials={testimonialsData?.data}
+        // testimonials={TESTIMONIALS_DATA}
       />
     </>
   );

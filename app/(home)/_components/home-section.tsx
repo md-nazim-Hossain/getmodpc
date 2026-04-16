@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type SectionHeaderKey = keyof typeof SECTION_HEADERS;
+export type SectionHeaderKey = keyof typeof SECTION_HEADERS;
 
 type SectionVariant = 'default' | 'tinted';
 
@@ -86,7 +86,7 @@ export function HomeSection<T>({
         <div className={cn(wrapperClassName)}>
           <SectionHeader
             id={headingId}
-            title={header.title}
+            title={header?.title}
             viewAllLink={
               'viewAllLink' in header ? header.viewAllLink : undefined
             }

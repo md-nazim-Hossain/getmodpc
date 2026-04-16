@@ -72,7 +72,7 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
            * platform is now a plain string union ('android'|'ios'|string).
            * PlatformIconList accepts the same string values — no adapter needed.
            */}
-          {/* <PlatformIconList platform={app.platform} size='sm' /> */}
+          <PlatformIconList platform={app.platform} size='sm' />
 
           {/*
            * `installs` no longer exists on HomeAppItem.

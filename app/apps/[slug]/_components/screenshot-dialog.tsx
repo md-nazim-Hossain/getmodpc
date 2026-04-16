@@ -103,7 +103,7 @@ export function ScreenshotDialog({
 
       {/* Image card — stop propagation so clicking it doesn't close */}
       <div
-        className='relative z-10 bg-white rounded-xl overflow-hidden shadow-2xl max-w-[340px] w-full mx-16'
+        className='relative z-10 bg-white rounded-xl overflow-hidden shadow-2xl max-w-100 w-full mx-16'
         onClick={(e) => e.stopPropagation()}
         style={{ aspectRatio: '9/16' }}
       >
@@ -112,7 +112,7 @@ export function ScreenshotDialog({
           src={src}
           alt={`${appName} screenshot ${activeIndex + 1} of ${total}`}
           fill
-          className='object-cover'
+          className='object-contain'
           sizes='340px'
           priority
         />

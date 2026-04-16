@@ -1,3 +1,5 @@
+import { HomeAppItem } from './home-apps.types';
+
 export enum EnumAppStatus {
   PUBLISH = 'publish',
   DRAFT = 'draft',
@@ -15,9 +17,9 @@ export enum EnumAppSource {
 
 /** FIX: was missing from the original – used `'android' as any` in mock-data */
 export enum EnumPlatformType {
-  ANDROID = 'android',
-  IOS = 'ios',
-  WINDOWS = 'windows',
+  'android' = 'android',
+  'ios' = 'ios',
+  'windows' = 'windows',
 }
 
 /** FIX: was missing from the original – referenced in AppBody but never defined */
@@ -44,6 +46,8 @@ export interface IAppTags {
   name: string;
   slug: string;
 }
+
+type RelatedAppType = 'byCategory' | 'similar' | 'sameDeveloper';
 
 export interface AppBody {
   id?: string;
@@ -85,6 +89,7 @@ export interface AppBody {
   links?: AppLink[];
   modders?: AppModder[];
   last_version_checked_at?: string | null;
+  related?: Record<RelatedAppType, HomeAppItem[]>;
 }
 
 /**
