@@ -29,41 +29,41 @@ export const SECTION_HEADERS = {
   popularApps: {
     title: 'Popular Apps',
     subtitle: 'Most downloaded apps this month',
-    viewAllLink: '/apps/popular',
+    viewAllLink: '/category/apps',
   },
   popularGames: {
     title: 'Popular Games',
     subtitle: "Top trending games everyone's playing",
-    viewAllLink: '/games/popular',
+    viewAllLink: '/category/games',
   },
   latestApps: {
     title: 'Latest Updated Apps',
     subtitle: 'Fresh updates with new features',
-    viewAllLink: '/apps/updated',
+    viewAllLink: '/category/apps',
   },
   newApps: {
     title: 'New Release Apps',
     subtitle: 'Just launched apps worth trying',
-    viewAllLink: '/apps/new',
+    viewAllLink: '/category/apps',
   },
   latestGames: {
     title: 'Latest Updated Games',
     subtitle: 'Games with recent updates',
-    viewAllLink: '/games/updated',
+    viewAllLink: '/category/games',
   },
   newGames: {
     title: 'New Release Games',
     subtitle: 'Brand new games to explore',
-    viewAllLink: '/games/new',
+    viewAllLink: '/category/games',
   },
-  appCategories: {
+  apps: {
     title: 'App Categories',
     subtitle: 'Browse apps by category',
-    viewAllLink: '/categories/apps',
+    viewAllLink: '/category/apps',
   },
-  gameCategories: {
+  games: {
     title: 'Game Categories',
     subtitle: 'Find your favorite game genre',
-    viewAllLink: '/categories/games',
+    viewAllLink: '/category/games',
   },
 };

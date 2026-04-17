@@ -29,6 +29,7 @@ import {
   VersionIcon,
 } from '@/assets';
 import { AppWithSlug } from '@/types/types.app';
+import parse from 'html-react-parser';
 import {
   BadgeCheck,
   Download,
@@ -230,9 +231,9 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         {/* ── 1. Banner ────────────────────────────────────────────── */}
         {app.header_image && (
           <div className='p-4 rounded-2xl'>
-            <div className='relative w-full h-52 sm:h-120 overflow-hidden bg-muted rounded-2xl'>
+            <div className='relative w-full h-52 sm:h-160 overflow-hidden bg-muted rounded-2xl'>
               <Image
-                src={app.header_image}
+                src={app?.header_image}
                 alt={`${app.name} banner`}
                 fill
                 priority
@@ -414,9 +415,10 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
         {/* ── 9. Description ───────────────────────────────────────── */}
         <div className='px-4 py-5 border-b border-border'>
-          <p className='text-sm text-foreground leading-relaxed whitespace-pre-line'>
+          {parse(app.description)}
+          {/* <p className='text-sm text-foreground leading-relaxed whitespace-pre-line'>
             {app.description}
-          </p>
+          </p> */}
         </div>
 
         {/* ── 10. Bottom CTA ───────────────────────────────────────── */}

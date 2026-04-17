@@ -15,8 +15,11 @@
 import { useCallback } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+
+import { getActiveReportReasons } from '@/server/get/get-reports';
 
 import {
   FormInput,
@@ -33,11 +36,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import {
-  REPORT_REASONS,
-  ReportAppFormValues,
-  reportAppSchema,
-} from '@/lib/schemas';
+import { ReportAppFormValues, reportAppSchema } from '@/lib/schemas';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -85,6 +84,17 @@ export function ReportAppDialog({
     [form, onOpenChange]
   );
 
+  const { data } = useQuery({
+    queryKey: ['notices'],
+    queryFn: async () => await getActiveReportReasons(),
+  });
+
+  const reasons =
+    data?.data?.map((reason) => ({
+      value: reason.id,
+      label: reason.title,
+    })) ?? [];
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
@@ -125,10 +135,7 @@ export function ReportAppDialog({
               control={form.control}
               name='reason'
               placeholder='Select a reason'
-              options={REPORT_REASONS.map((reason) => ({
-                value: reason,
-                label: reason,
-              }))}
+              options={reasons}
             />
             <FormTextarea control={form.control} name='details' />
           </FormWrapper>

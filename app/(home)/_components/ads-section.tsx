@@ -37,7 +37,7 @@ const AdsSection: React.FC<AdsSectionProps> = ({
        * bleed to the viewport edge while keeping inner content aligned
        * with the page container.
        */}
-      <div className=' px-4 sm:px-6 lg:px-8 sb-red'>
+      <div className=' px-4 sm:px-6 lg:px-8'>
         <Swiper
           onSwiper={(s) => {
             swiperRef.current = s;
