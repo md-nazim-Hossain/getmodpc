@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 
-import { AdsSectionProps } from '@/types';
+import { Ad } from '@/types/ads';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -10,6 +10,17 @@ import { A11y, Autoplay, FreeMode } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import AdCard from '@/components/cards/ad-card';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface AdsSectionProps {
+  heading?: string;
+  ads: Ad[];
+  autoplay?: boolean;
+  autoplayDelay?: number;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const AdsSection: React.FC<AdsSectionProps> = ({
   heading,
@@ -22,6 +33,10 @@ const AdsSection: React.FC<AdsSectionProps> = ({
 
   if (!ads.length) return null;
 
+  // Filter only active ads
+  const activeAds = ads.filter((ad) => ad.is_active);
+  if (!activeAds.length) return null;
+
   return (
     <section aria-label={heading ?? 'Promoted content'} className='w-full py-6'>
       {heading && (
@@ -32,12 +47,7 @@ const AdsSection: React.FC<AdsSectionProps> = ({
         </div>
       )}
 
-      {/*
-       * Negative horizontal margin + matching padding lets the swiper
-       * bleed to the viewport edge while keeping inner content aligned
-       * with the page container.
-       */}
-      <div className=' px-4 sm:px-6 lg:px-8'>
+      <div className='px-4 sm:px-6 lg:px-8'>
         <Swiper
           onSwiper={(s) => {
             swiperRef.current = s;
@@ -61,33 +71,19 @@ const AdsSection: React.FC<AdsSectionProps> = ({
               : false
           }
           breakpoints={{
-            // Mobile — natural width cards
-            0: {
-              spaceBetween: 12,
-              slidesOffsetAfter: 24,
-            },
-            // Tablet
-            640: {
-              spaceBetween: 16,
-              slidesOffsetAfter: 32,
-            },
-            // Desktop
-            1024: {
-              spaceBetween: 20,
-              slidesOffsetAfter: 40,
-            },
+            0: { spaceBetween: 12, slidesOffsetAfter: 24 },
+            640: { spaceBetween: 16, slidesOffsetAfter: 32 },
+            1024: { spaceBetween: 20, slidesOffsetAfter: 40 },
           }}
           a11y={{
             prevSlideMessage: 'Previous ad',
             nextSlideMessage: 'Next ad',
           }}
-          // Allow slides to overflow so the peek effect is visible
           className='overflow-visible!'
         >
-          {ads.map((ad) => (
+          {activeAds.map((ad) => (
             <SwiperSlide
               key={ad.id}
-              // Fixed width per slide — matches the card's natural design width
               style={{ width: 'clamp(220px, 60vw, 280px)' }}
               className='h-auto!'
             >

@@ -18,7 +18,7 @@ const TooltipWrapper: React.FC<{
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent className={cn(className)} align='center'>
-          <p>{message}</p>
+          {message}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -16,9 +16,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getAppDetailsBySlug } from '@/server/get/get-apps';
+import slugify from 'slugify';
 
-import { AppDetailsCard } from '@/components/cards/app-details-card';
+import {
+  getAppDetailsBySlug,
+  getDownloadAppsBySlug,
+} from '@/server/get/get-apps';
+
 import { Container } from '@/components/layout/container';
 import {
   Breadcrumb,
@@ -30,6 +34,7 @@ import {
 } from '@/components/ui/breadcrumb';
 
 import { RelatedApps } from '../_components/related-apps';
+import AppDownloadContent from './_components/app-download-content';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,12 +71,12 @@ export async function generateMetadata({
 export default async function AppDetailsPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const { data: app } = await getAppDetailsBySlug(slug);
+  const { data: app } = await getDownloadAppsBySlug(slug);
 
   // // FIX: original had no null guard — would crash on invalid slug
   if (!app) notFound();
 
-  const category = app.genre ?? 'Apps';
+  // const category = app. ?? 'Apps';
 
   return (
     <div className='min-h-screen bg-slate-50/50'>
@@ -103,10 +108,14 @@ export default async function AppDetailsPage({ params }: PageProps) {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href={`/apps?category=${app.categories?.[0]?.slug ?? ''}`}
+                  href={`/category/${slugify(app.genre, {
+                    lower: true,
+                    trim: true,
+                    strict: true,
+                  })}`}
                   className='text-slate-500 hover:text-violet-600 transition-colors text-sm'
                 >
-                  {category}
+                  {app.genre}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -124,7 +133,7 @@ export default async function AppDetailsPage({ params }: PageProps) {
       <Container className='py-8'>
         {/* Two-column layout */}
         <div className='grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-6'>
-          <AppDetailsCard app={app} settings={app.settings} />
+          <AppDownloadContent data={app} shareUrl='/' />
           <div className='lg:sticky lg:top-16 self-start'>
             <RelatedApps apps={app?.related?.byCategory ?? []} />
           </div>

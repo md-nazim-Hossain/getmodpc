@@ -1,4 +1,5 @@
-import { Ad, PaginationMeta, ReportReason, Testimonial } from '.';
+import { PaginationMeta, ReportReason, Testimonial } from '.';
+import { Ad } from './ads';
 import {
   HomeAppItem,
   HomeAppsData,
@@ -6,6 +7,7 @@ import {
   SettingsHomeValue,
 } from './home-apps.types';
 import { AppDetails } from './types.app';
+import { AppDownloadDetails } from './types.app-details-download';
 
 export interface ApiResponse<T, TMeta = unknown> {
   statusCode: number;
@@ -39,3 +41,5 @@ export type AdResponse = ApiResponse<Ad[]>;
 export type ReportReasonResponse = ApiResponse<ReportReason[]>;
 
 export type ActiveTestimonialResponse = ApiResponse<Testimonial[]>;
+
+export type DownloadAppResponse = ApiResponse<AppDownloadDetails>;

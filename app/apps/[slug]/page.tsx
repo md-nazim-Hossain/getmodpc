@@ -16,6 +16,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import slugify from 'slugify';
+
 import { getAppDetailsBySlug } from '@/server/get/get-apps';
 
 import { AppDetailsCard } from '@/components/cards/app-details-card';
@@ -73,8 +75,6 @@ export default async function AppDetailsPage({ params }: PageProps) {
   // // FIX: original had no null guard — would crash on invalid slug
   if (!app) notFound();
 
-  const category = app.genre ?? 'Apps';
-
   return (
     <div className='min-h-screen bg-slate-50/50'>
       {/* ── Sticky breadcrumb ──────────────────────────────────── */}
@@ -105,10 +105,14 @@ export default async function AppDetailsPage({ params }: PageProps) {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href={`/apps?category=${app.categories?.[0]?.slug ?? ''}`}
+                  href={`/category/${slugify(app.genre, {
+                    lower: true,
+                    strict: true,
+                    trim: true,
+                  })}`}
                   className='text-slate-500 hover:text-violet-600 transition-colors text-sm'
                 >
-                  {category}
+                  {app.genre}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />

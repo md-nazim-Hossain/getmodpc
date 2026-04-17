@@ -19,6 +19,9 @@ import { AppSection } from '@/app/apps/[slug]/_components/app-section';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{
+    page?: string;
+  }>;
 }
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
@@ -49,13 +52,19 @@ export async function generateMetadata({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function AppCategoryPage({ params }: PageProps) {
+export default async function AppCategoryPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { slug } = await params;
+
+  const search = await searchParams;
+  const page = Number(search?.page ? search?.page : 1);
 
   const {
     data: { apps, settings },
     meta,
-  } = await getAppsByCategory(slug);
+  } = await getAppsByCategory(slug, page);
 
   // // FIX: original had no null guard — would crash on invalid slug
   // if (!app) notFound();

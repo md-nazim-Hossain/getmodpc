@@ -1,18 +1,10 @@
-// components/cards/app-card-info.tsx
+// components/cards/home-app-card-info.tsx
 //
-// Migrated from AppBody → HomeAppItem.
-//
-// Field mapping (AppBody → HomeAppItem):
-//   app?.installs        → app?.size          (closest available metric; installs removed from HomeAppItem)
-//   app?.platform        → app?.platform      (EnumPlatformType enum → 'android'|'ios'|string union)
-//   app?.version         → app?.version       (string|null|undefined → string, always present)
-//   app?.is_verified     → app?.is_verified   (boolean|undefined → boolean, always present)
-//   app?.short_mode      → app?.short_mode    (string|undefined → string, always present)
-//   app?.icon            → app?.icon          (string|null → string, always present)
-//   app?.name            → app?.name          (unchanged)
-//   showVersion         → controls version display in the installs/size row
-//
-// UI: UNCHANGED — same layout, same classes, same icon SVGs.
+// BUG FIX: Tooltip content (verified badge) was triggering Link navigation.
+// Fix: wrap tooltip trigger in a <span> with e.stopPropagation() + e.preventDefault()
+// so clicks on the tooltip do NOT bubble to the parent <Link>.
+import React from 'react';
+
 import Image from 'next/image';
 
 import { HomeAppItem, Settings } from '@/types/home-apps.types';
@@ -29,7 +21,6 @@ import TooltipWrapper from '../ui/tooltip-wrapper';
 interface AppCardInfoProps {
   app: HomeAppItem;
   className?: string;
-  /** When true, appends the version string to the size/install row. */
   showVersion?: boolean;
   settings?: Settings<any>[];
 }
@@ -45,14 +36,15 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
   const value = settings?.find((s) => s.key === 'icons')?.value;
 
   const verifiedBadgeIcon =
-    value?.icons.find((i: any) => i?.name === 'verified_badge_icon')?.url ||
-    '/icons/check.svg';
+    value?.icons?.find(
+      (i: { name: string }) => i?.name === 'verified_badge_icon'
+    )?.url || '/icons/check.svg';
 
   const tooltipText = value?.verified_badge_tooltip_text || '';
 
   return (
     <div className={cn('flex gap-4 p-2', className)}>
-      {/* App Icon — `icon` is now a required non-empty string on HomeAppItem */}
+      {/* App Icon */}
       <div className='relative size-21 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
         <Image
           src={app?.icon}
@@ -67,41 +59,46 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
       <div className='flex-1 min-w-0 p-0 relative z-3'>
         <CardTitle className='text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-x-1.5'>
           {app?.name}
-          {/* is_verified is now a required boolean — always safe to read */}
+
+          {/* ── FIX: stop propagation so tooltip click ≠ Link navigation ── */}
           {app?.is_verified && (
-            <TooltipWrapper message={parse(tooltipText)}>
-              <Image
-                src={verifiedBadgeIcon}
-                alt='Verified'
-                width={14}
-                height={14}
-              />
-            </TooltipWrapper>
+            <span
+              role='button'
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }
+              }}
+              className='inline-flex items-center cursor-default'
+              aria-label='Verified badge'
+            >
+              <TooltipWrapper message={parse(tooltipText)}>
+                <Image
+                  src={verifiedBadgeIcon}
+                  alt='Verified'
+                  width={14}
+                  height={14}
+                  // Also stop pointer events reaching the Link
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                />
+              </TooltipWrapper>
+            </span>
           )}
-          {/* {app?.is_verified && (
-            <Image
-              src='/icons/check.svg'
-              alt='Verified'
-              width={14}
-              height={14}
-            />
-          )} */}
         </CardTitle>
 
         {/* Meta */}
         <div className='flex flex-col gap-y-0.75 mt-1 text-xs text-foreground'>
-          {/*
-           * platform is now a plain string union ('android'|'ios'|string).
-           * PlatformIconList accepts the same string values — no adapter needed.
-           */}
           <PlatformIconList platform={app?.platform} size='sm' />
 
-          {/*
-           * `installs` no longer exists on HomeAppItem.
-           * `size` is the closest available field (e.g. "45 MB").
-           * showVersion appends the version string, matching the previous
-           * `app?.installs • v${app?.version}` pattern.
-           */}
           <span className='flex items-center gap-2'>
             <div className='size-3.5'>
               <svg className='size-3.5' viewBox='0 0 24 24' fill='currentColor'>
@@ -116,7 +113,6 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
             </span>
           </span>
 
-          {/* short_mode is now always a non-empty string — conditional render still correct */}
           {
             <span className='flex items-center gap-2'>
               <div className='size-3.5 overflow-hidden'>

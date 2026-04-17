@@ -41,8 +41,8 @@ export interface AppLink {
 }
 
 export interface AppModder {
-  title?: string | null;
-  descriptions?: string | null;
+  title: string | null;
+  descriptions: string | null;
 }
 
 export interface IAppTags {
@@ -51,7 +51,7 @@ export interface IAppTags {
   slug: string;
 }
 
-type RelatedAppType = 'byCategory' | 'similar' | 'sameDeveloper';
+export type RelatedAppType = 'byCategory' | 'similar' | 'sameDeveloper';
 
 export interface AppDetails {
   id: string;
@@ -66,7 +66,7 @@ export interface AppDetails {
   latest_news?: string | null;
   header_image?: string | null;
   icon?: string | null;
-  genre?: string | null;
+  genre: string;
   youtube_id?: string | null;
   os_version: string;
   screenshots?: string[];

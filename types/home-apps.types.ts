@@ -1,3 +1,5 @@
+import { Testimonial } from '.';
+import { Ad } from './ads';
 import { EnumAppType, EnumPlatformType } from './types.app';
 
 export interface HomeAppItem {
@@ -90,8 +92,9 @@ export interface HomeAppsData {
   newReleasedGames: HomeAppItem[];
 
   categories: CategoryParent[];
-
   settings: Settings<SettingsHomeValue>[];
+  ads: Ad[];
+  testimonials: Testimonial[];
 }
 
 // Final Typed Response
