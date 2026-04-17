@@ -14,7 +14,7 @@
 // UI: UNCHANGED — same layout, same classes, same icon SVGs.
 import Image from 'next/image';
 
-import { AppBody } from '@/types/types.app';
+import { AppDetails } from '@/types/types.app';
 
 import { cn } from '@/lib/utils';
 
@@ -25,7 +25,7 @@ import { CardTitle } from '../ui/card';
  * AppCardInfo now accepts the full AppBody shape.
  * Only the data-access layer changed; the rendered output is identical.
  */
-const AppCardInfo: React.FC<{ app: AppBody; className?: string }> = ({
+const AppCardInfo: React.FC<{ app: AppDetails; className?: string }> = ({
   app,
   className,
 }) => {

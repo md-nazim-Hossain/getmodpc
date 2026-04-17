@@ -36,11 +36,7 @@ export const reportAppSchema = z.object({
     .min(1, 'Email is required')
     .email('Please enter a valid email address'),
 
-  reason: z.enum(REPORT_REASONS, {
-    required_error: 'Please select a reason',
-    invalid_type_error: 'Please select a valid reason',
-  }),
-
+  reason: z.string().min(1, 'Reason is required'),
   details: z
     .string()
     .max(500, 'Details must be 500 characters or fewer')
@@ -48,3 +44,7 @@ export const reportAppSchema = z.object({
 });
 
 export type ReportAppFormValues = z.infer<typeof reportAppSchema>;
+
+export type ReportAppPayload = ReportAppFormValues & {
+  app_id: string;
+};

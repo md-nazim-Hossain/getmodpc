@@ -37,8 +37,6 @@ export function CommentForm({ app_id }: CommentFormProps) {
   });
 
   async function onSubmit(values: CommentFormValues) {
-    // console.log({ values });
-    // return;
     setServerError(null);
     try {
       const payload: CommentPayload = {

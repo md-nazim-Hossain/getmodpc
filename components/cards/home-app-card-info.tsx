@@ -3,24 +3,26 @@
 // Migrated from AppBody → HomeAppItem.
 //
 // Field mapping (AppBody → HomeAppItem):
-//   app.installs        → app.size          (closest available metric; installs removed from HomeAppItem)
-//   app.platform        → app.platform      (EnumPlatformType enum → 'android'|'ios'|string union)
-//   app.version         → app.version       (string|null|undefined → string, always present)
-//   app.is_verified     → app.is_verified   (boolean|undefined → boolean, always present)
-//   app.short_mode      → app.short_mode    (string|undefined → string, always present)
-//   app.icon            → app.icon          (string|null → string, always present)
-//   app.name            → app.name          (unchanged)
+//   app?.installs        → app?.size          (closest available metric; installs removed from HomeAppItem)
+//   app?.platform        → app?.platform      (EnumPlatformType enum → 'android'|'ios'|string union)
+//   app?.version         → app?.version       (string|null|undefined → string, always present)
+//   app?.is_verified     → app?.is_verified   (boolean|undefined → boolean, always present)
+//   app?.short_mode      → app?.short_mode    (string|undefined → string, always present)
+//   app?.icon            → app?.icon          (string|null → string, always present)
+//   app?.name            → app?.name          (unchanged)
 //   showVersion         → controls version display in the installs/size row
 //
 // UI: UNCHANGED — same layout, same classes, same icon SVGs.
 import Image from 'next/image';
 
-import { HomeAppItem } from '@/types/home-apps.types';
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
+import parse from 'html-react-parser';
 
 import { cn } from '@/lib/utils';
 
 import { PlatformIconList } from '../platform-icon';
 import { CardTitle } from '../ui/card';
+import TooltipWrapper from '../ui/tooltip-wrapper';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,6 +31,7 @@ interface AppCardInfoProps {
   className?: string;
   /** When true, appends the version string to the size/install row. */
   showVersion?: boolean;
+  settings?: Settings<any>[];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -37,14 +40,23 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
   app,
   className,
   showVersion,
+  settings,
 }) => {
+  const value = settings?.find((s) => s.key === 'icons')?.value;
+
+  const verifiedBadgeIcon =
+    value?.icons.find((i: any) => i?.name === 'verified_badge_icon')?.url ||
+    '/icons/check.svg';
+
+  const tooltipText = value?.verified_badge_tooltip_text || '';
+
   return (
     <div className={cn('flex gap-4 p-2', className)}>
       {/* App Icon — `icon` is now a required non-empty string on HomeAppItem */}
       <div className='relative size-21 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
         <Image
-          src={app.icon}
-          alt={`${app.name} icon`}
+          src={app?.icon}
+          alt={`${app?.name} icon`}
           fill
           className='object-cover transition-transform duration-300 group-hover:scale-110'
           sizes='56px'
@@ -52,18 +64,28 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
       </div>
 
       {/* Info */}
-      <div className='flex-1 min-w-0 p-0'>
+      <div className='flex-1 min-w-0 p-0 relative z-3'>
         <CardTitle className='text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-x-1.5'>
-          {app.name}
+          {app?.name}
           {/* is_verified is now a required boolean — always safe to read */}
-          {app.is_verified && (
+          {app?.is_verified && (
+            <TooltipWrapper message={parse(tooltipText)}>
+              <Image
+                src={verifiedBadgeIcon}
+                alt='Verified'
+                width={14}
+                height={14}
+              />
+            </TooltipWrapper>
+          )}
+          {/* {app?.is_verified && (
             <Image
               src='/icons/check.svg'
               alt='Verified'
               width={14}
               height={14}
             />
-          )}
+          )} */}
         </CardTitle>
 
         {/* Meta */}
@@ -72,13 +94,13 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
            * platform is now a plain string union ('android'|'ios'|string).
            * PlatformIconList accepts the same string values — no adapter needed.
            */}
-          <PlatformIconList platform={app.platform} size='sm' />
+          <PlatformIconList platform={app?.platform} size='sm' />
 
           {/*
            * `installs` no longer exists on HomeAppItem.
            * `size` is the closest available field (e.g. "45 MB").
            * showVersion appends the version string, matching the previous
-           * `app.installs • v${app.version}` pattern.
+           * `app?.installs • v${app?.version}` pattern.
            */}
           <span className='flex items-center gap-2'>
             <div className='size-3.5'>
@@ -89,13 +111,13 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
               </svg>
             </div>
             <span className='text-muted-foreground'>
-              {app.size}
-              {showVersion && app.version ? ` • v${app.version}` : ''}
+              {app?.size}
+              {showVersion && app?.version ? ` • v${app?.version}` : ''}
             </span>
           </span>
 
           {/* short_mode is now always a non-empty string — conditional render still correct */}
-          {app.short_mode && (
+          {
             <span className='flex items-center gap-2'>
               <div className='size-3.5 overflow-hidden'>
                 <svg
@@ -108,9 +130,11 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
                   </g>
                 </svg>
               </div>
-              <span className='text-muted-foreground'>{app.short_mode}</span>
+              <span className='text-muted-foreground'>
+                {app?.short_mode || 'Unknown'}
+              </span>
             </span>
-          )}
+          }
         </div>
       </div>
     </div>

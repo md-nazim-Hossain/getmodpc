@@ -1,6 +1,6 @@
 'use server';
 
-import { Ad, ApiResponse } from '@/types';
+import { AdResponse } from '@/types/types.response';
 import fetchApi from '@/utils/fetch-api';
 
-export const getADs = async (): Promise<ApiResponse<Ad[]>> => fetchApi(`/ads`);
+export const getADs = async (): Promise<AdResponse> => fetchApi(`/ads`);

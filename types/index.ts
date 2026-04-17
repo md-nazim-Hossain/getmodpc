@@ -110,15 +110,16 @@ export interface AdsSectionProps {
   autoplayDelay?: number;
 }
 
-// Generic API Response Wrapper
-export interface ApiResponse<T> {
-  statusCode: number;
-  success: boolean;
-  message: string;
-  meta: unknown | null;
-  data: T;
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
+// Generic API Response Wrapper
 export interface ReportReason {
   id: string;
   title: string;

@@ -29,9 +29,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { AppSection } from './_components/app-section';
-import { CommentForm } from './_components/comment-form';
-import { RelatedApps } from './_components/related-apps';
+import { RelatedApps } from '../_components/related-apps';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -131,21 +129,6 @@ export default async function AppDetailsPage({ params }: PageProps) {
             <RelatedApps apps={app?.related?.byCategory ?? []} />
           </div>
         </div>
-
-        {/* Discovery sections */}
-        <AppSection
-          title='Recommended for you'
-          apps={app.related?.similar ?? []}
-          settings={app.settings}
-        />
-        <AppSection
-          title={`Similar to ${app.platform}`}
-          apps={app.related?.sameDeveloper ?? []}
-          settings={app.settings}
-        />
-
-        {/* FIX: appSlug was not passed — CommentPayload was incomplete */}
-        <CommentForm app_id={app.id!} />
       </Container>
     </div>
   );

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import TanstackProvider from '@/provider/tanstack-provider';
+import { Toaster } from 'sonner';
 
 import { Footer } from '@/components/layout/footer';
 
@@ -46,6 +47,7 @@ export default function RootLayout({
             <main className='flex-1'>{children}</main>
             <Footer />
           </div>
+          <Toaster />
         </TanstackProvider>
       </body>
     </html>

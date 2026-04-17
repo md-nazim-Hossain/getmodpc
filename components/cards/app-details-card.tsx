@@ -16,6 +16,7 @@
 import { useMemo, useState } from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   BaseIconProps,
@@ -28,26 +29,33 @@ import {
   UpdateIcon,
   VersionIcon,
 } from '@/assets';
-import { AppWithSlug } from '@/types/types.app';
-import parse from 'html-react-parser';
+import { Settings } from '@/types/home-apps.types';
+import { AppDetails } from '@/types/types.app';
 import {
   BadgeCheck,
   Download,
   Facebook,
   Globe,
   Mail,
+  Send,
   Star,
   Twitter,
   Zap,
 } from 'lucide-react';
+import slugify from 'slugify';
+import { toast } from 'sonner';
+
+import { createReport } from '@/server/post/create-report';
 
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
-import { ReportAppFormValues } from '@/lib/schemas';
+import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
 import { formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
+
+import RichTextViewer from '../rich-text-viewer';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -165,10 +173,11 @@ function SocialButton({ href, label, color, children }: SocialButtonProps) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 interface AppDetailsCardProps {
-  app: AppWithSlug;
+  app: AppDetails;
+  settings: Settings<any>[];
 }
 
-export function AppDetailsCard({ app }: AppDetailsCardProps) {
+export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
   const screenshots = app.screenshots ?? [];
 
   // Screenshot dialog state
@@ -176,6 +185,19 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
   // Report dialog state
   const [reportOpen, setReportOpen] = useState(false);
+
+  const settingsIconsValue = settings.find((s) => s.key === 'icons')?.value;
+  const sourceIcon = settingsIconsValue?.icons.find(
+    (i: any) => i?.name === 'source_of'
+  );
+
+  const settingsButtonsValue = settings.find((s) => s.key === 'buttons')?.value;
+
+  const telegramButton = settingsButtonsValue?.telegram_button;
+  const downloadButton = settingsButtonsValue?.download_button;
+
+  const installationGuidelineText =
+    settingsButtonsValue?.installation_guideline;
 
   const sourceLabel =
     app.source === 'play_store'
@@ -187,17 +209,48 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
   const metaItems = useMemo<MetaRowItem[]>(
     () => [
       { label: 'App Name', value: app.name, Icon: Globe },
-      { label: 'Publisher', value: app.developer, Icon: PublisherIcon },
-      { label: 'Genre', value: app.genre, Icon: GenreIcon },
+      {
+        label: 'Publisher',
+        value: (
+          <Link href={`/developer/${encodeURIComponent(app.developer!)}`}>
+            {app.developer}
+          </Link>
+        ),
+        Icon: PublisherIcon,
+      },
+      {
+        label: 'Genre',
+        value: (
+          <Link
+            href={`/category/${slugify(app.genre!, {
+              lower: true,
+              trim: true,
+              strict: true,
+            })}`}
+          >
+            {app.genre}
+          </Link>
+        ),
+        Icon: GenreIcon,
+      },
       { label: 'Size', value: app.size, Icon: SizeIcon },
       { label: 'Version', value: app.version, Icon: VersionIcon },
       { label: 'Update', value: app.updated, Icon: UpdateIcon },
       { label: 'Mod Info', value: app.short_mode, Icon: ModeInfoIcon },
       {
         label: 'Source of',
-        value: sourceLabel,
+        value: (
+          <Link href={app.url} target='_blank'>
+            <Image
+              src={sourceIcon?.url}
+              alt={sourceLabel}
+              width={102}
+              height={40}
+            />
+          </Link>
+        ),
         Icon: SourceOfIcon,
-        isBadge: true,
+        isBadge: false,
       },
       {
         label: 'Report',
@@ -213,17 +266,28 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
   );
 
   const handleReportSubmit = async (values: ReportAppFormValues) => {
-    // TODO: replace with your API call, e.g.:
-    // await fetch('/api/report', { method: 'POST', body: JSON.stringify({ appSlug: app.slug, ...values }) })
-    console.log('[ReportApp]', { slug: app.slug, ...values });
+    try {
+      const payload: ReportAppPayload = {
+        ...values,
+        app_id: app.id,
+      };
+
+      toast.promise(createReport(payload), {
+        loading: 'Submitting report...',
+        success: 'Report submitted successfully.',
+        error: 'Something went wrong. Please try again in a moment.',
+      });
+    } catch (err) {
+      toast.error('Something went wrong. Please try again in a moment.');
+    }
   };
 
   const scoreNum = parseFloat(app.score_text);
   const voteLabel = app.ratings
     ? `${formatNumber(app.ratings)} Votes`
     : 'Votes';
-  const primaryLink = app.links?.[0]?.link ?? '#';
-  const fastLink = app.links?.[1]?.link ?? primaryLink;
+
+  const primaryLink = `/apps/${app.slug}/download`;
 
   return (
     <>
@@ -352,24 +416,28 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}
         <div className='grid grid-cols-2 border-b border-border'>
-          <a
-            href={primaryLink}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
-          >
-            <Download className='w-4 h-4' aria-hidden />
-            Download Now
-          </a>
-          <a
-            href={fastLink}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
-          >
-            <Zap className='w-4 h-4' aria-hidden />
-            Fast Download
-          </a>
+          {downloadButton?.is_enabled && (
+            <a
+              href={primaryLink}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
+            >
+              <Download className='w-4 h-4' aria-hidden />
+              {downloadButton?.label || 'Download Now'}
+            </a>
+          )}
+          {telegramButton?.is_enabled && (
+            <a
+              href={telegramButton?.url}
+              target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
+              rel='noopener noreferrer'
+              className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
+            >
+              <Send className='w-4 h-4' aria-hidden />
+              {telegramButton?.label || 'Fast Download'}
+            </a>
+          )}
         </div>
 
         {/* ── 8. Screenshot strip ──────────────────────────────────── */}
@@ -415,7 +483,8 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
         {/* ── 9. Description ───────────────────────────────────────── */}
         <div className='px-4 py-5 border-b border-border'>
-          {parse(app.description)}
+          <RichTextViewer content={app.description} />
+
           {/* <p className='text-sm text-foreground leading-relaxed whitespace-pre-line'>
             {app.description}
           </p> */}
@@ -452,7 +521,9 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
             </strong>{' '}
             for free. Here are some notes:
           </p>
-          <ul className='list-disc list-inside space-y-1'>
+          <RichTextViewer content={installationGuidelineText} />
+
+          {/* <ul className='list-disc list-inside space-y-1'>
             <li>Please check our installation guide.</li>
             <li>
               To check the CPU and GPU of your Android device, please use the
@@ -460,7 +531,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
             </li>
             {app.os_version && <li>Requires {app.os_version} or higher.</li>}
             {app.size && <li>Download size: {app.size}.</li>}
-          </ul>
+          </ul> */}
         </div>
       </article>
 

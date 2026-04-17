@@ -73,6 +73,7 @@ export default async function HomePage() {
     newReleasedGames,
     // HomeAppsData merges appCategories + gameCategories into one array
     categories,
+    settings,
   } = appData?.data;
 
   return (
@@ -87,39 +88,43 @@ export default async function HomePage() {
       <HomeSection
         headerKey='popularApps'
         items={popularApps}
-        renderItem={(app) => <HomeAppCard app={app} />}
+        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
       />
 
       <HomeSection
         headerKey='popularGames'
         items={popularGames}
-        renderItem={(game) => <HomeAppCard app={game} />}
+        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestApps'
         items={latestUpdatedApps}
-        renderItem={(app) => <HomeAppCard app={app} showVersion />}
+        renderItem={(app) => (
+          <HomeAppCard app={app} settings={settings} showVersion />
+        )}
       />
 
       <HomeSection
         headerKey='newApps'
         items={newReleasedApps}
-        renderItem={(app) => <HomeAppCard app={app} />}
+        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestGames'
         items={latestUpdatedGames}
-        renderItem={(game) => <HomeAppCard app={game} showVersion />}
+        renderItem={(game) => (
+          <HomeAppCard app={game} settings={settings} showVersion />
+        )}
       />
 
       <HomeSection
         headerKey='newGames'
         items={newReleasedGames}
-        renderItem={(game) => <HomeAppCard app={game} />}
+        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
