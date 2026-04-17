@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import { Check, Copy, Share2 } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 import {
   EmailIcon,
   EmailShareButton,
@@ -105,7 +105,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
             onClick={copyLink}
             aria-label='Copy link'
             className={cn(
-              'flex items-center justify-center rounded-[10px] transition-all duration-200',
+              'flex items-center justify-center rounded-4xl transition-all duration-200',
               'bg-muted hover:bg-muted/80',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
             )}

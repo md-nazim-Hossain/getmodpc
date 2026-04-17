@@ -35,6 +35,7 @@ import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
 import slugify from 'slugify';
 import { toast } from 'sonner';
 
+import { createAppRating } from '@/server/post/create-app-rating';
 import { createReport } from '@/server/post/create-report';
 
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
@@ -42,6 +43,7 @@ import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
 import { formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
+import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog';
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
 
@@ -64,13 +66,20 @@ const STAR_CLASS: Record<StarFill, string> = {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function StarRating({ score }: { score: string }) {
+function StarRating({
+  score,
+  handleClick,
+}: {
+  score: string;
+  handleClick?: () => void;
+}) {
   const num = parseFloat(score);
   return (
     <div
-      className='flex items-center gap-0.5'
+      className='flex items-center gap-0.5 cursor-pointer'
       role='img'
       aria-label={`${score} out of 5 stars`}
+      onClick={handleClick}
     >
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
@@ -266,6 +275,25 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
 
   const primaryLink = `/apps/${app.slug}/download`;
 
+  // Rating dialog state
+  const [ratingOpen, setRatingOpen] = useState(false);
+
+  const [ratingMessage, setRatingMessage] = useState<string | null>(null);
+
+  async function handleRating() {
+    setRatingOpen(false);
+    setRatingMessage(null);
+
+    try {
+      const res = await createAppRating(app.id);
+      setRatingMessage(res.message);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setRatingOpen(true);
+    }
+  }
+
   return (
     <>
       <article className='bg-white border border-border overflow-hidden rounded-2xl'>
@@ -335,9 +363,9 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         </div>
 
         {/* ── 5. Star rating + votes ────────────────────────────────── */}
-        <div className='flex items-center justify-between px-4 pt-3'>
-          <div className='flex items-center gap-2 flex-wrap'>
-            <StarRating score={app.score_text} />
+        <div className='flex items-center justify-between px-4 pt-3 '>
+          <div className='flex items-center gap-2 flex-wrap '>
+            <StarRating handleClick={handleRating} score={app.score_text} />
             <span className='text-sm font-bold text-foreground'>
               {scoreNum.toFixed(1)} / 5
             </span>
@@ -508,6 +536,13 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         open={reportOpen}
         onOpenChange={setReportOpen}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* ── Rating dialog ─────────────────────────────────────────── */}
+      <RatingAppDialog
+        message={ratingMessage}
+        open={ratingOpen}
+        onOpenChange={setRatingOpen}
       />
     </>
   );

@@ -43,3 +43,9 @@ export type ReportReasonResponse = ApiResponse<ReportReason[]>;
 export type ActiveTestimonialResponse = ApiResponse<Testimonial[]>;
 
 export type DownloadAppResponse = ApiResponse<AppDownloadDetails>;
+
+export type AppRatingResponse = {
+  message: string;
+  statusCode: number;
+  success: boolean;
+};

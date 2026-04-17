@@ -85,7 +85,7 @@ export function ReportAppDialog({
   );
 
   const { data } = useQuery({
-    queryKey: ['notices'],
+    queryKey: ['active-report-reasons'],
     queryFn: async () => await getActiveReportReasons(),
   });
 

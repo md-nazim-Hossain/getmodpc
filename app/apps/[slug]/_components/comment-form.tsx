@@ -52,10 +52,6 @@ export function CommentForm({ app_id }: CommentFormProps) {
     }
   }
 
-  console.log({
-    form: form.formState.errors,
-  });
-
   return (
     <section className='mt-10 max-w-2xl' aria-labelledby={`${formId}-heading`}>
       {submitted ? (
