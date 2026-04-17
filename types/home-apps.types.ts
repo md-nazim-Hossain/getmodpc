@@ -1,4 +1,5 @@
-import { ApiResponse } from '.';
+import { Testimonial } from '.';
+import { Ad } from './ads';
 import { EnumAppType, EnumPlatformType } from './types.app';
 
 export interface HomeAppItem {
@@ -36,6 +37,47 @@ export interface CategoryParent {
   categories: CategoryChild[]; // recursive (future-proof)
 }
 
+type IconName =
+  | 'android_icon'
+  | 'apple_icon'
+  | 'windows_icon'
+  | 'version_icon'
+  | 'size_icon'
+  | 'premium_unlocked_icon'
+  | 'verified_badge_icon';
+export interface AppIcon {
+  url: string;
+  name: IconName;
+  alt_text: string;
+}
+
+export interface SettingsHomeValue {
+  icons: AppIcon[];
+  verified_badge_tooltip_text: string;
+}
+
+export interface SettingsAppDetailsValue extends Partial<SettingsHomeValue> {
+  download_button: {
+    label: string;
+    is_enabled: true;
+  };
+  telegram_button: {
+    url: string;
+    label: string;
+    is_enabled: boolean;
+    is_open_new_tab: boolean;
+  };
+  installation_guideline: string;
+}
+
+export interface Settings<T> {
+  id: string;
+  key: string;
+  value: T;
+  created_at: string;
+  updated_at: string;
+}
+
 // Home Page Data Structure
 export interface HomeAppsData {
   sliderApps: HomeAppItem[];
@@ -50,7 +92,9 @@ export interface HomeAppsData {
   newReleasedGames: HomeAppItem[];
 
   categories: CategoryParent[];
+  settings: Settings<SettingsHomeValue>[];
+  ads: Ad[];
+  testimonials: Testimonial[];
 }
 
 // Final Typed Response
-export type HomeAppsResponse = ApiResponse<HomeAppsData>;

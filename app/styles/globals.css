@@ -5,6 +5,7 @@
 /* @import './glass-button.css'; */
 @import './social-icon.css';
 @import './glass-card-effect.css';
+@import './pagination.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -194,5 +195,21 @@
 
   .sb-red {
     @apply border border-red-600;
+  }
+
+  .editor ul {
+    @apply list-disc pl-5;
+  }
+
+  .editor ol {
+    @apply list-decimal pl-5;
+  }
+
+  .editor li {
+    @apply mb-1;
+  }
+
+  .editor li p {
+    @apply inline;
   }
 }

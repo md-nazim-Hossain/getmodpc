@@ -18,12 +18,9 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { getHomeApps } from '@/server/get/get-apps';
-import { getActiveTestimonials } from '@/server/get/get-testimonials';
 
 import { CategoryCard } from '@/components/cards/category-card';
 import { HomeAppCard } from '@/components/cards/home-app-card';
-
-import { ADS_SAMPLE_DATA } from '@/lib/data/ads-data';
 
 import AdsSection from './_components/ads-section';
 import { HeroSection } from './_components/hero-section';
@@ -53,10 +50,6 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const appData = await getHomeApps();
 
-  // const adsData = await getADs();
-
-  const testimonialsData = await getActiveTestimonials();
-
   if (!appData || !appData.success || !appData.data) {
     redirect('/404');
   }
@@ -73,53 +66,57 @@ export default async function HomePage() {
     newReleasedGames,
     // HomeAppsData merges appCategories + gameCategories into one array
     categories,
+    settings,
+    ads,
+    testimonials,
   } = appData?.data;
 
   return (
     <>
       <HeroSection slides={sliderApps} />
 
-      <AdsSection
-        //ads={adsData.data} // TODO: Use this when API supports it
-        ads={ADS_SAMPLE_DATA}
-      />
+      <AdsSection ads={ads} />
 
       <HomeSection
         headerKey='popularApps'
         items={popularApps}
-        renderItem={(app) => <HomeAppCard app={app} />}
+        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
       />
 
       <HomeSection
         headerKey='popularGames'
         items={popularGames}
-        renderItem={(game) => <HomeAppCard app={game} />}
+        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestApps'
         items={latestUpdatedApps}
-        renderItem={(app) => <HomeAppCard app={app} showVersion />}
+        renderItem={(app) => (
+          <HomeAppCard app={app} settings={settings} showVersion />
+        )}
       />
 
       <HomeSection
         headerKey='newApps'
         items={newReleasedApps}
-        renderItem={(app) => <HomeAppCard app={app} />}
+        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestGames'
         items={latestUpdatedGames}
-        renderItem={(game) => <HomeAppCard app={game} showVersion />}
+        renderItem={(game) => (
+          <HomeAppCard app={game} settings={settings} showVersion />
+        )}
       />
 
       <HomeSection
         headerKey='newGames'
         items={newReleasedGames}
-        renderItem={(game) => <HomeAppCard app={game} />}
+        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
@@ -142,10 +139,7 @@ export default async function HomePage() {
         />
       ))}
 
-      <TestimonialsSection
-        testimonials={testimonialsData?.data}
-        // testimonials={TESTIMONIALS_DATA}
-      />
+      <TestimonialsSection testimonials={testimonials} />
     </>
   );
 }

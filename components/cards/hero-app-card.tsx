@@ -33,7 +33,7 @@ export function HeroAppCard({
 }: HeroAppCardProps): React.JSX.Element {
   return (
     // `slug` replaces `id` as the canonical URL segment in HomeAppItem
-    <Link href={`/app/${app.slug}`} className='glass-card-effect-wrapper'>
+    <Link href={`/apps/${app.slug}`} className='glass-card-effect-wrapper'>
       {/* Content Area */}
       <button className='glass-card'>
         {/* Banner Image */}

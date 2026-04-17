@@ -37,8 +37,6 @@ export function CommentForm({ app_id }: CommentFormProps) {
   });
 
   async function onSubmit(values: CommentFormValues) {
-    // console.log({ values });
-    // return;
     setServerError(null);
     try {
       const payload: CommentPayload = {
@@ -53,10 +51,6 @@ export function CommentForm({ app_id }: CommentFormProps) {
       setServerError('Something went wrong. Please try again in a moment.');
     }
   }
-
-  console.log({
-    form: form.formState.errors,
-  });
 
   return (
     <section className='mt-10 max-w-2xl' aria-labelledby={`${formId}-heading`}>

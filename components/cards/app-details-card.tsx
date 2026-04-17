@@ -16,6 +16,7 @@
 import { useMemo, useState } from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   BaseIconProps,
@@ -28,26 +29,32 @@ import {
   UpdateIcon,
   VersionIcon,
 } from '@/assets';
-import { AppWithSlug } from '@/types/types.app';
-import parse from 'html-react-parser';
-import {
-  BadgeCheck,
-  Download,
-  Facebook,
-  Globe,
-  Mail,
-  Star,
-  Twitter,
-  Zap,
-} from 'lucide-react';
+import { Settings } from '@/types/home-apps.types';
+import { AppDetails } from '@/types/types.app';
+import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
+import slugify from 'slugify';
+import { toast } from 'sonner';
+
+import { createAppRating } from '@/server/post/create-app-rating';
+import { createReport } from '@/server/post/create-report';
 
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
-import { ReportAppFormValues } from '@/lib/schemas';
+import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
 import { formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
+import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog';
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
+
+import RichTextViewer from '../rich-text-viewer';
+import SocialShare from '../social-share';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../ui/accordion';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -59,13 +66,20 @@ const STAR_CLASS: Record<StarFill, string> = {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function StarRating({ score }: { score: string }) {
+function StarRating({
+  score,
+  handleClick,
+}: {
+  score: string;
+  handleClick?: () => void;
+}) {
   const num = parseFloat(score);
   return (
     <div
-      className='flex items-center gap-0.5'
+      className='flex items-center gap-0.5 cursor-pointer'
       role='img'
       aria-label={`${score} out of 5 stars`}
+      onClick={handleClick}
     >
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
@@ -141,34 +155,15 @@ function MetaTable({ items }: { items: MetaRowItem[] }) {
   );
 }
 
-interface SocialButtonProps {
-  href: string;
-  label: string;
-  color: string;
-  children: React.ReactNode;
-}
-
-function SocialButton({ href, label, color, children }: SocialButtonProps) {
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      target='_blank'
-      rel='noopener noreferrer'
-      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded text-white transition-opacity hover:opacity-90 ${color}`}
-    >
-      {children}
-    </a>
-  );
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 interface AppDetailsCardProps {
-  app: AppWithSlug;
+  app: AppDetails;
+  settings: Settings<any>[];
 }
 
-export function AppDetailsCard({ app }: AppDetailsCardProps) {
+export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
+  const modders = app.modders ?? [];
   const screenshots = app.screenshots ?? [];
 
   // Screenshot dialog state
@@ -176,6 +171,19 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
   // Report dialog state
   const [reportOpen, setReportOpen] = useState(false);
+
+  const settingsIconsValue = settings.find((s) => s.key === 'icons')?.value;
+  const sourceIcon = settingsIconsValue?.icons.find(
+    (i: any) => i?.name === 'source_of'
+  );
+
+  const settingsButtonsValue = settings.find((s) => s.key === 'buttons')?.value;
+
+  const telegramButton = settingsButtonsValue?.telegram_button;
+  const downloadButton = settingsButtonsValue?.download_button;
+
+  const installationGuidelineText =
+    settingsButtonsValue?.installation_guideline;
 
   const sourceLabel =
     app.source === 'play_store'
@@ -187,17 +195,48 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
   const metaItems = useMemo<MetaRowItem[]>(
     () => [
       { label: 'App Name', value: app.name, Icon: Globe },
-      { label: 'Publisher', value: app.developer, Icon: PublisherIcon },
-      { label: 'Genre', value: app.genre, Icon: GenreIcon },
+      {
+        label: 'Publisher',
+        value: (
+          <Link href={`/developer/${encodeURIComponent(app.developer!)}`}>
+            {app.developer}
+          </Link>
+        ),
+        Icon: PublisherIcon,
+      },
+      {
+        label: 'Genre',
+        value: (
+          <Link
+            href={`/category/${slugify(app.genre!, {
+              lower: true,
+              trim: true,
+              strict: true,
+            })}`}
+          >
+            {app.genre}
+          </Link>
+        ),
+        Icon: GenreIcon,
+      },
       { label: 'Size', value: app.size, Icon: SizeIcon },
       { label: 'Version', value: app.version, Icon: VersionIcon },
       { label: 'Update', value: app.updated, Icon: UpdateIcon },
       { label: 'Mod Info', value: app.short_mode, Icon: ModeInfoIcon },
       {
         label: 'Source of',
-        value: sourceLabel,
+        value: (
+          <Link href={app.url} target='_blank'>
+            <Image
+              src={sourceIcon?.url}
+              alt={sourceLabel}
+              width={102}
+              height={40}
+            />
+          </Link>
+        ),
         Icon: SourceOfIcon,
-        isBadge: true,
+        isBadge: false,
       },
       {
         label: 'Report',
@@ -213,17 +252,47 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
   );
 
   const handleReportSubmit = async (values: ReportAppFormValues) => {
-    // TODO: replace with your API call, e.g.:
-    // await fetch('/api/report', { method: 'POST', body: JSON.stringify({ appSlug: app.slug, ...values }) })
-    console.log('[ReportApp]', { slug: app.slug, ...values });
+    try {
+      const payload: ReportAppPayload = {
+        ...values,
+        app_id: app.id,
+      };
+
+      toast.promise(createReport(payload), {
+        loading: 'Submitting report...',
+        success: 'Report submitted successfully.',
+        error: 'Something went wrong. Please try again in a moment.',
+      });
+    } catch (err) {
+      toast.error('Something went wrong. Please try again in a moment.');
+    }
   };
 
   const scoreNum = parseFloat(app.score_text);
   const voteLabel = app.ratings
     ? `${formatNumber(app.ratings)} Votes`
     : 'Votes';
-  const primaryLink = app.links?.[0]?.link ?? '#';
-  const fastLink = app.links?.[1]?.link ?? primaryLink;
+
+  const primaryLink = `/apps/${app.slug}/download`;
+
+  // Rating dialog state
+  const [ratingOpen, setRatingOpen] = useState(false);
+
+  const [ratingMessage, setRatingMessage] = useState<string | null>(null);
+
+  async function handleRating() {
+    setRatingOpen(false);
+    setRatingMessage(null);
+
+    try {
+      const res = await createAppRating(app.id);
+      setRatingMessage(res.message);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setRatingOpen(true);
+    }
+  }
 
   return (
     <>
@@ -294,9 +363,9 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         </div>
 
         {/* ── 5. Star rating + votes ────────────────────────────────── */}
-        <div className='flex items-center justify-between px-4 pt-3'>
-          <div className='flex items-center gap-2 flex-wrap'>
-            <StarRating score={app.score_text} />
+        <div className='flex items-center justify-between px-4 pt-3 '>
+          <div className='flex items-center gap-2 flex-wrap '>
+            <StarRating handleClick={handleRating} score={app.score_text} />
             <span className='text-sm font-bold text-foreground'>
               {scoreNum.toFixed(1)} / 5
             </span>
@@ -305,71 +374,34 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         </div>
 
         {/* ── 6. Social share ──────────────────────────────────────── */}
-        <div className='flex items-center gap-2 px-4 py-3 border-b border-border flex-wrap'>
-          <SocialButton href='#' label='Share on Facebook' color='bg-[#1877F2]'>
-            <Facebook className='w-3.5 h-3.5' aria-hidden />
-            Share On Facebook
-          </SocialButton>
-          <SocialButton href='#' label='Share on Twitter' color='bg-[#1DA1F2]'>
-            <Twitter className='w-3.5 h-3.5' aria-hidden />
-            Twitter
-          </SocialButton>
-          <SocialButton
-            href='#'
-            label='Share on Pinterest'
-            color='bg-[#E60023]'
-          >
-            <svg
-              className='w-3.5 h-3.5'
-              viewBox='0 0 24 24'
-              fill='currentColor'
-              aria-hidden
-            >
-              <path d='M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z' />
-            </svg>
-            Pinterest
-          </SocialButton>
-          <SocialButton href='#' label='Share on LinkedIn' color='bg-[#0077B5]'>
-            <svg
-              className='w-3.5 h-3.5'
-              viewBox='0 0 24 24'
-              fill='currentColor'
-              aria-hidden
-            >
-              <path d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' />
-            </svg>
-            Linkedin
-          </SocialButton>
-          <SocialButton
-            href={`mailto:?subject=${encodeURIComponent(app.name)}`}
-            label='Share via Email'
-            color='bg-slate-500'
-          >
-            <Mail className='w-3.5 h-3.5' aria-hidden />
-            Email
-          </SocialButton>
+        <div className='px-4 py-3'>
+          <SocialShare title={app.name} url={window.location.href} />
         </div>
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}
         <div className='grid grid-cols-2 border-b border-border'>
-          <a
-            href={primaryLink}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
-          >
-            <Download className='w-4 h-4' aria-hidden />
-            Download Now
-          </a>
-          <a
-            href={fastLink}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
-          >
-            <Zap className='w-4 h-4' aria-hidden />
-            Fast Download
-          </a>
+          {downloadButton?.is_enabled && (
+            <a
+              href={primaryLink}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
+            >
+              <Download className='w-4 h-4' aria-hidden />
+              {downloadButton?.label || 'Download Now'}
+            </a>
+          )}
+          {telegramButton?.is_enabled && (
+            <a
+              href={telegramButton?.url}
+              target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
+              rel='noopener noreferrer'
+              className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
+            >
+              <Send className='w-4 h-4' aria-hidden />
+              {telegramButton?.label || 'Fast Download'}
+            </a>
+          )}
         </div>
 
         {/* ── 8. Screenshot strip ──────────────────────────────────── */}
@@ -415,7 +447,32 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
 
         {/* ── 9. Description ───────────────────────────────────────── */}
         <div className='px-4 py-5 border-b border-border'>
-          {parse(app.description)}
+          {/* Modders */}
+          {modders.length > 0 && (
+            <Accordion
+              type='single'
+              defaultValue={modders[0]?.title ?? 'modders-0'}
+              collapsible
+              className='w-full mb-4'
+            >
+              {modders.map((m, _idx) => (
+                <AccordionItem
+                  key={m?.title ?? 'modders-' + _idx}
+                  value={m?.title ?? 'modders-' + _idx}
+                >
+                  <AccordionTrigger className='text-sm font-medium text-left hover:no-underline bg-black text-white rounded-b-none h-9 py-2 px-4'>
+                    {m?.title}
+                  </AccordionTrigger>
+                  <AccordionContent className='text-sm text-muted-foreground leading-relaxed px-4 py-2 border rounded-b-md'>
+                    <RichTextViewer content={m?.descriptions ?? ''} />
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+
+          <RichTextViewer content={app.description} />
+
           {/* <p className='text-sm text-foreground leading-relaxed whitespace-pre-line'>
             {app.description}
           </p> */}
@@ -452,7 +509,9 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
             </strong>{' '}
             for free. Here are some notes:
           </p>
-          <ul className='list-disc list-inside space-y-1'>
+          <RichTextViewer content={installationGuidelineText} />
+
+          {/* <ul className='list-disc list-inside space-y-1'>
             <li>Please check our installation guide.</li>
             <li>
               To check the CPU and GPU of your Android device, please use the
@@ -460,7 +519,7 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
             </li>
             {app.os_version && <li>Requires {app.os_version} or higher.</li>}
             {app.size && <li>Download size: {app.size}.</li>}
-          </ul>
+          </ul> */}
         </div>
       </article>
 
@@ -477,6 +536,13 @@ export function AppDetailsCard({ app }: AppDetailsCardProps) {
         open={reportOpen}
         onOpenChange={setReportOpen}
         onSubmit={handleReportSubmit}
+      />
+
+      {/* ── Rating dialog ─────────────────────────────────────────── */}
+      <RatingAppDialog
+        message={ratingMessage}
+        open={ratingOpen}
+        onOpenChange={setRatingOpen}
       />
     </>
   );

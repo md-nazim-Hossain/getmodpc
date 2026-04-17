@@ -1,4 +1,8 @@
-import { HomeAppItem } from './home-apps.types';
+import {
+  HomeAppItem,
+  Settings,
+  SettingsAppDetailsValue,
+} from './home-apps.types';
 
 export enum EnumAppStatus {
   PUBLISH = 'publish',
@@ -37,8 +41,8 @@ export interface AppLink {
 }
 
 export interface AppModder {
-  title?: string | null;
-  descriptions?: string | null;
+  title: string | null;
+  descriptions: string | null;
 }
 
 export interface IAppTags {
@@ -47,10 +51,11 @@ export interface IAppTags {
   slug: string;
 }
 
-type RelatedAppType = 'byCategory' | 'similar' | 'sameDeveloper';
+export type RelatedAppType = 'byCategory' | 'similar' | 'sameDeveloper';
 
-export interface AppBody {
-  id?: string;
+export interface AppDetails {
+  id: string;
+  slug: string;
   name: string;
   title?: string | null;
   platform?: EnumPlatformType;
@@ -61,7 +66,7 @@ export interface AppBody {
   latest_news?: string | null;
   header_image?: string | null;
   icon?: string | null;
-  genre?: string | null;
+  genre: string;
   youtube_id?: string | null;
   os_version: string;
   screenshots?: string[];
@@ -90,13 +95,14 @@ export interface AppBody {
   modders?: AppModder[];
   last_version_checked_at?: string | null;
   related?: Record<RelatedAppType, HomeAppItem[]>;
+  settings: Settings<SettingsAppDetailsValue>[];
 }
 
 /**
  * FIX: Intersection types scattered across components have been consolidated here.
  * All page-level components should accept AppWithSlug, not AppBody & { slug: string }.
  */
-export type AppWithSlug = AppBody & { slug: string };
+export type AppWithSlug = AppDetails & { slug: string };
 
 /**
  * NEW: Separate domain type for related/card apps so AppCard does not

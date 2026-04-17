@@ -11,7 +11,12 @@
 //   - app.id:      was optional (string|undefined), now required (string) — no change needed in JSX
 import Link from 'next/link';
 
-import { HomeAppItem } from '@/types/home-apps.types';
+import {
+  HomeAppItem,
+  Settings,
+  SettingsAppDetailsValue,
+  SettingsHomeValue,
+} from '@/types/home-apps.types';
 
 import { cn } from '@/lib/utils';
 
@@ -21,6 +26,7 @@ import HomeAppCardInfo from './home-app-card-info';
 
 interface AppCardProps {
   app: HomeAppItem;
+  settings?: Settings<unknown>[];
   className?: string;
   showVersion?: boolean;
 }
@@ -31,6 +37,7 @@ export function HomeAppCard({
   app,
   className,
   showVersion,
+  settings,
 }: AppCardProps): React.JSX.Element {
   return (
     <Link
@@ -39,7 +46,11 @@ export function HomeAppCard({
       className={cn('glass-card-effect-wrapper', className)}
     >
       <button className='glass-card'>
-        <HomeAppCardInfo app={app} showVersion={showVersion} />
+        <HomeAppCardInfo
+          app={app}
+          showVersion={showVersion}
+          settings={settings}
+        />
       </button>
       <div className='glass-card-shadow'></div>
     </Link>

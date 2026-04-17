@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { AppBody } from '@/types/types.app';
+import { AppDetails } from '@/types/types.app';
 
 import { cn } from '@/lib/utils';
 
@@ -11,7 +11,7 @@ import AppCardInfo from './app-card-info';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AppCardProps {
-  app: AppBody;
+  app: AppDetails;
   className?: string;
   showVersion?: boolean;
 }

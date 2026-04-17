@@ -18,9 +18,11 @@ import { notFound } from 'next/navigation';
 
 import slugify from 'slugify';
 
-import { getAppDetailsBySlug } from '@/server/get/get-apps';
+import {
+  getAppDetailsBySlug,
+  getDownloadAppsBySlug,
+} from '@/server/get/get-apps';
 
-import { AppDetailsCard } from '@/components/cards/app-details-card';
 import { Container } from '@/components/layout/container';
 import {
   Breadcrumb,
@@ -31,9 +33,8 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { AppSection } from './_components/app-section';
-import { CommentForm } from './_components/comment-form';
-import { RelatedApps } from './_components/related-apps';
+import { RelatedApps } from '../_components/related-apps';
+import AppDownloadContent from './_components/app-download-content';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -70,10 +71,12 @@ export async function generateMetadata({
 export default async function AppDetailsPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const { data: app } = await getAppDetailsBySlug(slug);
+  const { data: app } = await getDownloadAppsBySlug(slug);
 
   // // FIX: original had no null guard — would crash on invalid slug
   if (!app) notFound();
+
+  // const category = app. ?? 'Apps';
 
   return (
     <div className='min-h-screen bg-slate-50/50'>
@@ -107,8 +110,8 @@ export default async function AppDetailsPage({ params }: PageProps) {
                 <BreadcrumbLink
                   href={`/category/${slugify(app.genre, {
                     lower: true,
-                    strict: true,
                     trim: true,
+                    strict: true,
                   })}`}
                   className='text-slate-500 hover:text-violet-600 transition-colors text-sm'
                 >
@@ -130,26 +133,11 @@ export default async function AppDetailsPage({ params }: PageProps) {
       <Container className='py-8'>
         {/* Two-column layout */}
         <div className='grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-6'>
-          <AppDetailsCard app={app} settings={app.settings} />
+          <AppDownloadContent data={app} shareUrl='/' />
           <div className='lg:sticky lg:top-16 self-start'>
             <RelatedApps apps={app?.related?.byCategory ?? []} />
           </div>
         </div>
-
-        {/* Discovery sections */}
-        <AppSection
-          title='Recommended for you'
-          apps={app.related?.similar ?? []}
-          settings={app.settings}
-        />
-        <AppSection
-          title={`Similar to ${app.platform}`}
-          apps={app.related?.sameDeveloper ?? []}
-          settings={app.settings}
-        />
-
-        {/* FIX: appSlug was not passed — CommentPayload was incomplete */}
-        <CommentForm app_id={app.id!} />
       </Container>
     </div>
   );
