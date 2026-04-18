@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { getAppsByCategory } from '@/server/get/get-apps';
+import { getAllAppsBySearch } from '@/server/get/get-apps';
 
 import { Container } from '@/components/layout/container';
 import Pagination from '@/components/pagination';
@@ -18,7 +18,7 @@ import { AppSection } from '@/app/apps/[slug]/_components/app-section';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ search: string }>;
   searchParams?: Promise<{
     page?: string;
   }>;
@@ -29,10 +29,10 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { search } = await params;
 
   return {
-    title: `Category: ${slug}`,
+    title: `Search: ${search}`,
   };
 }
 
@@ -42,20 +42,18 @@ export default async function AppCategoryPage({
   params,
   searchParams,
 }: PageProps) {
-  const { slug } = await params;
+  const { search: slug } = await params;
 
   const search = await searchParams;
   const page = Number(search?.page ? search?.page : 1);
-
   const {
     data: { apps, settings },
     meta,
-  } = await getAppsByCategory(slug, page);
-
+  } = await getAllAppsBySearch(slug, page);
   // // FIX: original had no null guard — would crash on invalid slug
   // if (!app) notFound();
 
-  const category = slug.replace('-', ' ');
+  const keyword = decodeURIComponent(slug);
 
   return (
     <div className='min-h-screen bg-slate-50/50'>
@@ -81,13 +79,13 @@ export default async function AppCategoryPage({
                   href='/category'
                   className='text-slate-500 hover:text-violet-600 transition-colors text-sm'
                 >
-                  Category
+                  Search
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbPage className='text-slate-800 font-medium text-sm truncate max-w-45 capitalize'>
-                  {category}
+                  {keyword}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -99,7 +97,7 @@ export default async function AppCategoryPage({
       <Container className='py-8'>
         <AppSection
           className='mt-0'
-          title={`${category.charAt(0).toUpperCase() + category.slice(1)}`}
+          title={`Search results for: ${keyword.charAt(0).toUpperCase() + keyword.slice(1)}`}
           apps={apps ?? []}
           settings={settings}
         />

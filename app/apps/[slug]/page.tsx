@@ -132,7 +132,10 @@ export default async function AppDetailsPage({ params }: PageProps) {
         <div className='grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-6'>
           <AppDetailsCard app={app} settings={app.settings} />
           <div className='lg:sticky lg:top-16 self-start'>
-            <RelatedApps apps={app?.related?.byCategory ?? []} />
+            <RelatedApps
+              apps={app?.related?.byCategory ?? []}
+              settings={app.settings}
+            />
           </div>
         </div>
 

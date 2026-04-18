@@ -48,3 +48,12 @@ export type ReportAppFormValues = z.infer<typeof reportAppSchema>;
 export type ReportAppPayload = ReportAppFormValues & {
   app_id: string;
 };
+
+export const userAppRequestSchema = z.object({
+  app_name: z.string().min(1, 'App name is required').max(120),
+  app_url: z.string(),
+});
+
+export type UserAppRequestFormValues = z.infer<typeof userAppRequestSchema>;
+
+export type UserAppRequestPayload = UserAppRequestFormValues;

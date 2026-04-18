@@ -1,15 +1,16 @@
 'use client';
 
-import { HomeAppItem } from '@/types/home-apps.types';
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
 
 import { HomeAppCard } from '@/components/cards/home-app-card';
 import { Card } from '@/components/ui/card';
 
 interface RelatedAppsProps {
   apps: HomeAppItem[];
+  settings?: Settings<unknown>[];
 }
 
-export function RelatedApps({ apps }: RelatedAppsProps) {
+export function RelatedApps({ apps, settings }: RelatedAppsProps) {
   return (
     <Card className='bg-transparent border border-none rounded-none overflow-hidden shadow-none'>
       <div className='pb-4  '>
@@ -17,7 +18,7 @@ export function RelatedApps({ apps }: RelatedAppsProps) {
       </div>
       <div className='space-y-4 pb-8'>
         {apps.map((app) => (
-          <HomeAppCard key={app.id} app={app} />
+          <HomeAppCard key={app.id} app={app} settings={settings} />
         ))}
       </div>
     </Card>

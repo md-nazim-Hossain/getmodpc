@@ -3,6 +3,7 @@ import { Ad } from './ads';
 import {
   HomeAppItem,
   HomeAppsData,
+  SearchAppItem,
   Settings,
   SettingsHomeValue,
 } from './home-apps.types';
@@ -26,6 +27,14 @@ export type CategoryAppsResponse = ApiResponse<
   },
   PaginationMeta
 >;
+export type SearchAppsResponse = ApiResponse<
+  {
+    apps: HomeAppItem[];
+    settings: Settings<SettingsHomeValue>[];
+  },
+  PaginationMeta
+>;
+
 export type DeveloperAppsResponse = ApiResponse<
   {
     apps: HomeAppItem[];
@@ -49,3 +58,5 @@ export type AppRatingResponse = {
   statusCode: number;
   success: boolean;
 };
+
+export type InputSearchAppsResponse = ApiResponse<SearchAppItem[]>;

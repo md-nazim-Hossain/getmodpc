@@ -1,5 +1,6 @@
 // lib/utils.ts
 import { type ClassValue, clsx } from 'clsx';
+import { differenceInDays, format, formatDistanceToNow } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -21,16 +22,25 @@ export function formatDownloads(count: number, version?: string): string {
   return count.toString();
 }
 
-export function formatDate(dateString: string): string {
+export function formatDate(dateString: string, withFullDate?: boolean): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  const diffDays = differenceInDays(now, date);
 
   if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  if (diffDays < 30) {
+    return formatDistanceToNow(date, { addSuffix: true });
+  }
+
+  const shortDate = format(date, 'MMM d');
+
+  if (withFullDate) {
+    return `${format(date, 'MMMM d, yyyy')} (${shortDate})`;
+  }
+
+  return shortDate;
 }
 
 export function getPlatformIcon(platform: string): string {
