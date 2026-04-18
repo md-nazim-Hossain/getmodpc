@@ -14,7 +14,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { HomeAppItem } from '@/types/home-apps.types';
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
 
 import HomeAppCardInfo from './home-app-card-info';
 
@@ -23,6 +23,7 @@ import HomeAppCardInfo from './home-app-card-info';
 interface HeroAppCardProps {
   app: HomeAppItem;
   priority?: boolean;
+  settings?: Settings<unknown>[];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -30,6 +31,7 @@ interface HeroAppCardProps {
 export function HeroAppCard({
   app,
   priority = false,
+  settings,
 }: HeroAppCardProps): React.JSX.Element {
   return (
     // `slug` replaces `id` as the canonical URL segment in HomeAppItem
@@ -69,7 +71,7 @@ export function HeroAppCard({
           }}
           className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-background via-background/90 to-background/80'
         >
-          <HomeAppCardInfo app={app} className='p-2' />
+          <HomeAppCardInfo app={app} settings={settings} className='p-2' />
         </div>
       </button>
 

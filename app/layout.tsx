@@ -6,6 +6,7 @@ import TanstackProvider from '@/provider/tanstack-provider';
 import { Toaster } from 'sonner';
 
 import { Footer } from '@/components/layout/footer';
+import { PlatformTabs } from '@/components/platform-tabs';
 
 import { SITE_CONFIG } from '@/lib/constants';
 
@@ -48,6 +49,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <PlatformTabs />
         </TanstackProvider>
       </body>
     </html>

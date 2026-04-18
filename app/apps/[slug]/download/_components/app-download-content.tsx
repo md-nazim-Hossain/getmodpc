@@ -3,6 +3,7 @@
 import React from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   AppDownloadDetails,
@@ -10,6 +11,7 @@ import {
   ButtonsSettingValue,
   IconsSettingValue,
 } from '@/types/types.app-details-download';
+import { format } from 'date-fns';
 import parse from 'html-react-parser';
 import { Download, Info, Send } from 'lucide-react';
 
@@ -21,6 +23,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import TooltipWrapper from '@/components/ui/tooltip-wrapper';
@@ -104,14 +108,15 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({
             </div>
 
             <div className='mt-1.5'>
-              {formatDate(data.created_at)}
+              {format(data.created_at, 'MMMM d, yyyy')}
+              <span>{` ( ${formatDate(data.created_at)} ) `}</span>
               {/* <PlatformIconList platform={platform} size='sm' /> */}
             </div>
           </div>
         </div>
 
         {/* Modders */}
-        {modders.length > 0 && (
+        {/* {modders.length > 0 && (
           <Accordion
             type='single'
             defaultValue={modders[0]?.title ?? 'modders-0'}
@@ -132,34 +137,65 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({
               </AccordionItem>
             ))}
           </Accordion>
-        )}
+        )} */}
+
+        <Accordion
+          type='single'
+          defaultValue={links[0]?.name ?? 'modders-0'}
+          collapsible
+          className='w-full'
+        >
+          {links.map((link, _idx) => (
+            <AccordionItem
+              key={link.name ?? 'links-' + _idx}
+              value={link.name ?? 'links-' + _idx}
+            >
+              <AccordionTrigger className='text-sm font-medium text-left hover:no-underline bg-black text-white rounded-b-none h-9 py-2 px-4'>
+                {link.name}
+              </AccordionTrigger>
+              <AccordionContent className='text-sm text-muted-foreground leading-relaxed px-4 py-4! h-fit! border rounded-b-md'>
+                <Link
+                  style={{
+                    textDecoration: 'none',
+                  }}
+                  href={`${window.location.href}/progress`}
+                  className={buttonVariants({
+                    variant: 'secondary',
+                    className: 'w-full h-fit! py-2! justify-between! gap-2',
+                  })}
+                >
+                  <div>
+                    <div className='flex items-start gap-2'>
+                      <Download className='size-8!' />
+                      <span className='flex flex-col font-normal text-sm '>
+                        Download Now
+                        {link.note && (
+                          <span className='text-xs font-light'>
+                            {link.note}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Badge variant={'outline'}>{link.size}</Badge>
+                </Link>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
 
         <Separator />
 
         {/* CTA Buttons */}
-        <div className='flex flex-col sm:flex-row gap-3'>
-          {downloadBtn?.is_enabled && (
-            <a
-              href={(links?.[0] as { url?: string })?.url ?? '#'}
-              className={cn(
-                'flex-1 flex items-center justify-center gap-2 h-11 rounded-xl font-semibold text-sm',
-                'bg-primary text-primary-foreground hover:bg-primary/90',
-                'transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
-              )}
-            >
-              <Download className='size-4' />
-              {downloadBtn.label}
-            </a>
-          )}
-
+        <div>
           {telegramBtn?.is_enabled && (
-            <a
+            <Link
               href={telegramBtn.url}
               target={telegramBtn.is_open_new_tab ? '_blank' : undefined}
               rel='noopener noreferrer'
               className={cn(
-                'flex-1 flex items-center justify-center gap-2 h-11 rounded-xl font-semibold text-sm',
+                'mx-auto flex items-center justify-center gap-2 h-11 rounded-full font-semibold text-sm w-fit px-4 ',
                 'bg-[#229ED9] text-white hover:bg-[#1a8ec4]',
                 'transition-colors duration-150',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#229ED9] focus-visible:ring-offset-2'
@@ -167,7 +203,7 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({
             >
               <Send className='size-4' />
               {telegramBtn.label}
-            </a>
+            </Link>
           )}
         </div>
       </Card>

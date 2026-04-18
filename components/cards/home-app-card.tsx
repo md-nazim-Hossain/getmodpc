@@ -11,12 +11,7 @@
 //   - app.id:      was optional (string|undefined), now required (string) — no change needed in JSX
 import Link from 'next/link';
 
-import {
-  HomeAppItem,
-  Settings,
-  SettingsAppDetailsValue,
-  SettingsHomeValue,
-} from '@/types/home-apps.types';
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
 
 import { cn } from '@/lib/utils';
 
@@ -36,7 +31,7 @@ interface AppCardProps {
 export function HomeAppCard({
   app,
   className,
-  showVersion,
+  showVersion = true,
   settings,
 }: AppCardProps): React.JSX.Element {
   return (

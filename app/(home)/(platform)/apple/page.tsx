@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
+import { EnumPlatformType } from '@/types/types.app';
+
 import { getHomeApps } from '@/server/get/get-apps';
 
-import HomePageContent from './_components/home-page-content';
+import HomePageContent from '../../_components/home-page-content';
 
 export const metadata: Metadata = {
   title: 'AppStore — Discover the Best Apps & Games',
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const appData = await getHomeApps();
+  const appData = await getHomeApps(EnumPlatformType.apple);
 
   if (!appData || !appData.success || !appData.data) {
     redirect('/404');

@@ -12,7 +12,7 @@
 //   - Keying: slide.id remains — id is now a required string on HomeAppItem (was optional).
 import * as React from 'react';
 
-import { HomeAppItem } from '@/types/home-apps.types';
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
 import Autoplay from 'embla-carousel-autoplay';
 
 import { HeroAppCard } from '@/components/cards/hero-app-card';
@@ -32,12 +32,14 @@ import { SECTION_HEADERS } from '@/lib/constants';
 
 interface HeroSectionProps {
   slides: HomeAppItem[];
+  settings?: Settings<unknown>[];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function HeroSection({
   slides,
+  settings,
 }: HeroSectionProps): React.JSX.Element | null {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
@@ -75,7 +77,7 @@ export function HeroSection({
               >
                 <div className='p-1 h-full'>
                   {/* `badge` prop removed — not part of HomeAppItem */}
-                  <HeroAppCard app={slide} />
+                  <HeroAppCard app={slide} settings={settings} />
                 </div>
               </CarouselItem>
             ))}

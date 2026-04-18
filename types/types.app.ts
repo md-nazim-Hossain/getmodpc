@@ -22,7 +22,7 @@ export enum EnumAppSource {
 /** FIX: was missing from the original – used `'android' as any` in mock-data */
 export enum EnumPlatformType {
   'android' = 'android',
-  'ios' = 'ios',
+  'apple' = 'apple',
   'windows' = 'windows',
 }
 

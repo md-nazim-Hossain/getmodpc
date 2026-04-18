@@ -260,11 +260,11 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
 
       toast.promise(createReport(payload), {
         loading: 'Submitting report...',
-        success: 'Report submitted successfully.',
-        error: 'Something went wrong. Please try again in a moment.',
+        success: (res) => res?.message,
+        error: (err) => err?.message,
       });
-    } catch (err) {
-      toast.error('Something went wrong. Please try again in a moment.');
+    } catch (err: any) {
+      toast.error(err?.message);
     }
   };
 

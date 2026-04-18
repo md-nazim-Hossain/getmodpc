@@ -97,4 +97,9 @@ export interface HomeAppsData {
   testimonials: Testimonial[];
 }
 
-// Final Typed Response
+export interface SearchAppItem {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+}

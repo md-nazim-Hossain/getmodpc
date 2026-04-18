@@ -1,6 +1,11 @@
 // appDownload.types.ts
 import { HomeAppItem } from './home-apps.types';
-import { AppModder, EnumPlatformType, RelatedAppType } from './types.app';
+import {
+  AppLink,
+  AppModder,
+  EnumPlatformType,
+  RelatedAppType,
+} from './types.app';
 
 // -----------------------------
 // FAQ
@@ -83,7 +88,7 @@ export interface AppDownloadDetails {
   created_at: string;
   updated_at: string;
 
-  links: unknown[]; // extend later when structure is known
+  links: AppLink[]; // extend later when structure is known
   related?: Record<RelatedAppType, HomeAppItem[]>;
   settings: AppSetting[];
   downloadFaqs: DownloadFaq[];
