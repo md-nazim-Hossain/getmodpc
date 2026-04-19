@@ -67,12 +67,10 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
               tabIndex={0}
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.stopPropagation();
-                  e.preventDefault();
                 }
               }}
               className='inline-flex items-center cursor-default'
