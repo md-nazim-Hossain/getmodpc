@@ -133,7 +133,7 @@ export default async function AppDetailsPage({ params }: PageProps) {
       <Container className='py-8'>
         {/* Two-column layout */}
         <div className='grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-6'>
-          <AppDownloadContent data={app} shareUrl='/' />
+          <AppDownloadContent data={app} shareUrl={typeof window !== 'undefined' ? window.location.href : '/'} />
           <div className='lg:sticky lg:top-16 self-start'>
             <RelatedApps apps={app?.related?.byCategory ?? []} />
           </div>

@@ -158,7 +158,7 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({
                   style={{
                     textDecoration: 'none',
                   }}
-                  href={`${window.location.href}/progress`}
+                  href={`/apps/${data.slug}/download/progress`}
                   className={buttonVariants({
                     variant: 'secondary',
                     className: 'w-full h-fit! py-2! justify-between! gap-2',

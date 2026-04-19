@@ -375,21 +375,19 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
 
         {/* ── 6. Social share ──────────────────────────────────────── */}
         <div className='px-4 py-3'>
-          <SocialShare title={app.name} url={window.location.href} />
+          <SocialShare title={app.name} url={typeof window !== 'undefined' ? window.location.href : ''} />
         </div>
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}
         <div className='grid grid-cols-2 border-b border-border'>
           {downloadButton?.is_enabled && (
-            <a
+            <Link
               href={primaryLink}
-              target='_blank'
-              rel='noopener noreferrer'
               className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
             >
               <Download className='w-4 h-4' aria-hidden />
               {downloadButton?.label || 'Download Now'}
-            </a>
+            </Link>
           )}
           {telegramButton?.is_enabled && (
             <a
@@ -489,15 +487,13 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
               />
             )}
           </h2>
-          <a
+          <Link
             href={primaryLink}
-            target='_blank'
-            rel='noopener noreferrer'
             className='flex items-center justify-center gap-2 w-full py-3.5 bg-foreground hover:opacity-90 text-background text-sm font-bold rounded transition-opacity'
           >
             <Download className='w-4 h-4' aria-hidden />
             Download Now
-          </a>
+          </Link>
         </div>
 
         {/* ── 11. Install notes ────────────────────────────────────── */}
