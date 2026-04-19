@@ -6,7 +6,7 @@ import { ApiResponse } from '@/types/types.response';
 export async function fetchPostApi<T>(
   url: string,
   method: 'POST' | 'PUT' | 'DELETE' | 'PATCH' = 'POST',
-  data?: T
+  data?: any
 ): Promise<ApiResponse<T, unknown>> {
   try {
     const res = await fetch(`${secret.apiBaseUrl}${url}`, {
@@ -25,7 +25,6 @@ export async function fetchPostApi<T>(
 
     return result;
   } catch (err) {
-    console.log({ err });
     throw new Error((err as Error).message);
   }
 }

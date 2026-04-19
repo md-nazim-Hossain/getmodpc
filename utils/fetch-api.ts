@@ -1,3 +1,5 @@
+'use server';
+
 import { secret } from '@/config/secret';
 
 export default async function fetchApi<Response>(
@@ -17,7 +19,6 @@ export default async function fetchApi<Response>(
   });
 
   if (!res.ok) {
-    console.log({ res });
     throw new Error(res.statusText + ' - ' + res.url);
   }
 
