@@ -34,7 +34,7 @@ export enum EnumAppCommentStatus {
 
 export interface AppLink {
   name: string;
-  link: string;
+  id: string;
   type?: string;
   size?: string;
   note?: string;

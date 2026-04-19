@@ -1,9 +1,10 @@
-'use client'; // needed only for CopyrightYear — see below
+'use client';
 import { useState } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { FooterValue, SocialLinksValue } from '@/types/global-settings.types';
 import { toast } from 'sonner';
 
 import { createAppRequest } from '@/server/post/create-app-request';
@@ -16,18 +17,22 @@ import { UserAppRequestDialog } from '@/components/user-app-request-dialog';
 import { UserAppRequestFormValues } from '@/lib/schemas';
 
 import { Container } from '../container';
-import { APPS_LINKS, IFooterLink, QUICK_LINKS } from './footer-data';
+import { IFooterLink } from './footer-data';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface FooterProps {
+  footer: FooterValue | null;
+  socialLinks: SocialLinksValue['social_links'];
+}
 
 // ─── CopyrightYear ────────────────────────────────────────────────────────────
-// Client component so `new Date()` runs in the browser and always returns
-// the current year — not the year the build was produced.
-// Tiny bundle impact: no dependencies beyond React.
 
 function CopyrightYear() {
   return <>{new Date().getFullYear()}</>;
 }
 
-// ─── Icon sub-components ──────────────────────────────────────────────────────
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
 function LinkIcon() {
   return (
@@ -66,8 +71,6 @@ function InfoIcon() {
 }
 
 // ─── FooterNavGroup ───────────────────────────────────────────────────────────
-// Extracted sub-component — eliminates the duplicated nav group markup.
-// DRY: both "Apps & Games" and "Quick Links" are the same structure.
 
 interface FooterNavGroupProps {
   icon: React.ReactNode;
@@ -91,18 +94,16 @@ function FooterNavGroup({
         </h3>
       </div>
       <ul className='flex flex-col gap-y-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2'>
-        {links.map((link) => {
-          return (
-            <li key={link.label}>
-              <Link
-                href={link.href}
-                className='text-sm text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded'
-              >
-                {link.label}
-              </Link>
-            </li>
-          );
-        })}
+        {links.map((link) => (
+          <li key={link.label}>
+            <Link
+              href={link.href}
+              className='text-sm text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded'
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );
@@ -110,7 +111,7 @@ function FooterNavGroup({
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-export function Footer() {
+export function Footer({ footer, socialLinks }: FooterProps) {
   const [open, setOpen] = useState(false);
 
   async function handleAppRequestSubmit(values: UserAppRequestFormValues) {
@@ -120,25 +121,30 @@ export function Footer() {
         success: (res) => res.message,
         error: (err) => err.message,
       });
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) toast.error(err.message);
     }
   }
+
+  // Map API footer_links → IFooterLink shape
+  const footerLinks: IFooterLink[] = (footer?.footer_links ?? [])
+    .filter((l) => l.is_enabled)
+    .map((l) => ({ label: l.label, href: l.url }));
+
+  // Active social links only
+  const activeSocialLinks = socialLinks.filter((l) => l.is_enabled);
 
   return (
     <footer
       className='text-white bg-center bg-no-repeat pt-16 pb-16'
       aria-label='Site footer'
-      style={{
-        // Safe: static string from project config, not user input
-        backgroundImage: "url('/images/footer-bg.png')",
-      }}
+      style={{ backgroundImage: "url('/images/footer-bg.png')" }}
     >
       <Container size='xl'>
-        {/* 1. Top heading */}
+        {/* 1. Heading + CTA */}
         <div className='flex justify-between items-start'>
           <h2 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl mb-10 sm:mb-16'>
-            Get started today
+            {footer?.footer_heading ?? 'Get started today'}
           </h2>
           <Button onClick={() => setOpen(true)}>
             <span className='hidden sm:inline-block'>Request an app</span>
@@ -146,15 +152,11 @@ export function Footer() {
           </Button>
         </div>
 
-        {/* 2. Full-width logo */}
-        <Link
-          href='/'
-          aria-label='GETMODPC home'
-          className='block relative mb-8'
-        >
+        {/* 2. Logo — dynamic from settings, fallback to static asset */}
+        <Link href='/' aria-label='Home' className='block relative mb-8'>
           <Image
-            src='/images/logo.webp'
-            alt='GETMODPC'
+            src={'/images/logo.webp'}
+            alt='Logo'
             width={1440}
             height={329}
             className='w-full h-auto'
@@ -164,26 +166,20 @@ export function Footer() {
 
         <Separator className='bg-white/15 mb-8' />
 
-        {/* 3. Social icons — reads from SOCIAL_LINKS in footer-data.ts */}
+        {/* 3. Social icons — dynamic from settings */}
         <div className='mb-8'>
-          <SocialIcons />
+          <SocialIcons links={activeSocialLinks} />
         </div>
 
         <Separator className='bg-white/15' />
 
-        {/* 4. Links section — DRY: FooterNavGroup used for both groups */}
+        {/* 4. Footer links — dynamic from settings */}
         <div className='flex flex-col gap-8 py-10 sm:flex-row sm:justify-between sm:items-start'>
           <FooterNavGroup
             icon={<LinkIcon />}
-            headingId='footer-apps-heading'
-            label='Apps & Games'
-            links={APPS_LINKS}
-          />
-          <FooterNavGroup
-            icon={<InfoIcon />}
-            headingId='footer-quick-heading'
+            headingId='footer-links-heading'
             label='Quick Links'
-            links={QUICK_LINKS}
+            links={footerLinks}
           />
 
           <UserAppRequestDialog
@@ -193,8 +189,7 @@ export function Footer() {
           />
         </div>
 
-        {/* 5. Copyright — CopyrightYear is a client component so the year
-            resolves in the browser, not at build time */}
+        {/* 5. Copyright */}
         <p className='text-xs text-white/50 text-center'>
           GETMODPC &copy; 2010 – <CopyrightYear />
         </p>

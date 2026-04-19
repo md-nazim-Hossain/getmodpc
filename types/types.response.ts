@@ -1,5 +1,6 @@
 import { PaginationMeta, ReportReason, Testimonial } from '.';
 import { Ad } from './ads';
+import { GlobalSetting } from './global-settings.types';
 import {
   HomeAppItem,
   HomeAppsData,
@@ -60,3 +61,5 @@ export type AppRatingResponse = {
 };
 
 export type InputSearchAppsResponse = ApiResponse<SearchAppItem[]>;
+
+export type GlobalSettingsResponse = ApiResponse<GlobalSetting[]>;

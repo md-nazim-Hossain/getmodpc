@@ -32,6 +32,7 @@ import { Search, X } from 'lucide-react';
 import { getAppsBySearchKeyword } from '@/server/get/get-apps';
 
 import { PlatformIcon } from '@/components/platform-icon';
+
 import { Skeleton } from './ui/skeleton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -120,27 +121,27 @@ export function PlatformTabs() {
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
 
   // Fetch on debounced query change
- useEffect(() => {
-  if (!debouncedQuery.trim()) {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setResults([]);
-    setSearching(false);
-    return;
-  }
-
-  let cancelled = false;
-
-  fetchSearchResults(debouncedQuery).then((data) => {
-    if (!cancelled) {
-      setResults(data);
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setResults([]);
       setSearching(false);
+      return;
     }
-  });
 
-  return () => {
-    cancelled = true;
-  };
-}, [debouncedQuery]);
+    let cancelled = false;
+
+    fetchSearchResults(debouncedQuery).then((data) => {
+      if (!cancelled) {
+        setResults(data);
+        setSearching(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedQuery]);
 
   // Clear results when query is emptied
   useEffect(() => {
@@ -340,7 +341,7 @@ export function PlatformTabs() {
             </div>
 
             {/* Search trigger / expandable input */}
-            <div className='flex items-stretch justify-end shrink-0 pr-1  h-full'>
+            <div className='flex items-stretch justify-end shrink-0 pr-1  h-full '>
               <AnimatePresence mode='wait'>
                 {searchOpen ? (
                   <motion.div
@@ -349,14 +350,14 @@ export function PlatformTabs() {
                     animate={{ width: 600, opacity: 1 }}
                     exit={{ width: 40, opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    className='flex items-center bg-white rounded-full pl-4 pr-6 h-18 overflow-hidden'
+                    className='flex items-center bg-white rounded-full pl-4 pr-6 h-18 overflow-hidden shadow-md'
                   >
                     <Search className='size-6 text-foreground shrink-0' />
                     <input
                       ref={inputRef}
                       type='text'
                       value={query}
-                     onChange={(e) => {
+                      onChange={(e) => {
                         const value = e.target.value;
                         setQuery(value);
                         if (value.trim()) {
