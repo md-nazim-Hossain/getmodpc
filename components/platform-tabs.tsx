@@ -32,6 +32,7 @@ import { Search, X } from 'lucide-react';
 import { getAppsBySearchKeyword } from '@/server/get/get-apps';
 
 import { PlatformIcon } from '@/components/platform-icon';
+import { Skeleton } from './ui/skeleton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -119,22 +120,27 @@ export function PlatformTabs() {
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
 
   // Fetch on debounced query change
-  useEffect(() => {
-    if (!debouncedQuery.trim()) return;
-
-    let cancelled = false;
+ useEffect(() => {
+  if (!debouncedQuery.trim()) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSearching(true);
-    fetchSearchResults(debouncedQuery).then((data) => {
-      if (!cancelled) {
-        setResults(data);
-        setSearching(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedQuery]);
+    setResults([]);
+    setSearching(false);
+    return;
+  }
+
+  let cancelled = false;
+
+  fetchSearchResults(debouncedQuery).then((data) => {
+    if (!cancelled) {
+      setResults(data);
+      setSearching(false);
+    }
+  });
+
+  return () => {
+    cancelled = true;
+  };
+}, [debouncedQuery]);
 
   // Clear results when query is emptied
   useEffect(() => {
@@ -211,7 +217,7 @@ export function PlatformTabs() {
         >
           {/* Search popover — renders above the bar */}
           <AnimatePresence>
-            {searchOpen && results.length > 0 && (
+            {searchOpen && !!query && (
               <motion.div
                 key='search-popover'
                 initial={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -227,32 +233,54 @@ export function PlatformTabs() {
                 role='listbox'
                 aria-label='Search results'
               >
-                {results.map((app) => (
-                  <button
-                    key={app.id}
-                    role='option'
-                    aria-selected={false}
-                    onClick={() => handleResultClick(app.slug)}
-                    className='
-                      flex items-center gap-3 w-full px-4 py-3 cursor-pointer
-                      hover:bg-muted/10 transition-colors text-left
-                    '
-                  >
-                    {/* App icon */}
-                    <div className='relative size-8 rounded-lg overflow-hidden shrink-0 bg-muted'>
-                      <Image
-                        src={app.icon}
-                        alt={app.name}
-                        fill
-                        className='object-cover'
-                        sizes='32px'
-                      />
-                    </div>
-                    <span className='text-sm font-medium text-foreground truncate'>
-                      {app.name}
-                    </span>
-                  </button>
-                ))}
+                {/* Loading state */}
+                {searching && (
+                  <>
+                    {[...Array(3)].map((_, i) => (
+                      <div
+                        key={i}
+                        className='w-full px-4 py-3 flex gap-2 items-center'
+                      >
+                        <Skeleton className='size-8 rounded-lg' />
+                        <Skeleton className='flex-1 h-8' />
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {/* Results */}
+                {!searching && results.length > 0 && (
+                  <>
+                    {results.map((app) => (
+                      <button
+                        key={app.id}
+                        role='option'
+                        onClick={() => handleResultClick(app.slug)}
+                        className='flex items-center gap-3 w-full px-4 py-3 hover:bg-muted/10 transition-colors text-left'
+                      >
+                        <div className='relative size-8 rounded-lg overflow-hidden shrink-0 bg-muted'>
+                          <Image
+                            src={app.icon}
+                            alt={app.name}
+                            fill
+                            className='object-cover'
+                            sizes='32px'
+                          />
+                        </div>
+                        <span className='text-sm font-medium truncate'>
+                          {app.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {/* Empty state */}
+                {!searching && results.length === 0 && query.trim() && (
+                  <div className='flex items-center justify-center p-4'>
+                    <p>No results found</p>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -261,7 +289,7 @@ export function PlatformTabs() {
           <div
             ref={containerRef}
             className='
-              bg-white/50 backdrop-blur-lg shadow-2xl
+              bg-white/40 backdrop-blur-lg shadow-2xl
               flex items-center
                safe-area-pb rounded-full 
             '
@@ -278,7 +306,7 @@ export function PlatformTabs() {
                     className={`
                       relative flex flex-1 flex-col items-center justify-center gap-0.5 cursor-pointer
                       py-4 text-xs font-medium transition-colors rounded-full hover:bg-muted
-                      ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground '}
+                      ${isActive ? 'text-primary' : 'text-foreground hover:text-primary '}
                     `}
                     aria-current={isActive ? 'page' : undefined}
                     aria-label={p.label}
@@ -323,12 +351,18 @@ export function PlatformTabs() {
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     className='flex items-center bg-white rounded-full pl-4 pr-6 h-18 overflow-hidden'
                   >
-                    <Search className='size-6 text-muted-foreground shrink-0' />
+                    <Search className='size-6 text-foreground shrink-0' />
                     <input
                       ref={inputRef}
                       type='text'
                       value={query}
-                      onChange={(e) => setQuery(e.target.value)}
+                     onChange={(e) => {
+                        const value = e.target.value;
+                        setQuery(value);
+                        if (value.trim()) {
+                          setSearching(true);
+                        }
+                      }}
                       onKeyDown={handleKeyDown}
                       placeholder='Search apps…'
                       className='
@@ -366,7 +400,7 @@ export function PlatformTabs() {
                     className='
                       flex items-center justify-center
                       size-9 rounded-full
-                      text-muted-foreground hover:text-foreground hover:bg-muted
+                      text-foreground hover:text-primary hover:bg-muted
                       transition-colors mr-6
                     '
                     aria-label='Open search'

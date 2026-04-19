@@ -42,9 +42,6 @@ const HomeAppCardInfo: React.FC<AppCardInfoProps> = ({
 
   const tooltipText = value?.verified_badge_tooltip_text || '';
 
-  console.log({ app });
-  console.log({ tooltipText });
-
   return (
     <div className={cn('flex gap-4 p-2', className)}>
       {/* App Icon */}
