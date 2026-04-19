@@ -31,6 +31,7 @@ import {
 } from '@/assets';
 import { Settings } from '@/types/home-apps.types';
 import { AppDetails } from '@/types/types.app';
+import parse from 'html-react-parser';
 import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
 import slugify from 'slugify';
 import { toast } from 'sonner';
@@ -55,6 +56,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
+import TooltipWrapper from '../ui/tooltip-wrapper';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -294,6 +296,15 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
     }
   }
 
+  const value = settings?.find((s) => s.key === 'icons')?.value;
+
+  const verifiedBadgeIcon =
+    value?.icons?.find(
+      (i: { name: string }) => i?.name === 'verified_badge_icon'
+    )?.url || '/icons/check.svg';
+
+  const tooltipText = value?.verified_badge_tooltip_text || '';
+
   return (
     <>
       <article className='bg-white border border-border overflow-hidden rounded-2xl'>
@@ -333,13 +344,35 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                 {app.version ? ` v${app.version}` : ''}
                 {app.short_mode ? ` (${app.short_mode})` : ''}
               </h1>
-              {app.is_verified && (
-                <Image
-                  src='/icons/check.svg'
-                  alt='Verified'
-                  width={14}
-                  height={14}
-                />
+              {app?.is_verified && (
+                <span
+                  role='button'
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                    }
+                  }}
+                  className='inline-flex items-center cursor-default'
+                  aria-label='Verified badge'
+                >
+                  <TooltipWrapper message={parse(tooltipText)}>
+                    <Image
+                      src={verifiedBadgeIcon}
+                      alt='Verified'
+                      width={14}
+                      height={14}
+                      // Also stop pointer events reaching the Link
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                    />
+                  </TooltipWrapper>
+                </span>
               )}
             </div>
             <p className='text-xs text-muted-foreground mt-1'>
@@ -375,7 +408,10 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
 
         {/* ── 6. Social share ──────────────────────────────────────── */}
         <div className='px-4 py-3'>
-          <SocialShare title={app.name} url={typeof window !== 'undefined' ? window.location.href : ''} />
+          <SocialShare
+            title={app.name}
+            url={typeof window !== 'undefined' ? window.location.href : ''}
+          />
         </div>
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}

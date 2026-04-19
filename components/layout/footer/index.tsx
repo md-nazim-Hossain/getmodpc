@@ -17,7 +17,7 @@ import { UserAppRequestDialog } from '@/components/user-app-request-dialog';
 import { UserAppRequestFormValues } from '@/lib/schemas';
 
 import { Container } from '../container';
-import { IFooterLink } from './footer-data';
+import { APPS_LINKS, IFooterLink } from './footer-data';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -175,6 +175,12 @@ export function Footer({ footer, socialLinks }: FooterProps) {
 
         {/* 4. Footer links — dynamic from settings */}
         <div className='flex flex-col gap-8 py-10 sm:flex-row sm:justify-between sm:items-start'>
+          <FooterNavGroup
+            icon={<LinkIcon />}
+            headingId='footer-apps-heading'
+            label='Apps & Games'
+            links={APPS_LINKS}
+          />
           <FooterNavGroup
             icon={<LinkIcon />}
             headingId='footer-links-heading'
