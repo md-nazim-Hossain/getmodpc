@@ -215,4 +215,11 @@
   .editor li p {
     @apply inline;
   }
+
+  .editor a {
+    @apply text-blue-600 underline;
+  }
+  .editor a:visited {
+    @apply text-violet-600 underline;
+  }
 }

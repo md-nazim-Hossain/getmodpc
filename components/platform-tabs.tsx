@@ -5,8 +5,9 @@
 // Floating platform-switcher + expandable search bar.
 //
 // Behaviour:
-//  - Appears when page scrolls past 100 vh (smooth bottom-up entrance)
-//  - Disappears on scroll back to top
+//  - Appears when user scrolls UP (toward the top) from anywhere
+//  - Disappears when user scrolls DOWN
+//  - Always visible when within 100px of the top
 //  - Clicking a platform tab updates the route  /android | /apple | /windows
 //  - Search icon expands an input; debounced API call fetches apps
 //  - Results appear in a popover; clicking navigates to /apps/[slug]
@@ -35,16 +36,6 @@ import { PlatformIcon } from '@/components/platform-icon';
 
 import { Skeleton } from './ui/skeleton';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-// interface SearchResult {
-//   id: string;
-//   slug: string;
-//   name: string;
-//   icon: string;
-//   platform: string;
-// }
-
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 // String literals cast to EnumPlatformType so TS is happy whether the type is
@@ -55,8 +46,8 @@ const PLATFORMS = [
   { key: 'apple' as EnumPlatformType, label: 'Apple' },
 ] satisfies { key: EnumPlatformType; label: string }[];
 
-const SCROLL_THRESHOLD =
-  typeof window !== 'undefined' ? window.innerHeight * 0.9 : 600;
+/** Within this many px of the top → always show the bar. */
+const TOP_THRESHOLD = 100;
 const DEBOUNCE_DELAY = 350; // ms
 
 // ─── Debounce hook ────────────────────────────────────────────────────────────
@@ -93,24 +84,48 @@ export function PlatformTabs() {
     PLATFORMS.find((p) => pathname.startsWith(`/${p.key}`))?.key ??
     ('android' as EnumPlatformType);
 
-  // Scroll visibility
+  // ─── Scroll-direction visibility ─────────────────────────────────────────
+  // Visible on scroll-up (or near the top); hidden on scroll-down.
   const [visible, setVisible] = useState(false);
 
+  // Track the previous scrollY without causing re-renders.
+  const prevScrollY = useRef<number>(
+    typeof window !== 'undefined' ? window.scrollY : 0
+  );
+  // rAF guard — prevents queuing more than one frame at a time.
+  const ticking = useRef(false);
+
   useEffect(() => {
-    let ticking = false;
     const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
+      if (ticking.current) return;
+      ticking.current = true;
+
       requestAnimationFrame(() => {
-        setVisible(window.scrollY > SCROLL_THRESHOLD);
-        ticking = false;
+        const currentY = window.scrollY;
+        const previous = prevScrollY.current;
+
+        if (currentY <= TOP_THRESHOLD) {
+          // Near the top → always show
+          setVisible(true);
+        } else if (currentY < previous) {
+          // Scrolling UP (away from bottom, toward top) → show
+          setVisible(true);
+        } else if (currentY > previous) {
+          // Scrolling DOWN → hide
+          setVisible(false);
+        }
+        // currentY === previous (no movement): leave state unchanged
+
+        prevScrollY.current = currentY;
+        ticking.current = false;
       });
     };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Search state
+  // ─── Search state ─────────────────────────────────────────────────────────
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchAppItem[]>([]);

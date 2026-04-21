@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: {
       default: seo?.site_name ?? 'App',
-      template: `%s | ${seo?.site_name ?? 'App'}`,
+      template: `%s - ${seo?.site_name ?? 'App'}`,
     },
     description: seo?.meta_description || undefined,
     keywords: seo?.meta_keywords?.split(',').map((k) => k.trim()),

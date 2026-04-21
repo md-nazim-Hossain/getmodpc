@@ -75,7 +75,7 @@ export function HeroSection({
                 key={slide.id}
                 className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3'
               >
-                <div className='p-1 h-full'>
+                <div className='p-1 pb-5 h-full'>
                   {/* `badge` prop removed — not part of HomeAppItem */}
                   <HeroAppCard app={slide} settings={settings} />
                 </div>
