@@ -11,6 +11,8 @@
 //     string (always present) — fallback kept for defensive safety.
 //   - app.name: unchanged.
 //   - AppCardInfo: receives HomeAppItem directly — no adapter needed.
+import { CSSProperties } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -66,8 +68,14 @@ export function HeroAppCard({
         </div>
 
         <div
+          // style={
+          //   {
+          //     '--glass-border-radius': '24px',
+          //   } as CSSProperties
+          // }
           style={{
-            borderRadius: '0 0 var(--glass-border-radius)',
+            borderRadius:
+              '0 0 var(--glass-border-radius) var(--glass-border-radius)',
           }}
           className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-background via-background/90 to-background/80'
         >

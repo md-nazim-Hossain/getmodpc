@@ -8,6 +8,7 @@ import {
   Settings,
   SettingsHomeValue,
 } from './home-apps.types';
+import { Page } from './page.types';
 import { AppDetails } from './types.app';
 import { AppDownloadDetails } from './types.app-details-download';
 
@@ -63,3 +64,5 @@ export type AppRatingResponse = {
 export type InputSearchAppsResponse = ApiResponse<SearchAppItem[]>;
 
 export type GlobalSettingsResponse = ApiResponse<GlobalSetting[]>;
+
+export type PageResponse = ApiResponse<Page>;

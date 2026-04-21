@@ -6,22 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, CheckCircle2, Send } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
+import { createContact } from '@/server/post/create-report copy';
+
 import { FormInput, FormTextarea, FormWrapper } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { contactFormSchema, ContactFormValues } from '@/lib/schemas';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
-interface ContactFormProps {
-  /** Optional: server action or fetch fn to submit contact data */
-  onSubmitAction?: (payload: ContactFormValues) => Promise<void>;
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function ContactForm({ onSubmitAction }: ContactFormProps) {
+export function ContactForm() {
   const formId = useId();
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -37,7 +32,7 @@ export function ContactForm({ onSubmitAction }: ContactFormProps) {
       const payload: ContactFormValues = {
         ...values,
       };
-      await onSubmitAction?.(payload);
+      await createContact(payload);
       setSubmitted(true);
       form.reset();
     } catch {

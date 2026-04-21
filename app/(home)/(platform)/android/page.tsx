@@ -8,7 +8,7 @@ import { getHomeApps } from '@/server/get/get-apps';
 import HomePageContent from '../../_components/home-page-content';
 
 export const metadata: Metadata = {
-  title: 'AppStore — Discover the Best Apps & Games',
+  title: 'Android',
   description:
     'Browse thousands of apps and games. Find the latest releases, most popular titles, and top categories all in one place.',
   openGraph: {

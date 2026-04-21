@@ -1,27 +1,38 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-import { ContactFormValues } from '@/lib/schemas';
-
+import { fetchPageBySlug } from '../(pages)/[slug]/page';
 import { ContactForm } from './_components/contact-form';
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with us for any inquiries or support.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await fetchPageBySlug('contact-us');
 
-// ─── Server action (replace with real implementation) ─────────────────────────
+  if (!page) {
+    return {
+      title: 'Page Not Found',
+    };
+  }
 
-async function submitContact(payload: ContactFormValues): Promise<void> {
-  'use server';
-  // TODO: send email / write to DB / call external API
-  console.log('Contact payload received:', payload);
+  return {
+    title: page.meta_title || page.title,
+    description: page.meta_description ?? undefined,
+    openGraph: {
+      title: page.meta_title || page.title,
+      description: page.meta_description ?? undefined,
+    },
+  };
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const page = await fetchPageBySlug('contact-us');
+
+  if (!page) {
+    notFound();
+  }
   return (
     <main className='min-h-screen bg-background'>
       {/* ── Header ─────────────────────────────────────────────────────── */}
@@ -38,7 +49,7 @@ export default function ContactPage() {
 
       {/* ── Form ───────────────────────────────────────────────────────── */}
       <section className='container max-w-4xl mx-auto px-4 py-12'>
-        <ContactForm onSubmitAction={submitContact} />
+        <ContactForm />
       </section>
     </main>
   );
