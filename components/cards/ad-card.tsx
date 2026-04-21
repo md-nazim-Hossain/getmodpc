@@ -61,7 +61,7 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
     >
       {/* ── Banner ── */}
       <div
-        className='relative w-full h-42 overflow-hidden bg-[#5B4EE8]'
+        className='relative w-full h-48 overflow-hidden bg-black'
         aria-hidden='true'
       >
         <div className='absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.18)_0%,transparent_60%)] pointer-events-none z-10' />

@@ -126,7 +126,7 @@ export function CategoryCard({
           className='flex items-center justify-between gap-3 rounded-[12px] p-4'
         >
           <div className='min-w-0 flex-1 self-center'>
-            <h5 className='text-xs leading-tight font-medium text-foreground transition-colors group-hover:text-primary'>
+            <h5 className='text-xs leading-tight font-medium text-foreground transition-colors group-hover:text-primary wrap-break-word'>
               {category.name}
             </h5>
             {/* {category.count != null && (

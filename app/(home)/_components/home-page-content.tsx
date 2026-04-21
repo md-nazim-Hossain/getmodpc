@@ -86,7 +86,7 @@ const HomePageContent: React.FC<{ data: HomeAppsData }> = ({ data }) => {
           items={category?.categories}
           getId={(category) => category?.id}
           variant='tinted'
-          gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-5'
+          gridClassName='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-5'
           renderItem={(category) => <CategoryCard category={category} />}
         />
       ))}

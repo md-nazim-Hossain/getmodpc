@@ -79,7 +79,11 @@ export function HomeSection<T>({
 
   return (
     <section
-      className={cn('section-spacing', VARIANT_CLASSES[variant], className)}
+      className={cn(
+        'section-spacing w-full overflow-x-hidden',
+        VARIANT_CLASSES[variant],
+        className
+      )}
       aria-labelledby={headingId}
     >
       <Container>
