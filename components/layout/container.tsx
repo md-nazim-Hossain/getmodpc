@@ -15,7 +15,7 @@ const SIZE_CLASSES: Record<NonNullable<ContainerProps['size']>, string> = {
   default: 'max-w-7xl',
   lg: 'max-w-[1400px]',
   xl: 'max-w-[1600px]',
-  full: 'max-w-full',
+  full: 'w-full lg:max-w-full',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ export function Container({
   return (
     <div
       className={cn(
-        'mx-auto w-full px-4 sm:px-6 lg:px-8',
+        'mx-auto w-full px-3 sm:px-5 lg:px-7',
         SIZE_CLASSES[size],
         className
       )}

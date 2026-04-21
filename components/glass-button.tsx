@@ -19,7 +19,7 @@ const GlassButton: React.FC<{
       <button
         className={cn(
           'glass-card',
-          'font-medium! text-sm!  relative z-10 ',
+          'font-medium! text-[10px]! md:text-sm!  relative z-10 ',
           className
         )}
         style={
@@ -29,7 +29,9 @@ const GlassButton: React.FC<{
         }
       >
         <span
-          className={'flex! items-center justify-between gap-x-1 px-4 py-2.5'}
+          className={
+            'flex! items-center justify-between gap-x-1 px-2.5 py-2 md:px-4 md:py-2.5'
+          }
         >
           {children}
         </span>

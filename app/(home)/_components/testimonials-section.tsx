@@ -140,7 +140,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
         >
           {testimonials.map((testimonial) => (
             <SwiperSlide key={testimonial.id} className='h-auto!'>
-              <div className='border-l border-neutral-200 pl-6 sm:pl-8 pr-6 sm:pr-12 py-1 h-full'>
+              <div className='border-l border-neutral-200 pl-4 sm:pl-8 pr-4 sm:pr-12 py-1 h-full'>
                 <TestimonialCard testimonial={testimonial} />
               </div>
             </SwiperSlide>

@@ -10,9 +10,9 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
   const { image_url, company_logo, name, designation, content } = testimonial;
 
   return (
-    <div className='testimonial-card flex gap-8 pr-8 h-full'>
+    <div className='testimonial-card flex flex-col md:flex-row md:gap-8 md:pr-8 h-full'>
       {/* Left: Author Image */}
-      <div className='shrink-0 w-45 xl:w-60'>
+      <div className='shrink-0 w-full md:w-45 xl:w-60 '>
         <div className='relative w-full aspect-square overflow-hidden bg-neutral-100'>
           <Image
             src={image_url}
@@ -51,12 +51,12 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
         {/* Quotation mark decorative */}
         <div>
           <span
-            className='block text-[5rem] leading-none text-neutral-200 font-serif select-none -mb-4'
+            className='block text-5xl md:text-[5rem] leading-none text-neutral-200 font-serif select-none -mb-4'
             aria-hidden='true'
           >
             &ldquo;
           </span>
-          <p className='text-[15px] sm:text-base lg:text-[17px] text-foreground leading-relaxed font-medium tracking-wide'>
+          <p className='text-sm sm:text-base lg:text-lg text-foreground leading-relaxed font-medium tracking-wide'>
             {content}
           </p>
         </div>
