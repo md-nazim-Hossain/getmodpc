@@ -1,17 +1,17 @@
 'use server';
 
-import { fetchPostApi } from '@/utils/fetch-post-api';
+import type { DownloadApkResponse } from '@/types/types.response';
+import { fetchPost } from '@/utils/apiClient';
 
-type CreateDownloadAppPayload = {
+type CreateDownloadApkPayload = {
   link_id: string;
   app_slug: string;
 };
 
-export async function createDownloadApk(data: CreateDownloadAppPayload) {
-  return fetchPostApi<{
-    token: string;
-    size: string;
-    type: string;
-    name: string;
-  }>(`/downloads/prepare-download-apk`, 'POST', data);
-}
+export const createDownloadApk = async (
+  data: CreateDownloadApkPayload
+): Promise<DownloadApkResponse> =>
+  fetchPost<DownloadApkResponse, CreateDownloadApkPayload>(
+    '/downloads/prepare-download-apk',
+    data
+  );

@@ -1,4 +1,6 @@
-import fetchApi from '@/utils/fetch-api';
+'use server';
+
+import { fetchGet } from '@/utils/apiClient';
 
 export const getDownloads = async (token: string) =>
-  fetchApi(`/downloads?token=${token}`);
+  fetchGet(`/downloads`, { params: { token } });

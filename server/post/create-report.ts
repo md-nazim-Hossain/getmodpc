@@ -1,9 +1,11 @@
 'use server';
 
-import { fetchPostApi } from '@/utils/fetch-post-api';
+import type { ApiVoidResponse } from '@/types/types.response';
+import { fetchPost } from '@/utils/apiClient';
 
-import { ReportAppPayload } from '@/lib/schemas';
+import type { ReportAppPayload } from '@/lib/schemas';
 
-export async function createReport(data: ReportAppPayload) {
-  return fetchPostApi<ReportAppPayload>(`/reports`, 'POST', data);
-}
+export const createReport = async (
+  data: ReportAppPayload
+): Promise<ApiVoidResponse> =>
+  fetchPost<ApiVoidResponse, ReportAppPayload>('/reports', data);

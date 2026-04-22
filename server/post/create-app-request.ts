@@ -1,13 +1,11 @@
 'use server';
 
-import { fetchPostApi } from '@/utils/fetch-post-api';
+import type { ApiVoidResponse } from '@/types/types.response';
+import { fetchPost } from '@/utils/apiClient';
 
-import { UserAppRequestPayload } from '@/lib/schemas';
+import type { UserAppRequestPayload } from '@/lib/schemas';
 
-export async function createAppRequest(data: UserAppRequestPayload) {
-  return fetchPostApi<UserAppRequestPayload>(
-    '/user-app-requests',
-    'POST',
-    data
-  );
-}
+export const createAppRequest = async (
+  data: UserAppRequestPayload
+): Promise<ApiVoidResponse> =>
+  fetchPost<ApiVoidResponse, UserAppRequestPayload>('/user-app-requests', data);

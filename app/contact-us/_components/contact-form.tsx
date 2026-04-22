@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, CheckCircle2, Send } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import { createContact } from '@/server/post/create-report copy';
+import { createContact } from '@/server/post/create-contact';
 
 import { FormInput, FormTextarea, FormWrapper } from '@/components/form';
 import { Button } from '@/components/ui/button';

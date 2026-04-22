@@ -1,7 +1,7 @@
 'use server';
 
 import { EnumPlatformType } from '@/types/types.app';
-import {
+import type {
   AppDetailsResponse,
   CategoryAppsResponse,
   DeveloperAppsResponse,
@@ -10,42 +10,40 @@ import {
   InputSearchAppsResponse,
   SearchAppsResponse,
 } from '@/types/types.response';
-import fetchApi from '@/utils/fetch-api';
+import { fetchGet } from '@/utils/apiClient';
 
 export const getHomeApps = async (
   platform?: EnumPlatformType
 ): Promise<HomeAppsResponse> =>
-  fetchApi(
-    platform
-      ? `/apps/home-page-apps?platform=${platform}`
-      : `/apps/home-page-apps`
-  );
+  fetchGet('/apps/home-page-apps', {
+    params: platform ? { platform } : undefined,
+  });
 
 export const getAppDetailsBySlug = async (
   slug: string
-): Promise<AppDetailsResponse> => fetchApi(`/apps/slug/${slug}`);
+): Promise<AppDetailsResponse> => fetchGet(`/apps/slug/${slug}`);
 
 export const getAppsByCategory = async (
   category: string,
   page = 1
 ): Promise<CategoryAppsResponse> =>
-  fetchApi(`/apps/category/${category}?page=${page}`);
+  fetchGet(`/apps/category/${category}`, { params: { page } });
 
 export const getAllAppsBySearch = async (
   keyword: string,
   page = 1
 ): Promise<SearchAppsResponse> =>
-  fetchApi(`/apps/searchable-all-apps?search=${keyword}&page=${page}`);
+  fetchGet('/apps/searchable-all-apps', { params: { search: keyword, page } });
 
 export const getAppsByDeveloper = async (
   developer: string
-): Promise<DeveloperAppsResponse> => fetchApi(`/apps/developer/${developer}`);
+): Promise<DeveloperAppsResponse> => fetchGet(`/apps/developer/${developer}`);
 
 export const getDownloadAppsBySlug = async (
   slug: string
-): Promise<DownloadAppResponse> => fetchApi(`/apps/download/${slug}`);
+): Promise<DownloadAppResponse> => fetchGet(`/apps/download/${slug}`);
 
 export const getAppsBySearchKeyword = async (
   keyword: string
 ): Promise<InputSearchAppsResponse> =>
-  fetchApi(`/apps/searchable?search=${keyword}`);
+  fetchGet('/apps/searchable', { params: { search: keyword } });
