@@ -12,57 +12,59 @@ import { Page } from './page.types';
 import { AppDetails } from './types.app';
 import { AppDownloadDetails } from './types.app-details-download';
 
-export interface ApiResponse<T, TMeta = unknown> {
+// ─── Core wrapper — single source of truth for ALL API responses ──────────────
+
+export interface ApiResponse<TData, TMeta = null> {
   statusCode: number;
   success: boolean;
   message: string;
   meta: TMeta | null;
-  data: T;
+  data: TData;
 }
 
+// ─── Convenience alias for mutation responses that return no data ─────────────
+//     e.g. ratings, reports, contacts — server returns { success, message, statusCode }
+
+export type ApiVoidResponse = ApiResponse<null>;
+
+// ─── GET responses ────────────────────────────────────────────────────────────
+
 export type HomeAppsResponse = ApiResponse<HomeAppsData>;
-
-export type CategoryAppsResponse = ApiResponse<
-  {
-    apps: HomeAppItem[];
-    settings: Settings<SettingsHomeValue>[];
-  },
-  PaginationMeta
->;
-export type SearchAppsResponse = ApiResponse<
-  {
-    apps: HomeAppItem[];
-    settings: Settings<SettingsHomeValue>[];
-  },
-  PaginationMeta
->;
-
-export type DeveloperAppsResponse = ApiResponse<
-  {
-    apps: HomeAppItem[];
-    settings: Settings<SettingsHomeValue>[];
-  },
-  PaginationMeta
->;
-
 export type AppDetailsResponse = ApiResponse<AppDetails>;
-
 export type AdResponse = ApiResponse<Ad[]>;
-
 export type ReportReasonResponse = ApiResponse<ReportReason[]>;
-
 export type ActiveTestimonialResponse = ApiResponse<Testimonial[]>;
-
 export type DownloadAppResponse = ApiResponse<AppDownloadDetails>;
+export type InputSearchAppsResponse = ApiResponse<SearchAppItem[]>;
+export type GlobalSettingsResponse = ApiResponse<GlobalSetting[]>;
+export type PageResponse = ApiResponse<Page>;
 
-export type AppRatingResponse = {
-  message: string;
-  statusCode: number;
-  success: boolean;
+// Paginated responses share the same data shape — grouped for clarity
+type PaginatedAppsData = {
+  apps: HomeAppItem[];
+  settings: Settings<SettingsHomeValue>[];
 };
 
-export type InputSearchAppsResponse = ApiResponse<SearchAppItem[]>;
+export type CategoryAppsResponse = ApiResponse<
+  PaginatedAppsData,
+  PaginationMeta
+>;
+export type SearchAppsResponse = ApiResponse<PaginatedAppsData, PaginationMeta>;
+export type DeveloperAppsResponse = ApiResponse<
+  PaginatedAppsData,
+  PaginationMeta
+>;
 
-export type GlobalSettingsResponse = ApiResponse<GlobalSetting[]>;
+// ─── POST / PUT / PATCH / DELETE responses ────────────────────────────────────
 
-export type PageResponse = ApiResponse<Page>;
+// Rating: server returns no meaningful data body
+export type AppRatingResponse = ApiVoidResponse;
+
+// Download APK prepare: server returns token + file metadata
+export type DownloadApkResult = {
+  token: string;
+  size: string;
+  type: string;
+  name: string;
+};
+export type DownloadApkResponse = ApiResponse<DownloadApkResult>;

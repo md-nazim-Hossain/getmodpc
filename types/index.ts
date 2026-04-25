@@ -1,5 +1,7 @@
-// lib/types.ts
+// ── Ad props (use new Ad shape from types/ads.ts) ────────────────────────────
+import type { Ad } from './ads';
 
+// types/index.ts
 export type Platform = 'android' | 'windows' | 'apple';
 
 export interface App {
@@ -27,18 +29,6 @@ export interface Category {
   count?: number;
 }
 
-export interface Section {
-  id: string;
-  title: string;
-  subtitle?: string;
-  viewAllLink?: string;
-}
-
-export interface HeroSlide extends App {
-  badge?: string;
-  featured?: boolean;
-}
-
 export interface NavItem {
   label: string;
   href: string;
@@ -49,16 +39,12 @@ export interface FooterLink {
   label: string;
   href: string;
 }
-
 export interface FooterSection {
   title: string;
   links: FooterLink[];
 }
 
-export type IValueLabel = {
-  value: string;
-  label: string;
-};
+export type IValueLabel = { value: string; label: string };
 
 export interface Testimonial {
   id: string;
@@ -85,27 +71,12 @@ export interface TestimonialCardProps {
   testimonial: Testimonial;
 }
 
-// types/ads.ts
-
-export interface Ad {
-  id: string;
-  banner_image: string;
-  banner_bg_color?: string; // optional per-card accent color
-  title: string;
-  description: string;
-  cta_label: string;
-  cta_link: string;
-}
-
 export interface AdCardProps {
   ad: Ad;
 }
-
 export interface AdsSectionProps {
-  /** Optional heading above the carousel */
   heading?: string;
   ads: Ad[];
-  /** Enable Swiper autoplay */
   autoplay?: boolean;
   autoplayDelay?: number;
 }
@@ -119,7 +90,6 @@ export interface PaginationMeta {
   hasPreviousPage: boolean;
 }
 
-// Generic API Response Wrapper
 export interface ReportReason {
   id: string;
   title: string;

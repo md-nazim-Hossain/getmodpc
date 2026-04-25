@@ -1,10 +1,9 @@
 'use server';
 
-import { AppRatingResponse } from '@/types/types.response';
-import { fetchPostApi } from '@/utils/fetch-post-api';
+import type { AppRatingResponse } from '@/types/types.response';
+import { fetchPut } from '@/utils/apiClient';
 
-export async function createAppRating(
+export const createAppRating = async (
   appId: string
-): Promise<AppRatingResponse> {
-  return fetchPostApi<AppRatingResponse>(`/apps/given-rating/${appId}`, 'PUT');
-}
+): Promise<AppRatingResponse> =>
+  fetchPut<AppRatingResponse>(`/apps/given-rating/${appId}`);

@@ -1,9 +1,11 @@
 'use server';
 
-import { fetchPostApi } from '@/utils/fetch-post-api';
+import type { ApiVoidResponse } from '@/types/types.response';
+import { fetchPost } from '@/utils/apiClient';
 
-import { CommentPayload } from '@/lib/schemas';
+import type { CommentPayload } from '@/lib/schemas';
 
-export async function createComment(data: CommentPayload) {
-  return fetchPostApi<CommentPayload>(`/comments`, 'POST', data);
-}
+export const createComment = async (
+  data: CommentPayload
+): Promise<ApiVoidResponse> =>
+  fetchPost<ApiVoidResponse, CommentPayload>('/comments', data);

@@ -1,7 +1,9 @@
-import { GlobalSettingsResponse } from '@/types/types.response';
-import fetchApi from '@/utils/fetch-api';
+'use server';
+
+import type { GlobalSettingsResponse } from '@/types/types.response';
+import { fetchGet } from '@/utils/apiClient';
 
 export const getGlobalSettings = async (): Promise<GlobalSettingsResponse> =>
-  fetchApi(
-    `/settings/get-setting-by-keys?keys=seo,system_settings,footer,social_links`
-  );
+  fetchGet('/settings/get-setting-by-keys', {
+    params: { keys: 'seo,system_settings,footer,social_links' },
+  });
