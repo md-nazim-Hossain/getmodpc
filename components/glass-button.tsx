@@ -2,11 +2,13 @@ import React, { CSSProperties } from 'react';
 
 import { cn } from '@/lib/utils';
 
-const GlassButton: React.FC<{
-  className?: string;
+import { ButtonProps } from './ui/button';
 
-  children: React.ReactNode;
-}> = ({ className, children }) => {
+const GlassButton: React.FC<ButtonProps> = ({
+  className,
+  children,
+  ...props
+}) => {
   return (
     <div
       className='glass-card-effect-wrapper'
@@ -27,6 +29,7 @@ const GlassButton: React.FC<{
             '--glass-border-radius': '999px',
           } as CSSProperties
         }
+        {...props}
       >
         <span
           className={
