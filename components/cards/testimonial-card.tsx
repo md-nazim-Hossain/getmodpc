@@ -10,15 +10,15 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
   const { image_url, company_logo, name, designation, content } = testimonial;
 
   return (
-    <div className='testimonial-card flex flex-col md:flex-row md:gap-8 md:pr-8 h-full'>
+    <div className='testimonial-card flex flex-col md:flex-row md:gap-4 p-6 h-full'>
       {/* Left: Author Image */}
       <div className='shrink-0 w-full md:w-45 xl:w-60 '>
-        <div className='relative w-full aspect-square overflow-hidden bg-neutral-100'>
+        <div className='relative w-full aspect-square overflow-hidden rounded-sm'>
           <Image
             src={image_url}
             alt={`Photo of ${name}`}
             fill
-            className='object-cover object-top'
+            className='object-cover object-top rounded-sm'
             sizes='(max-width: 768px) 140px, 240px'
           />
           {/* Workplace badge overlay */}
@@ -51,12 +51,12 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
         {/* Quotation mark decorative */}
         <div>
           <span
-            className='block text-5xl md:text-[5rem] leading-none text-neutral-200 font-serif select-none -mb-4'
+            className='block text-5xl md:text-[5rem] leading-none text-neutral-500 font-serif select-none -mb-8'
             aria-hidden='true'
           >
             &ldquo;
           </span>
-          <p className='text-sm sm:text-base lg:text-lg text-foreground leading-relaxed font-medium tracking-wide'>
+          <p className='text-sm sm:text-base text-foreground leading-relaxed font-normal tracking-wide'>
             {content}
           </p>
         </div>

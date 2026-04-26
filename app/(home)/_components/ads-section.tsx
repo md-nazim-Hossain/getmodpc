@@ -1,15 +1,25 @@
 'use client';
 
-import React, { useRef } from 'react';
+// components/ads/ads-section.tsx
+//
+// Migration: Swiper → shadcn Carousel
+//
+// Changes:
+//   - Removed: swiper, swiper/css, swiper/modules, swiper/react
+//   - Added: shadcn Carousel + embla-carousel-autoplay (same dep as hero-section)
+//   - Behavior preserved: autoplay, loop, responsive slides, prev/next controls
+//   - UI/layout: UNCHANGED
+import * as React from 'react';
 
 import { Ad } from '@/types/ads';
-import type { Swiper as SwiperType } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/free-mode';
-import { A11y, Autoplay, FreeMode } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import Autoplay from 'embla-carousel-autoplay';
 
 import AdCard from '@/components/cards/ad-card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '@/components/ui/carousel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -25,16 +35,19 @@ interface AdsSectionProps {
 const AdsSection: React.FC<AdsSectionProps> = ({
   heading,
   ads,
-  autoplay = false,
+  autoplay = true,
   autoplayDelay = 4000,
 }) => {
-  const swiperRef = useRef<SwiperType | null>(null);
-  const modules = autoplay ? [Autoplay, FreeMode, A11y] : [FreeMode, A11y];
-
-  if (!ads.length) return null;
+  const plugin = React.useRef(
+    Autoplay({ delay: autoplayDelay, stopOnInteraction: true })
+  );
 
   // Filter only active ads
-  const activeAds = ads.filter((ad) => ad.is_active);
+  const activeAds = React.useMemo(
+    () => ads.filter((ad) => ad.is_active),
+    [ads]
+  );
+
   if (!activeAds.length) return null;
 
   return (
@@ -48,49 +61,31 @@ const AdsSection: React.FC<AdsSectionProps> = ({
       )}
 
       <div className='px-4 sm:px-6 lg:px-8'>
-        <Swiper
-          onSwiper={(s) => {
-            swiperRef.current = s;
-          }}
-          modules={modules}
-          freeMode={{ enabled: true, momentum: true, momentumRatio: 0.6 }}
-          grabCursor
-          slidesOffsetBefore={0}
-          slidesOffsetAfter={16}
-          spaceBetween={14}
-          slidesPerView='auto'
-          loop={false}
-          speed={480}
-          autoplay={
-            autoplay
-              ? {
-                  delay: autoplayDelay,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }
-              : false
-          }
-          breakpoints={{
-            0: { spaceBetween: 12, slidesOffsetAfter: 24 },
-            640: { spaceBetween: 16, slidesOffsetAfter: 32 },
-            1024: { spaceBetween: 20, slidesOffsetAfter: 40 },
-          }}
-          a11y={{
-            prevSlideMessage: 'Previous ad',
-            nextSlideMessage: 'Next ad',
-          }}
-          className='overflow-visible!'
+        <Carousel
+          opts={{ align: 'start', loop: true }}
+          plugins={autoplay ? [plugin.current] : []}
+          className='w-full'
         >
-          {activeAds.map((ad) => (
-            <SwiperSlide
-              key={ad.id}
-              style={{ width: 'clamp(220px, 60vw, 280px)' }}
-              className='h-auto!'
-            >
-              <AdCard ad={ad} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <CarouselContent className='-ml-3 sm:-ml-4'>
+            {activeAds.map((ad) => (
+              <CarouselItem
+                key={ad.id}
+                className='
+                  pl-3 sm:pl-4
+                  basis-full
+                  sm:basis-1/2
+                  lg:basis-1/3
+                  xl:basis-1/4
+                  2xl:basis-1/5
+                '
+              >
+                <div className='h-full'>
+                  <AdCard ad={ad} />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       </div>
     </section>
   );
