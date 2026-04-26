@@ -88,11 +88,11 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({ data }) => {
             )}
           </div>
 
-          <div className='mt-1.5'>
+          <p className='text-xs text-muted-foreground mt-1.5'>
             {format(data.created_at, 'MMMM d, yyyy')}
             <span>{` ( ${formatDate(data.created_at)} ) `}</span>
             {/* <PlatformIconList platform={platform} size='sm' /> */}
-          </div>
+          </p>
         </div>
       </div>
 

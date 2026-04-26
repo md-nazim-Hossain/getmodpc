@@ -40,12 +40,12 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
   return (
     <section
-      className='py-16 sm:py-20 lg:py-28 overflow-hidden'
+      className='py-8 sm:py-12 lg:py-16 overflow-hidden'
       aria-label='Customer Testimonials'
     >
       <div className='mx-auto px-6 lg:px-12 max-w-350'>
         {/* ── Header ── */}
-        <div className='flex items-end justify-between mb-12 sm:mb-16'>
+        <div className='flex items-end justify-between mb-8 sm:mb-12'>
           <div>
             {subtitle && (
               <p className='text-[10px] tracking-[0.22em] uppercase font-semibold text-neutral-600 mb-3'>

@@ -51,7 +51,10 @@ const AdsSection: React.FC<AdsSectionProps> = ({
   if (!activeAds.length) return null;
 
   return (
-    <section aria-label={heading ?? 'Promoted content'} className='w-full py-6'>
+    <section
+      aria-label={heading ?? 'Promoted content'}
+      className='w-full section-spacing'
+    >
       {heading && (
         <div className='px-4 sm:px-6 mb-4'>
           <h2 className='text-sm font-semibold uppercase tracking-widest text-neutral-400'>

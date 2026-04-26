@@ -31,6 +31,7 @@ import {
 } from '@/assets';
 import { Settings } from '@/types/home-apps.types';
 import { AppDetails } from '@/types/types.app';
+import { format } from 'date-fns';
 import parse from 'html-react-parser';
 import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
 import slugify from 'slugify';
@@ -42,7 +43,7 @@ import { createReport } from '@/server/post/create-report';
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
 import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
-import { formatNumber, getStarFill, StarFill } from '@/lib/utils';
+import { formatDate, formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
 import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog';
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
@@ -376,7 +377,8 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
               )}
             </div>
             <p className='text-xs text-muted-foreground mt-1'>
-              {app.updated ?? app.published_date ?? ''}
+              {format(app.published_date ?? app.updated ?? '', 'MMMM d, yyyy')}
+              <span>{` ( ${formatDate(app.published_date ?? app.updated ?? '')} ) `}</span>
             </p>
           </div>
         </div>

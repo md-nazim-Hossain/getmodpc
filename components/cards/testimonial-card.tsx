@@ -13,12 +13,15 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
     <div className='testimonial-card flex flex-col md:flex-row md:gap-4 p-6 h-full'>
       {/* Left: Author Image */}
       <div className='shrink-0 w-full md:w-45 xl:w-60 '>
-        <div className='relative w-full aspect-square overflow-hidden rounded-sm'>
+        <div
+          style={{ borderRadius: 'var(--glass-border-radius)' }}
+          className='relative w-full aspect-square overflow-hidden'
+        >
           <Image
             src={image_url}
             alt={`Photo of ${name}`}
             fill
-            className='object-cover object-top rounded-sm'
+            className='object-cover object-top'
             sizes='(max-width: 768px) 140px, 240px'
           />
           {/* Workplace badge overlay */}
@@ -56,7 +59,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
           >
             &ldquo;
           </span>
-          <p className='text-sm sm:text-base text-foreground leading-relaxed font-normal tracking-wide'>
+          <p className='text-sm text-justify sm:text-base text-foreground leading-relaxed font-normal tracking-wide'>
             {content}
           </p>
         </div>
