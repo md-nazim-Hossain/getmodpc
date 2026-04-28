@@ -99,7 +99,7 @@ export default async function DynamicPage({ params }: PageProps) {
   }
 
   return (
-    <main className='min-h-screen bg-white'>
+    <main className='min-h-screen'>
       {/* ── Breadcrumb ─────────────────────────────────────────────────── */}
       <Container size='lg' className='py-4'>
         <Breadcrumb>

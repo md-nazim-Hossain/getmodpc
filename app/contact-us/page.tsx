@@ -34,7 +34,7 @@ export default async function ContactPage() {
     notFound();
   }
   return (
-    <main className='min-h-screen bg-background'>
+    <main className='min-h-screen'>
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <section className='bg-white border-b border-slate-100'>
         <div className='container max-w-4xl mx-auto px-4 py-12 text-center flex flex-col'>

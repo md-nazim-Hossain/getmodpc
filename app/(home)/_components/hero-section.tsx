@@ -50,7 +50,7 @@ export function HeroSection({
 
   return (
     <section
-      className='section-spacing pt-6 bg-linear-to-b from-primary/5 to-transparent relative overflow-hidden'
+      className='section-spacing pt-6 relative overflow-hidden'
       aria-labelledby='section-heading-trending'
     >
       <Container size='full'>

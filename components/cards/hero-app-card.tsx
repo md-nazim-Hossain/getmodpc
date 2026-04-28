@@ -55,7 +55,7 @@ export function HeroAppCard({
             sizes='(max-width: 768px) 100vw, 50vw'
             priority={priority}
           />
-          <div className='absolute inset-0 bg-linear-to-t from-background/30 via-background/10 to-transparent' />
+          {/* <div className='absolute inset-0 bg-linear-to-t from-background/30 via-background/10 to-transparent' /> */}
 
           {/* Badges — UI intentionally commented out until design is finalised */}
           {/* {badge && (
