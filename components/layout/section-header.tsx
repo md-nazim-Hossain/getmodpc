@@ -42,7 +42,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'mb-4 flex items-end justify-between gap-4',
+        'mb-4 flex items-end justify-between gap-4 ',
         align === 'center' && 'text-center items-center',
         className
       )}
@@ -68,8 +68,11 @@ export function SectionHeader({
         // ✅ 'group' moved to the Link — was missing entirely.
         // 'group-hover:translate-x-1' on the SVG inside was dead because no
         // ancestor had the 'group' class. The arrow never animated.
-        <Link href={viewAllLink} className='group shrink-0 cursor-pointer'>
-          <GlassButton>
+        <Link
+          href={viewAllLink}
+          className='group  shrink-0 cursor-pointer block'
+        >
+          <GlassButton childrenClassName='xl:px-6! xl:py-3! text-sm'>
             {viewAllText}
             <ArrowRight className='size-4' />
           </GlassButton>

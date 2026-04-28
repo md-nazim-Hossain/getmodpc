@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import {
@@ -21,6 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { AppImage } from '@/components/ui/app-image';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -61,7 +61,7 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({ data }) => {
       <div className='flex items-start gap-4'>
         {/* Icon */}
         <div className='relative size-20 shrink-0 rounded-2xl overflow-hidden shadow-md ring-1 ring-black/10'>
-          <Image
+          <AppImage
             src={icon}
             alt={`${name} icon`}
             fill
@@ -78,7 +78,8 @@ const AppDownloadContent: React.FC<AppDownloadContentProps> = ({ data }) => {
             </h1>
             {is_verified && (
               <TooltipWrapper message={parse(tooltipText)}>
-                <Image
+                <AppImage
+                  optimize
                   src={verifiedBadgeIcon}
                   alt='Verified'
                   width={18}

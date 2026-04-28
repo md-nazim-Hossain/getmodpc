@@ -3,8 +3,7 @@
 // Error boundaries must be Client Components
 import { useEffect } from 'react';
 
-import Image from 'next/image';
-
+import { AppImage } from '@/components/ui/app-image';
 import { Button } from '@/components/ui/button';
 
 export default function Error({
@@ -22,7 +21,8 @@ export default function Error({
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto flex h-full flex-col items-center justify-center gap-8 px-6'>
-        <Image
+        <AppImage
+          optimize
           width={400}
           height={400}
           src={'/server-error.svg'}

@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils';
 
 import { ButtonProps } from './ui/button';
 
-const GlassButton: React.FC<ButtonProps> = ({
-  className,
-  children,
-  ...props
-}) => {
+const GlassButton: React.FC<
+  ButtonProps & {
+    childrenClassName?: string;
+  }
+> = ({ className, children, childrenClassName, ...props }) => {
   return (
     <div
       className='glass-card-effect-wrapper'
@@ -32,9 +32,10 @@ const GlassButton: React.FC<ButtonProps> = ({
         {...props}
       >
         <span
-          className={
-            'flex! items-center justify-between gap-x-1 px-2.5 py-2 md:px-4 md:py-2.5'
-          }
+          className={cn(
+            'flex! items-center justify-between gap-x-1 px-2.5 py-2 md:px-4 md:py-2.5',
+            childrenClassName
+          )}
         >
           {children}
         </span>

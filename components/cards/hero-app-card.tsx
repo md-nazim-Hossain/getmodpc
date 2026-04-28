@@ -1,24 +1,10 @@
-// components/cards/hero-app-card.tsx
-//
-// Migrated from AppBody → HomeAppItem.
-//
-// Structural changes:
-//   - Import type: AppBody → HomeAppItem
-//   - Routing:     /app/${app.id} → /app/${app.slug}
-//   - `badge` prop: removed — HomeAppItem has no badge field and the badge UI
-//     was already commented out. Keeping the prop would be a dead API.
-//   - app.header_image: was string|null|undefined (required fallback), now
-//     string (always present) — fallback kept for defensive safety.
-//   - app.name: unchanged.
-//   - AppCardInfo: receives HomeAppItem directly — no adapter needed.
-import { CSSProperties } from 'react';
-
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { HomeAppItem, Settings } from '@/types/home-apps.types';
 
-import HomeAppCardInfo from './home-app-card-info';
+import { AppImage } from '../ui/app-image';
+import { AppCardInfo } from './app-card-info';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,10 +28,8 @@ export function HeroAppCard({
       <button className='glass-card'>
         {/* Banner Image */}
         <div className='relative h-84 overflow-hidden!'>
-          <Image
-            // header_image is now a required non-null string on HomeAppItem;
-            // fallback retained for defensive robustness.
-            src={app.header_image ?? '/placeholder.png'}
+          <AppImage
+            src={app.header_image}
             alt={app.name}
             fill
             className='object-cover transition-transform duration-700'
@@ -79,7 +63,7 @@ export function HeroAppCard({
           }}
           className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-background via-background/90 to-background/80'
         >
-          <HomeAppCardInfo app={app} settings={settings} className='p-2' />
+          <AppCardInfo app={app} settings={settings} className='p-2' />
         </div>
       </button>
 

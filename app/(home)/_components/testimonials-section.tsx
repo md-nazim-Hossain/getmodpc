@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import TestimonialCard from '@/components/cards/testimonial-card';
 import GlassButton from '@/components/glass-button';
+import { Container } from '@/components/layout/container';
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   title = 'What our customers say',
@@ -43,7 +44,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       className='py-8 sm:py-12 lg:py-16 overflow-hidden'
       aria-label='Customer Testimonials'
     >
-      <div className='mx-auto px-6 lg:px-12 max-w-350'>
+      <Container>
         {/* ── Header ── */}
         <div className='flex items-end justify-between mb-8 sm:mb-12'>
           <div>
@@ -108,10 +109,9 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               : false
           }
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 0 },
-            640: { slidesPerView: 1.25, spaceBetween: 0 },
-            1024: { slidesPerView: 2, spaceBetween: 0 },
-            1280: { slidesPerView: 2.15, spaceBetween: 30 },
+            0: { slidesPerView: 1, spaceBetween: 10 },
+            1024: { slidesPerView: 2, spaceBetween: 30 },
+            1920: { slidesPerView: 3, spaceBetween: 30 },
           }}
           a11y={{
             prevSlideMessage: 'Previous testimonial',
@@ -143,7 +143,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             aria-label={`Testimonial ${activeIndex + 1} of ${testimonials.length}`}
           />
         </div> */}
-      </div>
+      </Container>
     </section>
   );
 };

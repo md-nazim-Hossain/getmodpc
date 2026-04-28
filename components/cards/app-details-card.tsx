@@ -15,7 +15,6 @@
 //  - ReportAppDialog rendered alongside ScreenshotDialog (outside article)
 import { useMemo, useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import {
@@ -57,6 +56,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
+import { AppImage } from '../ui/app-image';
 import TooltipWrapper from '../ui/tooltip-wrapper';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -230,7 +230,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         label: 'Source of',
         value: (
           <Link href={app.url} target='_blank'>
-            <Image
+            <AppImage
               src={sourceIcon?.url}
               alt={sourceLabel}
               width={102}
@@ -313,7 +313,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         {app.header_image && (
           <div className='p-4 rounded-2xl'>
             <div className='relative w-full h-52 sm:h-160 overflow-hidden bg-muted rounded-2xl'>
-              <Image
+              <AppImage
                 src={app?.header_image}
                 alt={`${app.name} banner`}
                 fill
@@ -329,7 +329,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         <div className='flex items-start gap-3 px-4 pb-3'>
           {app.icon && (
             <div className='relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border border-border shadow-sm'>
-              <Image
+              <AppImage
                 src={app.icon}
                 alt={`${app.name} icon`}
                 fill
@@ -361,7 +361,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                   aria-label='Verified badge'
                 >
                   <TooltipWrapper message={parse(tooltipText)}>
-                    <Image
+                    <AppImage
                       src={verifiedBadgeIcon}
                       alt='Verified'
                       width={14}
@@ -456,7 +456,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                   onClick={() => viewer.open(i)}
                   className='relative shrink-0 w-20 h-32 overflow-hidden rounded border-2 border-border transition-all hover:border-cyan-500 hover:opacity-100 opacity-80 cursor-pointer group'
                 >
-                  <Image
+                  <AppImage
                     src={src}
                     alt=''
                     fill

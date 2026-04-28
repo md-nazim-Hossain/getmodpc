@@ -2,7 +2,7 @@
 
 import { HomeAppItem, Settings } from '@/types/home-apps.types';
 
-import { HomeAppCard } from '@/components/cards/home-app-card';
+import { AppCard } from '@/components/cards/app-card';
 import { Card } from '@/components/ui/card';
 
 interface RelatedAppsProps {
@@ -18,7 +18,7 @@ export function RelatedApps({ apps, settings }: RelatedAppsProps) {
       </div>
       <div className='space-y-4 pb-8'>
         {apps.map((app) => (
-          <HomeAppCard key={app.id} app={app} settings={settings} />
+          <AppCard key={app.id} app={app} settings={settings} />
         ))}
       </div>
     </Card>

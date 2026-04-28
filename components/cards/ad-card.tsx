@@ -2,12 +2,13 @@
 
 import React from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { Ad } from '@/types/ads';
 
 import { Card } from '@/components/ui/card';
+
+import { AppImage } from '../ui/app-image';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,7 +35,7 @@ const MediaViewer = ({
       className='absolute inset-0 w-full h-full object-cover object-center'
     />
   ) : (
-    <Image
+    <AppImage
       src={media_url}
       alt=''
       fill

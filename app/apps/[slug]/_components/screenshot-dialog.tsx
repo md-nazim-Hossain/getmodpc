@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 
-import Image from 'next/image';
-
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 import { UseScreenshotViewerReturn } from '@/hooks/use-screenshot-viewer';
+
+import { AppImage } from '@/components/ui/app-image';
 
 interface ScreenshotDialogProps {
   screenshots: string[];
@@ -107,7 +107,7 @@ export function ScreenshotDialog({
         onClick={(e) => e.stopPropagation()}
         style={{ aspectRatio: '9/16' }}
       >
-        <Image
+        <AppImage
           key={src} // forces re-mount on image change → avoids flicker
           src={src}
           alt={`${appName} screenshot ${activeIndex + 1} of ${total}`}

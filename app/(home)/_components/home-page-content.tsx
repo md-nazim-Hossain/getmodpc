@@ -2,8 +2,8 @@ import React from 'react';
 
 import { HomeAppsData } from '@/types/home-apps.types';
 
+import { AppCard } from '@/components/cards/app-card';
 import { CategoryCard } from '@/components/cards/category-card';
-import { HomeAppCard } from '@/components/cards/home-app-card';
 
 import AdsSection from './ads-section';
 import { HeroSection } from './hero-section';
@@ -36,39 +36,39 @@ const HomePageContent: React.FC<{ data: HomeAppsData }> = ({ data }) => {
       <HomeSection
         headerKey='popularApps'
         items={popularApps}
-        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
+        renderItem={(app) => <AppCard app={app} settings={settings} />}
       />
 
       <HomeSection
         headerKey='popularGames'
         items={popularGames}
-        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
+        renderItem={(game) => <AppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestApps'
         items={latestUpdatedApps}
-        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
+        renderItem={(app) => <AppCard app={app} settings={settings} />}
       />
 
       <HomeSection
         headerKey='newApps'
         items={newReleasedApps}
-        renderItem={(app) => <HomeAppCard app={app} settings={settings} />}
+        renderItem={(app) => <AppCard app={app} settings={settings} />}
         variant='tinted'
       />
 
       <HomeSection
         headerKey='latestGames'
         items={latestUpdatedGames}
-        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
+        renderItem={(game) => <AppCard app={game} settings={settings} />}
       />
 
       <HomeSection
         headerKey='newGames'
         items={newReleasedGames}
-        renderItem={(game) => <HomeAppCard app={game} settings={settings} />}
+        renderItem={(game) => <AppCard app={game} settings={settings} />}
         variant='tinted'
       />
 
