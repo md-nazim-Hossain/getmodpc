@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 export interface SocialShareProps {
   url: string;
-  title: string;
+  title?: string;
   description?: string;
   /** Required for Pinterest */
   image?: string;
@@ -31,8 +31,8 @@ export interface SocialShareProps {
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const ICON_SIZE = 36;
-const ICON_RADIUS = 10;
+const ICON_SIZE = 28;
+const ICON_RADIUS = 8;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -105,7 +105,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
             onClick={copyLink}
             aria-label='Copy link'
             className={cn(
-              'flex items-center justify-center rounded-4xl transition-all duration-200',
+              'flex items-center justify-center rounded-sm transition-all duration-200',
               'bg-muted hover:bg-muted/80',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
             )}
@@ -126,7 +126,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
 // ─── ShareItem wrapper ────────────────────────────────────────────────────────
 
 const ShareItem = ({
-  label,
   children,
 }: {
   label: string;
@@ -136,9 +135,9 @@ const ShareItem = ({
     <div className='transition-transform duration-150 group-hover:scale-110 group-active:scale-95'>
       {children}
     </div>
-    <span className='text-[10px] text-muted-foreground font-medium leading-none'>
+    {/* <span className='text-[10px] text-muted-foreground font-medium leading-none'>
       {label}
-    </span>
+    </span> */}
   </div>
 );
 

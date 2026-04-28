@@ -13,7 +13,7 @@
 //  - "Report App" row in the MetaTable now opens ReportAppDialog
 //  - useReportDialog hook encapsulates open/close state
 //  - ReportAppDialog rendered alongside ScreenshotDialog (outside article)
-import { useMemo, useState } from 'react';
+import { CSSProperties, useMemo, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -42,7 +42,13 @@ import { createReport } from '@/server/post/create-report';
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
 import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
-import { formatDate, formatNumber, getStarFill, StarFill } from '@/lib/utils';
+import {
+  cn,
+  formatDate,
+  formatNumber,
+  getStarFill,
+  StarFill,
+} from '@/lib/utils';
 
 import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog';
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
@@ -87,7 +93,7 @@ function StarRating({
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${STAR_CLASS[getStarFill(i, num)]}`}
+          className={`size-5 ${STAR_CLASS[getStarFill(i, num)]}`}
           aria-hidden
         />
       ))}
@@ -411,33 +417,92 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         {/* ── 6. Social share ──────────────────────────────────────── */}
         <div className='px-4 py-3'>
           <SocialShare
-            title={app.name}
+            // title={app.name}
             url={typeof window !== 'undefined' ? window.location.href : ''}
           />
         </div>
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}
-        <div className='grid grid-cols-2 border-b border-border'>
+        <div className='grid grid-cols-2 border-b border-border bg-background p-4 gap-4'>
           {downloadButton?.is_enabled && (
             <Link
               href={primaryLink}
-              className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
+              className={cn('glass-card-effect-wrapper')}
+              style={
+                {
+                  '--glass-border-radius': '12px',
+                } as CSSProperties
+              }
             >
-              <Download className='w-4 h-4' aria-hidden />
-              {downloadButton?.label || 'Download Now'}
+              <button
+                className={'glass-card'}
+                style={
+                  {
+                    '--glass-border-radius': '12px',
+                  } as CSSProperties
+                }
+              >
+                <div className='flex items-center justify-center gap-3 rounded-[12px] text-sm font-bold p-4 bg-foreground hover:opacity-90 text-background'>
+                  <Download className='w-4 h-4' aria-hidden />
+                  {downloadButton?.label || 'Download Now'}
+                </div>
+              </button>
+              <div className='glass-card-shadow'></div>
             </Link>
           )}
+
           {telegramButton?.is_enabled && (
-            <a
+            <Link
               href={telegramButton?.url}
               target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
               rel='noopener noreferrer'
-              className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
+              className={cn('glass-card-effect-wrapper')}
+              style={
+                {
+                  '--glass-border-radius': '12px',
+                } as CSSProperties
+              }
             >
-              <Send className='w-4 h-4' aria-hidden />
-              {telegramButton?.label || 'Fast Download'}
-            </a>
+              <button
+                className={'glass-card'}
+                style={
+                  {
+                    '--glass-border-radius': '12px',
+                  } as CSSProperties
+                }
+              >
+                <div className='flex items-center justify-center gap-3 rounded-[12px] p-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold '>
+                  <Send className='w-4 h-4' aria-hidden />
+                  {telegramButton?.label || 'Fast Download'}
+                </div>
+              </button>
+              <div className='glass-card-shadow'></div>
+            </Link>
           )}
+          {/* {downloadButton?.is_enabled && (
+            <Link
+              href={primaryLink}
+              // className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
+            >
+              <GlassButton childrenClassName='bg-foreground'>
+                <Download className='w-4 h-4' aria-hidden />
+                {downloadButton?.label || 'Download Now'}
+              </GlassButton>
+            </Link>
+          )} */}
+          {/* {telegramButton?.is_enabled && (
+            <Link
+              href={telegramButton?.url}
+              target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
+              rel='noopener noreferrer'
+              // className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
+            >
+              <GlassButton className='flex! justify-center!'>
+                <Send className='w-4 h-4' aria-hidden />
+                {telegramButton?.label || 'Fast Download'}
+              </GlassButton>
+            </Link>
+          )} */}
         </div>
 
         {/* ── 8. Screenshot strip ──────────────────────────────────── */}

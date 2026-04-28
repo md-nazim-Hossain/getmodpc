@@ -10,7 +10,7 @@ import { A11y, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import TestimonialCard from '@/components/cards/testimonial-card';
-import GlassButton from '@/components/glass-button';
+import { GlassButton } from '@/components/glass-button';
 import { Container } from '@/components/layout/container';
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
@@ -60,20 +60,32 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
           {/* Nav Buttons */}
           <div className='flex gap-2 pb-1'>
-            <GlassButton onClick={handlePrev} aria-label='Previous testimonial'>
-              <ChevronLeft
-                size={16}
-                className='text-neutral-700 group-hover:text-white transition-colors duration-200'
-                aria-hidden
-              />
-            </GlassButton>
-            <GlassButton onClick={handleNext} aria-label='Next testimonial'>
-              <ChevronRight
-                size={16}
-                className='text-neutral-700 group-hover:text-white transition-colors duration-200'
-                aria-hidden
-              />
-            </GlassButton>
+            <GlassButton
+              asButton
+              onClick={handlePrev}
+              label=''
+              icon={
+                <ChevronLeft
+                  size={16}
+                  className='text-neutral-700 group-hover:text-white transition-colors duration-200'
+                  aria-hidden
+                />
+              }
+              ariaLabel='Previous testimonial'
+            />
+            <GlassButton
+              asButton
+              onClick={handleNext}
+              label=''
+              icon={
+                <ChevronRight
+                  size={16}
+                  className='text-neutral-700 group-hover:text-white transition-colors duration-200'
+                  aria-hidden
+                />
+              }
+              ariaLabel='Next testimonial'
+            />
           </div>
         </div>
 

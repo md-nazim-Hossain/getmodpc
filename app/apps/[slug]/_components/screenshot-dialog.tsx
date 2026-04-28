@@ -103,9 +103,9 @@ export function ScreenshotDialog({
 
       {/* Image card — stop propagation so clicking it doesn't close */}
       <div
-        className='relative z-10 bg-white rounded-xl overflow-hidden shadow-2xl max-w-100 w-full mx-16'
+        className='relative z-10  overflow-hidden  h-[90vh] w-[80vw] '
         onClick={(e) => e.stopPropagation()}
-        style={{ aspectRatio: '9/16' }}
+        // style={{ aspectRatio: '9/16' }}
       >
         <AppImage
           key={src} // forces re-mount on image change → avoids flicker
