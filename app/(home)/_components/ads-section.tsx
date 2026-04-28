@@ -2,47 +2,32 @@
 
 // components/ads/ads-section.tsx
 //
-// Migration: Swiper → shadcn Carousel
+// Refactor: shadcn Carousel → responsive CSS grid
 //
 // Changes:
-//   - Removed: swiper, swiper/css, swiper/modules, swiper/react
-//   - Added: shadcn Carousel + embla-carousel-autoplay (same dep as hero-section)
-//   - Behavior preserved: autoplay, loop, responsive slides, prev/next controls
-//   - UI/layout: UNCHANGED
+//   - Removed: Carousel, CarouselContent, CarouselItem, embla-carousel-autoplay
+//   - Added: Tailwind grid layout (1 → 2 → 3 → 5 cols across breakpoints)
+//   - Each card wrapped in Next.js <Link> for full-card click
+//   - Filtered to active ads only (unchanged)
+//   - Card UI: UNCHANGED
 import * as React from 'react';
 
+import Link from 'next/link';
+
 import { Ad } from '@/types/ads';
-import Autoplay from 'embla-carousel-autoplay';
 
 import AdCard from '@/components/cards/ad-card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AdsSectionProps {
   heading?: string;
   ads: Ad[];
-  autoplay?: boolean;
-  autoplayDelay?: number;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const AdsSection: React.FC<AdsSectionProps> = ({
-  heading,
-  ads,
-  autoplay = true,
-  autoplayDelay = 4000,
-}) => {
-  const plugin = React.useRef(
-    Autoplay({ delay: autoplayDelay, stopOnInteraction: true })
-  );
-
-  // Filter only active ads
+const AdsSection: React.FC<AdsSectionProps> = ({ heading, ads }) => {
   const activeAds = React.useMemo(
     () => ads.filter((ad) => ad.is_active),
     [ads]
@@ -64,31 +49,28 @@ const AdsSection: React.FC<AdsSectionProps> = ({
       )}
 
       <div className='px-4 sm:px-6 lg:px-8'>
-        <Carousel
-          opts={{ align: 'start', loop: true }}
-          plugins={autoplay ? [plugin.current] : []}
-          className='w-full'
+        <div
+          className='
+            grid gap-4
+            grid-cols-1
+            sm:grid-cols-2
+            md:grid-cols-3
+            lg:grid-cols-5
+          '
         >
-          <CarouselContent className='-ml-3 sm:-ml-4'>
-            {activeAds.map((ad) => (
-              <CarouselItem
-                key={ad.id}
-                className='
-                  pl-3 sm:pl-4
-                  basis-full
-                  sm:basis-1/2
-                  lg:basis-1/3
-                  xl:basis-1/4
-                  2xl:basis-1/5
-                '
-              >
-                <div className='h-full'>
-                  <AdCard ad={ad} />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+          {activeAds.map((ad) => (
+            <Link
+              key={ad.id}
+              href={ad.cta_url}
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label={ad.title || 'View ad'}
+              className='block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B4EE8] focus-visible:ring-offset-2 rounded-2xl'
+            >
+              <AdCard ad={ad} />
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );

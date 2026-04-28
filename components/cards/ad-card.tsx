@@ -2,8 +2,6 @@
 
 import React from 'react';
 
-import Link from 'next/link';
-
 import { Ad } from '@/types/ads';
 
 import { Card } from '@/components/ui/card';
@@ -37,7 +35,7 @@ const MediaViewer = ({
   ) : (
     <AppImage
       src={media_url}
-      alt=''
+      alt='Ad banner'
       fill
       className='object-cover object-center'
       sizes='(max-width: 640px) 90vw, (max-width: 1024px) 44vw, 280px'
@@ -68,9 +66,7 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
         <div className='absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.18)_0%,transparent_60%)] pointer-events-none z-10' />
 
         {!title && cta_url ? (
-          <Link href={cta_url} target='_blank'>
-            <MediaViewer media_url={media_url} isVideo={isVideo} />
-          </Link>
+          <MediaViewer media_url={media_url} isVideo={isVideo} />
         ) : (
           <MediaViewer media_url={media_url} isVideo={isVideo} />
         )}
@@ -89,21 +85,15 @@ const AdCard: React.FC<AdCardProps> = ({ ad }) => {
 
           <div className='border-t border-neutral-100 mt-1' />
 
-          <Link
-            href={cta_url}
-            target='_blank'
-            rel='noopener noreferrer'
-            aria-label={`${cta_label} — ${title}`}
+          <p
             className='
             inline-flex items-center justify-center
             text-[13.5px] font-semibold
-            text-[#5B4EE8] hover:text-[#4338CA]
-            transition-colors duration-150
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B4EE8] focus-visible:ring-offset-2 rounded-sm
+            text-primary
           '
           >
             {cta_label}
-          </Link>
+          </p>
         </div>
       )}
     </Card>
