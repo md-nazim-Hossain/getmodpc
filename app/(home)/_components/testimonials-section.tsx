@@ -72,6 +72,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 />
               }
               ariaLabel='Previous testimonial'
+              variant={'icon'}
             />
             <GlassButton
               asButton
@@ -85,6 +86,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 />
               }
               ariaLabel='Next testimonial'
+              variant={'icon'}
             />
           </div>
         </div>

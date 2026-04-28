@@ -72,9 +72,9 @@ export function SectionHeader({
         <GlassButton
           href={viewAllLink}
           label={viewAllText}
-          icon={<ArrowRight />}
+          icon={<ArrowRight className='size-4' />}
           borderRadius='999px'
-          variant='custom'
+          variant='default'
         />
         // <Link
         //   href={viewAllLink}

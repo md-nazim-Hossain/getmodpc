@@ -13,7 +13,7 @@
 //  - "Report App" row in the MetaTable now opens ReportAppDialog
 //  - useReportDialog hook encapsulates open/close state
 //  - ReportAppDialog rendered alongside ScreenshotDialog (outside article)
-import { CSSProperties, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -32,7 +32,7 @@ import { Settings } from '@/types/home-apps.types';
 import { AppDetails } from '@/types/types.app';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
-import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
+import { Download, Globe, Send, Star } from 'lucide-react';
 import slugify from 'slugify';
 import { toast } from 'sonner';
 
@@ -42,18 +42,13 @@ import { createReport } from '@/server/post/create-report';
 import { useScreenshotViewer } from '@/hooks/use-screenshot-viewer';
 
 import { ReportAppFormValues, ReportAppPayload } from '@/lib/schemas';
-import {
-  cn,
-  formatDate,
-  formatNumber,
-  getStarFill,
-  StarFill,
-} from '@/lib/utils';
+import { formatDate, formatNumber, getStarFill, StarFill } from '@/lib/utils';
 
 import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog';
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
 
+import { GlassButton } from '../glass-button';
 import RichTextViewer from '../rich-text-viewer';
 import SocialShare from '../social-share';
 import {
@@ -425,84 +420,24 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         {/* ── 7. Download buttons ──────────────────────────────────── */}
         <div className='grid grid-cols-2 border-b border-border bg-background p-4 gap-4'>
           {downloadButton?.is_enabled && (
-            <Link
+            <GlassButton
               href={primaryLink}
-              className={cn('glass-card-effect-wrapper')}
-              style={
-                {
-                  '--glass-border-radius': '12px',
-                } as CSSProperties
-              }
-            >
-              <button
-                className={'glass-card'}
-                style={
-                  {
-                    '--glass-border-radius': '12px',
-                  } as CSSProperties
-                }
-              >
-                <div className='flex items-center justify-center gap-3 rounded-[12px] text-sm font-bold p-4 bg-foreground hover:opacity-90 text-background'>
-                  <Download className='w-4 h-4' aria-hidden />
-                  {downloadButton?.label || 'Download Now'}
-                </div>
-              </button>
-              <div className='glass-card-shadow'></div>
-            </Link>
+              label={downloadButton?.label || 'Download Now'}
+              icon={<Download className='w-4 h-4' />}
+              ariaLabel='Download Now'
+              variant='black'
+            />
           )}
-
           {telegramButton?.is_enabled && (
-            <Link
+            <GlassButton
               href={telegramButton?.url}
               target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
-              rel='noopener noreferrer'
-              className={cn('glass-card-effect-wrapper')}
-              style={
-                {
-                  '--glass-border-radius': '12px',
-                } as CSSProperties
-              }
-            >
-              <button
-                className={'glass-card'}
-                style={
-                  {
-                    '--glass-border-radius': '12px',
-                  } as CSSProperties
-                }
-              >
-                <div className='flex items-center justify-center gap-3 rounded-[12px] p-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold '>
-                  <Send className='w-4 h-4' aria-hidden />
-                  {telegramButton?.label || 'Fast Download'}
-                </div>
-              </button>
-              <div className='glass-card-shadow'></div>
-            </Link>
+              label={downloadButton?.label || 'Download Now'}
+              icon={<Send className='w-4 h-4' />}
+              ariaLabel={telegramButton?.label || 'Fast Download'}
+              variant='cyan'
+            />
           )}
-          {/* {downloadButton?.is_enabled && (
-            <Link
-              href={primaryLink}
-              // className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
-            >
-              <GlassButton childrenClassName='bg-foreground'>
-                <Download className='w-4 h-4' aria-hidden />
-                {downloadButton?.label || 'Download Now'}
-              </GlassButton>
-            </Link>
-          )} */}
-          {/* {telegramButton?.is_enabled && (
-            <Link
-              href={telegramButton?.url}
-              target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
-              rel='noopener noreferrer'
-              // className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
-            >
-              <GlassButton className='flex! justify-center!'>
-                <Send className='w-4 h-4' aria-hidden />
-                {telegramButton?.label || 'Fast Download'}
-              </GlassButton>
-            </Link>
-          )} */}
         </div>
 
         {/* ── 8. Screenshot strip ──────────────────────────────────── */}
@@ -580,8 +515,8 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         </div>
 
         {/* ── 10. Bottom CTA ───────────────────────────────────────── */}
-        <div className='px-4 pt-5 pb-3 bg-background border-t border-border'>
-          <h2 className='text-base font-bold text-foreground mb-4 flex items-center gap-1.5'>
+        <div className='px-4 py-4 bg-background border-t border-border'>
+          {/* <h2 className='text-base font-bold text-foreground mb-4 flex items-center gap-1.5'>
             Download Now {app.name}
             {app.is_verified && (
               <BadgeCheck
@@ -589,14 +524,15 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                 aria-hidden
               />
             )}
-          </h2>
-          <Link
+          </h2> */}
+
+          <GlassButton
             href={primaryLink}
-            className='flex items-center justify-center gap-2 w-full py-3.5 bg-foreground hover:opacity-90 text-background text-sm font-bold rounded transition-opacity'
-          >
-            <Download className='w-4 h-4' aria-hidden />
-            Download Now
-          </Link>
+            label={downloadButton?.label || 'Download Now'}
+            icon={<Download className='w-4 h-4' />}
+            ariaLabel='Download Now'
+            variant='black'
+          />
         </div>
 
         {/* ── 11. Install notes ────────────────────────────────────── */}

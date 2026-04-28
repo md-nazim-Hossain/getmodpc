@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type GlassButtonVariant = 'default' | 'cyan' | 'custom';
+type GlassButtonVariant = 'default' | 'cyan' | 'black' | 'icon' | 'custom';
 
 /** Shared props regardless of link vs button mode */
 interface GlassButtonBaseProps {
@@ -84,8 +84,10 @@ export type GlassButtonProps = GlassButtonLinkProps | GlassButtonButtonProps;
 // ─── Variant styles ───────────────────────────────────────────────────────────
 
 const variantStyles: Record<Exclude<GlassButtonVariant, 'custom'>, string> = {
-  default: 'bg-foreground hover:opacity-90 text-background',
+  default: 'py-2.5 px-5',
+  black: 'bg-foreground hover:opacity-90 text-background',
   cyan: 'bg-cyan-500 hover:bg-cyan-600 text-white',
+  icon: 'size-10 p-0',
 };
 
 // ─── Shared inner content ─────────────────────────────────────────────────────
@@ -103,11 +105,11 @@ function GlassButtonInner({
   const innerClassName =
     variant === 'custom'
       ? cn(
-          'flex items-center justify-center gap-3 text-sm font-bold p-4',
+          'flex items-center justify-center gap-2 text-sm font-semibold p-4',
           className
         )
       : cn(
-          'flex items-center justify-center gap-3 text-sm font-bold p-4',
+          'flex items-center justify-center gap-2 text-sm font-semibold p-4',
           variantStyles[variant ?? 'default']
         );
 
