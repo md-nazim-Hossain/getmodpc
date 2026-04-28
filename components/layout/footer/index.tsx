@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { FooterValue, SocialLinksValue } from '@/types/global-settings.types';
@@ -10,6 +9,7 @@ import { toast } from 'sonner';
 import { createAppRequest } from '@/server/post/create-app-request';
 
 import SocialIcons from '@/components/layout/footer/social-icons';
+import { AppImage } from '@/components/ui/app-image';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { UserAppRequestDialog } from '@/components/user-app-request-dialog';
@@ -154,7 +154,8 @@ export function Footer({ footer, socialLinks }: FooterProps) {
 
         {/* 2. Logo — dynamic from settings, fallback to static asset */}
         <Link href='/' aria-label='Home' className='block relative mb-8'>
-          <Image
+          <AppImage
+            unoptimized
             src={'/images/logo.webp'}
             alt='Logo'
             width={1440}

@@ -53,7 +53,7 @@ export function CommentForm({ app_id }: CommentFormProps) {
   }
 
   return (
-    <section className='mt-10 max-w-2xl' aria-labelledby={`${formId}-heading`}>
+    <section className='mt-10 w-full' aria-labelledby={`${formId}-heading`}>
       {submitted ? (
         <div
           role='status'

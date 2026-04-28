@@ -790,7 +790,7 @@ export const DropzonePlaceholder = memo(
         className={cn(
           'relative flex size-14 items-center justify-center rounded-2xl border transition-all duration-200',
           isDragActive
-            ? 'border-primary/30 bg-primary/[0.08] text-primary'
+            ? 'border-primary/30 bg-primary/8 text-primary'
             : 'border-border/70 bg-muted/60 text-muted-foreground'
         )}
       >

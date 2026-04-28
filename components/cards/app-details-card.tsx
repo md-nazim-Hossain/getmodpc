@@ -15,7 +15,6 @@
 //  - ReportAppDialog rendered alongside ScreenshotDialog (outside article)
 import { useMemo, useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import {
@@ -33,7 +32,7 @@ import { Settings } from '@/types/home-apps.types';
 import { AppDetails } from '@/types/types.app';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
-import { BadgeCheck, Download, Globe, Send, Star } from 'lucide-react';
+import { Download, Globe, Send, Star } from 'lucide-react';
 import slugify from 'slugify';
 import { toast } from 'sonner';
 
@@ -49,6 +48,7 @@ import { RatingAppDialog } from '@/app/apps/[slug]/_components/rating-app-dialog
 import { ReportAppDialog } from '@/app/apps/[slug]/_components/report-app-dialog';
 import { ScreenshotDialog } from '@/app/apps/[slug]/_components/screenshot-dialog';
 
+import { GlassButton } from '../glass-button';
 import RichTextViewer from '../rich-text-viewer';
 import SocialShare from '../social-share';
 import {
@@ -57,6 +57,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
+import { AppImage } from '../ui/app-image';
 import TooltipWrapper from '../ui/tooltip-wrapper';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -87,7 +88,7 @@ function StarRating({
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${STAR_CLASS[getStarFill(i, num)]}`}
+          className={`size-5 ${STAR_CLASS[getStarFill(i, num)]}`}
           aria-hidden
         />
       ))}
@@ -230,7 +231,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         label: 'Source of',
         value: (
           <Link href={app.url} target='_blank'>
-            <Image
+            <AppImage
               src={sourceIcon?.url}
               alt={sourceLabel}
               width={102}
@@ -313,7 +314,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         {app.header_image && (
           <div className='p-4 rounded-2xl'>
             <div className='relative w-full h-52 sm:h-160 overflow-hidden bg-muted rounded-2xl'>
-              <Image
+              <AppImage
                 src={app?.header_image}
                 alt={`${app.name} banner`}
                 fill
@@ -329,7 +330,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         <div className='flex items-start gap-3 px-4 pb-3'>
           {app.icon && (
             <div className='relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border border-border shadow-sm'>
-              <Image
+              <AppImage
                 src={app.icon}
                 alt={`${app.name} icon`}
                 fill
@@ -361,7 +362,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                   aria-label='Verified badge'
                 >
                   <TooltipWrapper message={parse(tooltipText)}>
-                    <Image
+                    <AppImage
                       src={verifiedBadgeIcon}
                       alt='Verified'
                       width={14}
@@ -411,32 +412,31 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         {/* ── 6. Social share ──────────────────────────────────────── */}
         <div className='px-4 py-3'>
           <SocialShare
-            title={app.name}
+            // title={app.name}
             url={typeof window !== 'undefined' ? window.location.href : ''}
           />
         </div>
 
         {/* ── 7. Download buttons ──────────────────────────────────── */}
-        <div className='grid grid-cols-2 border-b border-border'>
+        <div className='grid grid-cols-2 border-b border-border bg-background p-4 gap-4'>
           {downloadButton?.is_enabled && (
-            <Link
+            <GlassButton
               href={primaryLink}
-              className='flex items-center justify-center gap-2 py-4 bg-foreground hover:opacity-90 text-background text-sm font-bold transition-opacity border-r border-border'
-            >
-              <Download className='w-4 h-4' aria-hidden />
-              {downloadButton?.label || 'Download Now'}
-            </Link>
+              label={downloadButton?.label || 'Download Now'}
+              icon={<Download className='w-4 h-4' />}
+              ariaLabel='Download Now'
+              variant='black'
+            />
           )}
           {telegramButton?.is_enabled && (
-            <a
+            <GlassButton
               href={telegramButton?.url}
               target={telegramButton?.is_open_new_tab ? '_blank' : '_self'}
-              rel='noopener noreferrer'
-              className='flex items-center justify-center gap-2 py-4 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-bold transition-colors'
-            >
-              <Send className='w-4 h-4' aria-hidden />
-              {telegramButton?.label || 'Fast Download'}
-            </a>
+              label={downloadButton?.label || 'Download Now'}
+              icon={<Send className='w-4 h-4' />}
+              ariaLabel={telegramButton?.label || 'Fast Download'}
+              variant='cyan'
+            />
           )}
         </div>
 
@@ -456,7 +456,7 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                   onClick={() => viewer.open(i)}
                   className='relative shrink-0 w-20 h-32 overflow-hidden rounded border-2 border-border transition-all hover:border-cyan-500 hover:opacity-100 opacity-80 cursor-pointer group'
                 >
-                  <Image
+                  <AppImage
                     src={src}
                     alt=''
                     fill
@@ -515,8 +515,8 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
         </div>
 
         {/* ── 10. Bottom CTA ───────────────────────────────────────── */}
-        <div className='px-4 pt-5 pb-3 bg-background border-t border-border'>
-          <h2 className='text-base font-bold text-foreground mb-4 flex items-center gap-1.5'>
+        <div className='px-4 py-4 bg-background border-t border-border'>
+          {/* <h2 className='text-base font-bold text-foreground mb-4 flex items-center gap-1.5'>
             Download Now {app.name}
             {app.is_verified && (
               <BadgeCheck
@@ -524,14 +524,15 @@ export function AppDetailsCard({ app, settings }: AppDetailsCardProps) {
                 aria-hidden
               />
             )}
-          </h2>
-          <Link
+          </h2> */}
+
+          <GlassButton
             href={primaryLink}
-            className='flex items-center justify-center gap-2 w-full py-3.5 bg-foreground hover:opacity-90 text-background text-sm font-bold rounded transition-opacity'
-          >
-            <Download className='w-4 h-4' aria-hidden />
-            Download Now
-          </Link>
+            label={downloadButton?.label || 'Download Now'}
+            icon={<Download className='w-4 h-4' />}
+            ariaLabel='Download Now'
+            variant='black'
+          />
         </div>
 
         {/* ── 11. Install notes ────────────────────────────────────── */}

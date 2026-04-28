@@ -74,8 +74,8 @@ export default async function RootLayout({
       >
         <TanstackProvider>
           <AppSettingsProvider settings={settings.data}>
-            <div className='relative flex min-h-screen flex-col'>
-              <main className='flex-1'>{children}</main>
+            <div className='relative'>
+              <main>{children}</main>
               <Footer footer={footer} socialLinks={socials} />
             </div>
             <Toaster />

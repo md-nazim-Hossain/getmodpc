@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-import Image from 'next/image';
-
 import { TestimonialCardProps } from '@/types';
+
+import { AppImage } from '../ui/app-image';
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
   const { image_url, company_logo, name, designation, content } = testimonial;
@@ -17,7 +17,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
           style={{ borderRadius: 'var(--glass-border-radius)' }}
           className='relative w-full aspect-square overflow-hidden'
         >
-          <Image
+          <AppImage
             src={image_url}
             alt={`Photo of ${name}`}
             fill
@@ -27,7 +27,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
           {/* Workplace badge overlay */}
           {company_logo && (
             <div className='absolute bottom-0 left-0  bg-white px-3 py-2 border-t border-neutral-100'>
-              <Image
+              <AppImage
                 src={company_logo}
                 alt={`Logo of Company`}
                 width={100}

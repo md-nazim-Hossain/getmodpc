@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-import GlassButton from '../glass-button';
+import { GlassButton } from '../glass-button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,7 +42,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'mb-4 flex items-end justify-between gap-4',
+        'mb-4 flex items-end justify-between gap-4 ',
         align === 'center' && 'text-center items-center',
         className
       )}
@@ -68,20 +68,32 @@ export function SectionHeader({
         // ✅ 'group' moved to the Link — was missing entirely.
         // 'group-hover:translate-x-1' on the SVG inside was dead because no
         // ancestor had the 'group' class. The arrow never animated.
-        <Link href={viewAllLink} className='group shrink-0 cursor-pointer'>
-          <GlassButton>
-            {viewAllText}
-            <ArrowRight className='size-4' />
-          </GlassButton>
-          {/* <Button
-            size={'sm'}
-            variant='glassPrimary'
-            className='rounded-full gap-x-1'
-          >
-            {viewAllText}
-            <ArrowRight className='size-4' />
-          </Button> */}
-        </Link>
+
+        <GlassButton
+          href={viewAllLink}
+          label={viewAllText}
+          icon={<ArrowRight className='size-4' />}
+          borderRadius='999px'
+          variant='default'
+        />
+        // <Link
+        //   href={viewAllLink}
+        //   className='group  shrink-0 cursor-pointer block'
+        // >
+
+        //   {/* <GlassButton childrenClassName='xl:px-6! xl:py-3! text-sm'>
+        //     {viewAllText}
+        //     <ArrowRight className='size-4' />
+        //   </GlassButton> */}
+        //   {/* <Button
+        //     size={'sm'}
+        //     variant='glassPrimary'
+        //     className='rounded-full gap-x-1'
+        //   >
+        //     {viewAllText}
+        //     <ArrowRight className='size-4' />
+        //   </Button> */}
+        // </Link>
       )}
     </div>
   );

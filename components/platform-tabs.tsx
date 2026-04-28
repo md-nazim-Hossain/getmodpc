@@ -22,7 +22,6 @@ import {
   useState,
 } from 'react';
 
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { SearchAppItem } from '@/types/home-apps.types';
@@ -34,6 +33,7 @@ import { getAppsBySearchKeyword } from '@/server/get/get-apps';
 
 import { PlatformIcon } from '@/components/platform-icon';
 
+import { AppImage } from './ui/app-image';
 import { Skeleton } from './ui/skeleton';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -228,7 +228,7 @@ export function PlatformTabs() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 420, damping: 36 }}
-          className='fixed bottom-8 left-8 right-8 z-50 '
+          className='fixed bottom-8 left-8 right-8 z-50 bg-white/40 backdrop-blur-md shadow-2xl rounded-full'
           aria-label='Platform navigation'
         >
           {/* Search popover — renders above the bar */}
@@ -275,7 +275,7 @@ export function PlatformTabs() {
                         className='flex items-center gap-3 w-full px-4 py-3 hover:bg-muted/10 transition-colors text-left'
                       >
                         <div className='relative size-8 rounded-lg overflow-hidden shrink-0 bg-muted'>
-                          <Image
+                          <AppImage
                             src={app.icon}
                             alt={app.name}
                             fill
@@ -305,9 +305,9 @@ export function PlatformTabs() {
           <div
             ref={containerRef}
             className='
-              bg-white/40 backdrop-blur-lg shadow-2xl
+        
               flex items-center
-               safe-area-pb rounded-full 
+               safe-area-pb 
             '
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
           >

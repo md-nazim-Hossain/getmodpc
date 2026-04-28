@@ -1,71 +1,103 @@
-// components/app/AppCardInfo.tsx
+// components/cards/home-app-card-info.tsx
 //
-// Refactored to use the new AppBody type from lib/types.
-//
-// Field mapping (old App → new AppBody):
-//   app.title      → app.name          (display name)
-//   app.icon       → app.icon          (same field, now string | null)
-//   app.isVerified → app.is_verified   (snake_case)
-//   app.platform   → app.platform      (now EnumPlatformType enum)
-//   app.downloads  → app.installs      (string, e.g. "50,000,000+")
-//   app.version    → app.version       (same, now string | null)
-//   app.extraInfo  → app.short_mode    (mod label, e.g. "Premium Unlocked")
-//
-// UI: UNCHANGED — same layout, same classes, same icon SVGs.
-import Image from 'next/image';
-
-import { AppDetails } from '@/types/types.app';
+// BUG FIX: Tooltip content (verified badge) was triggering Link navigation.
+// Fix: wrap tooltip trigger in a <span> with e.stopPropagation() + e.preventDefault()
+// so clicks on the tooltip do NOT bubble to the parent <Link>.
+import { HomeAppItem, Settings } from '@/types/home-apps.types';
+import parse from 'html-react-parser';
 
 import { cn } from '@/lib/utils';
 
 import { PlatformIconList } from '../platform-icon';
+import { AppImage } from '../ui/app-image';
 import { CardTitle } from '../ui/card';
+import TooltipWrapper from '../ui/tooltip-wrapper';
 
-/**
- * AppCardInfo now accepts the full AppBody shape.
- * Only the data-access layer changed; the rendered output is identical.
- */
-const AppCardInfo: React.FC<{ app: AppDetails; className?: string }> = ({
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface AppCardInfoProps {
+  app: HomeAppItem;
+  className?: string;
+  showVersion?: boolean;
+  settings?: Settings<any>[];
+  blurDataIcon?: string;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export function AppCardInfo({
   app,
   className,
-}) => {
+  showVersion,
+  settings,
+  blurDataIcon,
+}: AppCardInfoProps) {
+  const value = settings?.find((s) => s.key === 'icons')?.value;
+
+  const verifiedBadgeIcon =
+    value?.icons?.find(
+      (i: { name: string }) => i?.name === 'verified_badge_icon'
+    )?.url || '/icons/check.svg';
+
+  const tooltipText = value?.verified_badge_tooltip_text || '';
+
   return (
     <div className={cn('flex gap-4 p-2', className)}>
       {/* App Icon */}
       <div className='relative size-21 shrink-0 overflow-hidden rounded-xl shadow-md ring-1 ring-black/5'>
-        {app.icon && (
-          <Image
-            src={app.icon}
-            alt={`${app.name} icon`} // was: app.title
-            fill
-            className='object-cover transition-transform duration-300 group-hover:scale-110'
-            sizes='56px'
-          />
-        )}
+        <AppImage
+          src={app?.icon}
+          alt={`${app?.name} icon`}
+          fill
+          blurDataUrl={blurDataIcon}
+          className='object-cover transition-transform duration-300 group-hover:scale-110'
+          sizes='56px'
+        />
       </div>
 
       {/* Info */}
-      <div className='flex-1 min-w-0 p-0'>
+      <div className='flex-1 min-w-0 p-0 relative z-3'>
         <CardTitle className='text-base font-semibold text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-x-1.5'>
-          {app.name} {/* was: app.title */}
-          {/* Verified Icon */}
-          {app.is_verified /* was: app.isVerified */ && (
-            <Image
-              src='/icons/check.svg'
-              alt='Verified'
-              width={14}
-              height={14}
-            />
+          {app?.name}
+
+          {/* ── FIX: stop propagation so tooltip click ≠ Link navigation ── */}
+          {app?.is_verified && (
+            <span
+              role='button'
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation();
+                }
+              }}
+              className='inline-flex items-center cursor-default'
+              aria-label='Verified badge'
+            >
+              <TooltipWrapper message={parse(tooltipText)}>
+                <AppImage
+                  optimize
+                  src={verifiedBadgeIcon}
+                  alt='Verified'
+                  width={14}
+                  height={14}
+                  // Also stop pointer events reaching the Link
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                />
+              </TooltipWrapper>
+            </span>
           )}
         </CardTitle>
 
         {/* Meta */}
         <div className='flex flex-col gap-y-0.75 mt-1 text-xs text-foreground'>
-          {/* Platform icons — PlatformIconList already accepts Platform ('android'|'windows'|'apple')
-              The new EnumPlatformType values are identical strings, so no adapter is needed. */}
-          <PlatformIconList platform={app.platform!} size='sm' />
+          <PlatformIconList platform={app?.platform} size='sm' />
 
-          {/* Installs row — was: formatDownloads(app.downloads, app.version) */}
           <span className='flex items-center gap-2'>
             <div className='size-3.5'>
               <svg className='size-3.5' viewBox='0 0 24 24' fill='currentColor'>
@@ -74,15 +106,13 @@ const AppCardInfo: React.FC<{ app: AppDetails; className?: string }> = ({
                 </g>
               </svg>
             </div>
-            {/* installs is a pre-formatted string in AppBody ("50,000,000+") */}
             <span className='text-muted-foreground'>
-              {app.installs}
-              {app.version ? ` • v${app.version}` : ''}
+              {app?.size}
+              {showVersion && app?.version ? ` • v${app?.version}` : ''}
             </span>
           </span>
 
-          {/* Mod info row — was: always "Premium Unlocked", now app.short_mode */}
-          {app.short_mode && (
+          {
             <span className='flex items-center gap-2'>
               <div className='size-3.5 overflow-hidden'>
                 <svg
@@ -95,13 +125,13 @@ const AppCardInfo: React.FC<{ app: AppDetails; className?: string }> = ({
                   </g>
                 </svg>
               </div>
-              <span className='text-muted-foreground'>{app.short_mode}</span>
+              <span className='text-muted-foreground'>
+                {app?.short_mode || 'Unknown'}
+              </span>
             </span>
-          )}
+          }
         </div>
       </div>
     </div>
   );
-};
-
-export default AppCardInfo;
+}

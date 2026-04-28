@@ -10,7 +10,8 @@ import { A11y, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import TestimonialCard from '@/components/cards/testimonial-card';
-import GlassButton from '@/components/glass-button';
+import { GlassButton } from '@/components/glass-button';
+import { Container } from '@/components/layout/container';
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   title = 'What our customers say',
@@ -43,7 +44,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       className='py-8 sm:py-12 lg:py-16 overflow-hidden'
       aria-label='Customer Testimonials'
     >
-      <div className='mx-auto px-6 lg:px-12 max-w-350'>
+      <Container>
         {/* ── Header ── */}
         <div className='flex items-end justify-between mb-8 sm:mb-12'>
           <div>
@@ -59,20 +60,34 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
           {/* Nav Buttons */}
           <div className='flex gap-2 pb-1'>
-            <GlassButton onClick={handlePrev} aria-label='Previous testimonial'>
-              <ChevronLeft
-                size={16}
-                className='text-neutral-700 group-hover:text-white transition-colors duration-200'
-                aria-hidden
-              />
-            </GlassButton>
-            <GlassButton onClick={handleNext} aria-label='Next testimonial'>
-              <ChevronRight
-                size={16}
-                className='text-neutral-700 group-hover:text-white transition-colors duration-200'
-                aria-hidden
-              />
-            </GlassButton>
+            <GlassButton
+              asButton
+              onClick={handlePrev}
+              label=''
+              icon={
+                <ChevronLeft
+                  size={16}
+                  className='text-neutral-700 group-hover:text-white transition-colors duration-200'
+                  aria-hidden
+                />
+              }
+              ariaLabel='Previous testimonial'
+              variant={'icon'}
+            />
+            <GlassButton
+              asButton
+              onClick={handleNext}
+              label=''
+              icon={
+                <ChevronRight
+                  size={16}
+                  className='text-neutral-700 group-hover:text-white transition-colors duration-200'
+                  aria-hidden
+                />
+              }
+              ariaLabel='Next testimonial'
+              variant={'icon'}
+            />
           </div>
         </div>
 
@@ -108,10 +123,9 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               : false
           }
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 0 },
-            640: { slidesPerView: 1.25, spaceBetween: 0 },
-            1024: { slidesPerView: 2, spaceBetween: 0 },
-            1280: { slidesPerView: 2.15, spaceBetween: 30 },
+            0: { slidesPerView: 1, spaceBetween: 10 },
+            1024: { slidesPerView: 2, spaceBetween: 30 },
+            1920: { slidesPerView: 3, spaceBetween: 30 },
           }}
           a11y={{
             prevSlideMessage: 'Previous testimonial',
@@ -143,7 +157,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             aria-label={`Testimonial ${activeIndex + 1} of ${testimonials.length}`}
           />
         </div> */}
-      </div>
+      </Container>
     </section>
   );
 };

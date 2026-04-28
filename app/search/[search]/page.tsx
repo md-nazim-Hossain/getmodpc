@@ -56,7 +56,7 @@ export default async function AppCategoryPage({
   const keyword = decodeURIComponent(slug);
 
   return (
-    <div className='min-h-screen bg-slate-50/50'>
+    <div className='min-h-screen '>
       {/* ── Sticky breadcrumb ──────────────────────────────────── */}
       <nav
         className='bg-white border-b border-slate-100 sticky top-0 z-10 shadow-sm'

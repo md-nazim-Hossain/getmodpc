@@ -2,11 +2,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
+import { AppImage } from '@/components/ui/app-image';
 import { Card } from '@/components/ui/card';
 
 import { formatFileSize } from '@/lib/utils';
@@ -105,7 +105,8 @@ const AppProgressContent: React.FC<AppProgressContentProps> = ({
           <div className='flex flex-col items-center gap-2 pt-2'>
             {appIcon && (
               <div className='relative size-16 shrink-0 rounded-2xl overflow-hidden shadow-md ring-1 ring-black/10'>
-                <Image
+                <AppImage
+                  optimize
                   src={appIcon}
                   alt={appName ?? 'App icon'}
                   fill

@@ -1,15 +1,16 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
+import { AppImage } from '@/components/ui/app-image';
 import { buttonVariants } from '@/components/ui/button';
 
 export default function NotFound() {
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto flex h-full flex-col items-center px-6 pt-20'>
-        <Image
+        <AppImage
+          optimize
           width={400}
           height={400}
           src={'/404.svg'}
